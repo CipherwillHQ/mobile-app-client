@@ -1,0 +1,13 @@
+# Mirrors an existing Cipherwill web operation.
+# Owns the mobile selection contract.
+# Does not alter backend authorization.
+query GET_KEY_BY_REF_ID($ref_id: ID!, $publicKey: String) {
+    getKeyByRefId(ref_id: $ref_id, publicKey: $publicKey) {
+      id
+      ref_id
+      publicKey
+      key
+      created_at
+      updated_at
+    }
+  }

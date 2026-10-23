@@ -1,0 +1,1 @@
+mutation ACK_GUIDANCE_OPERATION($objectiveId:String!,$actionId:String!){finishGuidedActionOperation(objectiveId:$objectiveId,actionId:$actionId)}

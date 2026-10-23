@@ -1,0 +1,15 @@
+# Mirrors an existing Cipherwill web operation.
+# Owns the mobile selection contract.
+# Does not alter backend authorization.
+mutation COMPLETE_MY_ONBOARDING($data: CompleteMyOnboardingInput!) {
+    completeMyOnboarding(data: $data) {
+      user_id
+      is_completed
+      heard_from_option_id
+      heard_from_custom
+      expectations_selected_ids
+      expectations_custom
+      completed_at
+      updated_at
+    }
+  }

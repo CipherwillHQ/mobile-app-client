@@ -1,0 +1,8 @@
+# Mirrors an existing Cipherwill web operation.
+# Owns the mobile selection contract.
+# Does not alter backend authorization.
+mutation CREATE_FOLDER($name: String!, $folder_id: String) {
+    createFolder(name: $name, folder_id: $folder_id) {
+      id
+    }
+  }

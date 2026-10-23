@@ -1,0 +1,13 @@
+{
+  "APP_ENV": "staging",
+  "API_URL": "",
+  "FIREBASE_API_KEY": "",
+  "FIREBASE_ANDROID_APP_ID": "",
+  "FIREBASE_IOS_APP_ID": "",
+  "FIREBASE_PROJECT_ID": "project-cipherwill",
+  "FIREBASE_SENDER_ID": "",
+  "GOOGLE_SERVER_CLIENT_ID": "",
+  "GOOGLE_IOS_CLIENT_ID": "",
+  "REOWN_PROJECT_ID": "",
+  "SENTRY_DSN": ""
+}

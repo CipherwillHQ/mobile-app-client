@@ -1,0 +1,10 @@
+# Mirrors an existing Cipherwill web operation.
+# Owns the mobile selection contract.
+# Does not alter backend authorization.
+query GET_STORAGE_USED {
+    getStorageUsed {
+      id
+      text_pods
+      storage_pods
+    }
+  }

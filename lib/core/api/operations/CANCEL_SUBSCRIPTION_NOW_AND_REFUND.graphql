@@ -1,0 +1,6 @@
+# Mirrors an existing Cipherwill web operation.
+# Owns the mobile selection contract.
+# Does not alter backend authorization.
+mutation CANCEL_SUBSCRIPTION_NOW_AND_REFUND($subscriptionId: ID!) {
+    cancelSubscriptionNowAndRefund(subscriptionId: $subscriptionId)
+  }

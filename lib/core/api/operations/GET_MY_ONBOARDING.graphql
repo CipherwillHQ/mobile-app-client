@@ -1,0 +1,26 @@
+# Mirrors an existing Cipherwill web operation.
+# Owns the mobile selection contract.
+# Does not alter backend authorization.
+query GET_MY_ONBOARDING {
+    getMyOnboarding {
+      user_id
+      is_completed
+      heard_from_option_id
+      heard_from_custom
+      expectations_selected_ids
+      expectations_custom
+      heard_from_options_catalog {
+        id
+        label
+        requires_custom_text
+      }
+      expectation_options_catalog {
+        id
+        label
+        requires_custom_text
+      }
+      completed_at
+      created_at
+      updated_at
+    }
+  }

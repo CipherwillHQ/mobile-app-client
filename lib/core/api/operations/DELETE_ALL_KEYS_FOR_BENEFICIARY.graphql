@@ -1,0 +1,6 @@
+# Mirrors an existing Cipherwill web operation.
+# Owns the mobile selection contract.
+# Does not alter backend authorization.
+mutation DELETE_ALL_KEYS_FOR_BENEFICIARY($beneficiary_id: String!) {
+    deleteAllKeysForBeneficiary(beneficiary_id: $beneficiary_id)
+  }

@@ -1,0 +1,6 @@
+# Mirrors an existing Cipherwill web operation.
+# Owns the mobile selection contract.
+# Does not alter backend authorization.
+query GET_PADDLE_PORTAL_SESSION_URL($subscription_id: String!) {
+    getPaddlePortalSessionUrl(subscription_id: $subscription_id)
+  }

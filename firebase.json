@@ -1,0 +1,30 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "project-cipherwill",
+          "appId": "1:200526322095:android:4ecc4cbaf5474c5ca3775a",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/core/config/firebase_options.dart": {
+          "projectId": "project-cipherwill",
+          "configurations": {
+            "android": "1:200526322095:android:4ecc4cbaf5474c5ca3775a",
+            "ios": "1:200526322095:ios:a23b55152484fe83a3775a"
+          }
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "project-cipherwill",
+          "appId": "1:200526322095:ios:a23b55152484fe83a3775a",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      }
+    }
+  }
+}

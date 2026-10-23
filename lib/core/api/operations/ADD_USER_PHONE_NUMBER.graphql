@@ -1,0 +1,6 @@
+# Mirrors an existing Cipherwill web operation.
+# Owns the mobile selection contract.
+# Does not alter backend authorization.
+mutation ADD_USER_PHONE_NUMBER($phone_code: String!, $phone_num: String!) {
+    addUserPhoneNumber(phone_code: $phone_code, phone_num: $phone_num)
+  }

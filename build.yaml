@@ -1,0 +1,16 @@
+# Generates typed operations from the exported backend schema.
+# Owns code generation settings.
+# Does not define runtime API endpoints.
+targets:
+  $default:
+    builders:
+      graphql_codegen:
+        options:
+          clients: []
+          scopes:
+            - lib/core/api/**
+          scalars:
+            JSON:
+              type: Object
+            Upload:
+              type: String

@@ -1,0 +1,124 @@
+// Manages existing subscriptions and invoices
+// Owns cancellation and invoice links.
+// Does not offer checkout or upgrades.
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../app/providers.dart';
+import '../../core/api/json_values.dart';
+import '../../shared/time.dart';
+import '../../shared/ui/page_frame.dart';
+import '../../shared/ui/remote_panel.dart';
+import '../../shared/ui/actions.dart';
+
+class BillingScreen extends ConsumerWidget {
+  const BillingScreen({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => PageFrame(
+    title: 'Subscription and invoices',
+    children: [
+      RemotePanel(
+        operation: 'GET_MY_SUBSCRIPTION',
+        builder: (r) {
+          final raw = r['getMySubscription'];
+          if (raw == null) return const Text('No existing subscription.');
+          final s = asJson(raw);
+          return Column(
+            children: [
+              ListTile(
+                title: Text(s['plan_name']),
+                subtitle: Text(s['status']),
+              ),
+              ListTile(
+                title: const Text('Next billing'),
+                subtitle: Text(localTime(s['next_billing_at'])),
+              ),
+              if (s['cancel_at'] != null)
+                ListTile(
+                  title: const Text('Cancellation scheduled'),
+                  subtitle: Text(localTime(s['cancel_at'])),
+                ),
+              ListTile(
+                title: const Text('Payment method'),
+                subtitle: Text(
+                  s['last_payment_method']?.toString() ?? 'Unavailable',
+                ),
+              ),
+              if (s['payment_gateway'] == 'paddle')
+                TextButton(
+                  onPressed: () => perform(context, () async {
+                    final url = (await ref.read(apiProvider).run(
+                      'GET_PADDLE_PORTAL_SESSION_URL',
+                      {'subscription_id': s['id']},
+                    ))['getPaddlePortalSessionUrl'];
+                    if (!await launchUrl(
+                      Uri.parse(url),
+                      mode: LaunchMode.externalApplication,
+                    )) {
+                      throw StateError('Unable to open subscriber portal.');
+                    }
+                  }),
+                  child: const Text('Manage existing subscription'),
+                ),
+              for (final entry in {
+                'Cancel at period end': 'CANCEL_SUBSCRIPTION_AT_PERIOD_END',
+                'Cancel now and request eligible refund':
+                    'CANCEL_SUBSCRIPTION_NOW_AND_REFUND',
+              }.entries)
+                TextButton(
+                  onPressed: () => perform(context, () async {
+                    if (!await confirm(
+                      context,
+                      entry.key + '? Eligibility is checked by Cipherwill.',
+                    )) {
+                      throw const ActionCancelled();
+                    }
+                    await ref.read(apiProvider).run(entry.value, {
+                      'subscriptionId': s['id'],
+                    });
+                    ref.invalidate(remoteProvider);
+                    ref.invalidate(accountProvider);
+                  }, success: 'Cancellation request completed.'),
+                  child: Text(entry.key),
+                ),
+            ],
+          );
+        },
+      ),
+      RemotePanel(
+        operation: 'GET_MY_INVOICES',
+        builder: (r) => Column(
+          children: [
+            for (final invoice in jsonList(r['getMyInvoices']))
+              Card(
+                child: ListTile(
+                  title: Text(invoice['plan_name']),
+                  subtitle: Text(
+                    invoice['status'] +
+                        ' · ' +
+                        localTime(invoice['created_at']),
+                  ),
+                  trailing: Text(
+                    invoice['amount'].toString() + ' ' + invoice['currency'],
+                  ),
+                  onTap: () => perform(context, () async {
+                    final url = (await ref.read(apiProvider).run(
+                      'GET_INVOICE_PDF',
+                      {'invoiceId': invoice['id']},
+                    ))['getInvoicePdf'];
+                    if (!await launchUrl(
+                      Uri.parse(url),
+                      mode: LaunchMode.externalApplication,
+                    )) {
+                      throw StateError('Unable to open invoice.');
+                    }
+                  }),
+                ),
+              ),
+          ],
+        ),
+      ),
+    ],
+  );
+}

@@ -1,0 +1,11 @@
+# Applies Flutter lint rules to handwritten client sources.
+# Owns generated-source exclusions.
+# Does not suppress compiler errors in application code.
+include: package:flutter_lints/flutter.yaml
+analyzer:
+  exclude:
+    - "**/*.graphql.dart"
+linter:
+  rules:
+    depend_on_referenced_packages: false
+    prefer_interpolation_to_compose_strings: false

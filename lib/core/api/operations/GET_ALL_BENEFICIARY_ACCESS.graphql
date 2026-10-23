@@ -1,0 +1,12 @@
+# Mirrors an existing Cipherwill web operation.
+# Owns the mobile selection contract.
+# Does not alter backend authorization.
+query GET_ALL_BENEFICIARY_ACCESS {
+    getAllBeneficiaryAccess {
+      id
+      user
+      beneficiary_id
+      created_at
+      expire_at
+    }
+  }

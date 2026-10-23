@@ -1,0 +1,85 @@
+{
+  "privateKey": "0000000000000000000000000000000000000000000000000000000000000001",
+  "publicKey": "0479be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8",
+  "podKey": "0123456789abcdef0123456789abcdef0123456789abcdef",
+  "ephemeralPrivateKey": "0000000000000000000000000000000000000000000000000000000000000099",
+  "iv": "BwcHBwcHBwcHBwcHBwcHBw==",
+  "salt": "CQkJCQkJCQk=",
+  "current": "{\"type\":\"E0\",\"ciphertext\":\"xNIrpUxGR5cAbjjvApYSA5IdU/4jBxoBZQty5VC42LJK6DY7vXbG3YoZG0y3aV8gZO2ncpZMUTK+N7RLzqk2tg==\",\"ephemPublicKey\":\"BADjrhl0VmygbMUW1H4PsWWmdKPavPyhXnIvDjRQ9FiJKuq+fkUxUQEWIX8Hv00HMA3pfkh0+B9TNCCnLusL1qQ=\",\"iv\":\"BwcHBwcHBwcHBwcHBwcHBw==\",\"mac\":\"OLL9+TgfahiLrOXvDIkaE63bIkhmR5BFwzqTFSnMeIs=\"}",
+  "legacy": "{\"type\":\"E0\",\"ciphertext\":\"SayI9yD/K0tqwZ4iHQJQQFvxJCfg+yi3HZZjqm3E0reVUSk5fUmNMDWDY8Qf2C/urqoc4mCdrrdgXSb5slQHJw==\",\"ephemPublicKey\":\"BADjrhl0VmygbMUW1H4PsWWmdKPavPyhXnIvDjRQ9FiJKuq+fkUxUQEWIX8Hv00HMA3pfkh0+B9TNCCnLusL1qQ=\",\"iv\":\"BwcHBwcHBwcHBwcHBwcHBw==\",\"mac\":\"0hpJJwCkYEHircFApgjyDqPgzESw4fZgQdWZtF2ftUE=\"}",
+  "texts": [
+    {
+      "plaintext": "{\"type\":\"bank_account\",\"version\":\"0.0.1\",\"data\":{\"account_number\":\"001234 account_number 🔐  \",\"bank_name\":\"001234 bank_name 🔐  \"}}",
+      "ciphertext": "U2FsdGVkX18JCQkJCQkJCRAJD13YitlCeK2ravCpNcrpf//DTW8h1A48z8Vl0KK8/AcCmfbJpegnVqZzA4KxeyJVIaNA2SjZAr5C0xYnwgsbf1nli1g/15Y0Nlql6+3BLUDRo9MjsqUqH32V0UDi7pmJLQzC2sZakEBtFxLLS6Ts6qEZEAtrNHvFvFwR70QntGLfZwFhPJOxBwPirh/vlQ=="
+    },
+    {
+      "plaintext": "{\"type\":\"defi_staking\",\"version\":\"0.0.1\",\"data\":{\"platform\":\"001234 platform 🔐  \",\"asset_amount\":\"001234 asset_amount 🔐  \",\"asset_name\":\"001234 asset_name 🔐  \",\"lock_period\":\"001234 lock_period 🔐  \",\"wallet_address\":\"001234 wallet_address 🔐  \",\"username\":\"001234 username 🔐  \",\"password\":\"001234 password 🔐  \",\"note\":\"001234 note 🔐  \"}}",
+      "ciphertext": "U2FsdGVkX18JCQkJCQkJCSghf6x8MAqPTtkwYRWB0MQoA3KZeZvt9QkMpOHZtrkxInhviqIrdQMhenlnFJbKxFPER6GlqLwlJIX5YnZMaNu7UpiatiSU0P7XFnqswy+0ETUOVCwKX2GfrwQaCqKj9aKR/bhodp9zpTWwm4Vv/mNBAp/DxWkAFhads2qqNXxmUMLpZzpuoNVSUV8ZMQlDqBgy40eSECgwsnGi6DLHuNqfVHVe8nscYTyphBvK03tMbFIsLSqGHltqlNVLaTlxRHDooeSv7fHFANgzJBVx/lgHUQKFNhwAYh+kS1Nl9dYDN0ED7LKAKAPljK9ZbpYzo7+U6cOqMdHddl8jJgBuXDvlRXKIScB28+ZH9UrB9mXsjUui5lSnTmcrRiHv/BpuRxlbzR5YbHoQk86cSrYFh44eJ9MtsMyuApwocZWkTzqg5hHY5I7TqUPlWVNQYvYKXWDqdV4iiYPR9SvPzfJYb9n8DaoSlJ7ggxEDo2KshbB9"
+    },
+    {
+      "plaintext": "{\"type\":\"device_lock\",\"version\":\"0.0.1\",\"data\":{\"password\":\"001234 password 🔐  \",\"pin\":\"001234 pin 🔐  \",\"note\":\"001234 note 🔐  \"}}",
+      "ciphertext": "U2FsdGVkX18JCQkJCQkJCUYidNXvg97daX5AD3buy9KKxgNg81csFb+o8dCATr9R3ujJ9WUe70bmj+qKsB41wua0Z4cEUC66ZhzSQPzpmDl+W389Ai/WpcWGGrXc2SCxVF9Q/1VgUQyXW/+UBYr6pBRukK1Lvcot5/6GFUxTSEa1KU5XpICQQ8V5Acj1iFgIg/Y/2KxhjkNA+iSa6u8ECg=="
+    },
+    {
+      "plaintext": "{\"type\":\"email_account\",\"version\":\"0.0.1\",\"data\":{\"email\":\"001234 email 🔐  \",\"password\":\"001234 password 🔐  \",\"provider\":\"001234 provider 🔐  \",\"recoveryEmail\":\"001234 recoveryEmail 🔐  \",\"recoveryPhone\":\"001234 recoveryPhone 🔐  \",\"securityQuestion\":\"001234 securityQuestion 🔐  \",\"securityAnswer\":\"001234 securityAnswer 🔐  \",\"backupCodes\":[\"first 🔐\",\"second  \"],\"aliasEmails\":[\"first 🔐\",\"second  \"],\"note\":\"001234 note 🔐  \"}}",
+      "ciphertext": "U2FsdGVkX18JCQkJCQkJCeEbpkLHoO5BZ/I2+dg87EVN8A1cOolOwlsbEOLzNM0MMdwVZ6An72evsSTV/KPkT3XCHz7JeQY+ikBV+Ys0/iYcTp1HmeRnzz/3l0naZ5swUG1shztp7d5Xuh5/tB9DXTBdzYg6CxEZwpdAnDMaq9/YnK9wn6eLCjV4ezfrg6LVTfpliUWpJ1U1oX2pIjPRl6q/X/s+gr4cIrGuRUg+Kk9L30LJfpGBUVaBOeOnMixuw+CAPT4mw5RxWmk0Jjw2qPe53FhwUronl8gXaUqT4RB+xcWKKJQqInVl9POqV8no03PZULeQ8FnAynSc3CBpe7bK10JfRP43PT+Oh4Y/oawsKNY3UilbSGm8oVEOgcQRezfNQr+YX/KoR6JDOCYFu9waB6OyUNmOKKo6JLeI+6DQp83BMUOhfKb6qWP4AGcXUhi8Ufw4Vfxp3PgJx3kjMqqo2fAUD8iAVx20NsFWUGLkrgnR/xum11nE/ZylLWDDfx6OXOlaiLz3ZIlpNoOySgJeG0TRP6QvyRpzuymT5HAL3KURtoiYuZmQIuqKE9CpNXP9BfJ7jsdY2ydb7AYFN4FFb1fWOt5YttVx3EQG380YBZI/OU2IwsxXwhGWgYnU"
+    },
+    {
+      "plaintext": "{\"type\":\"note\",\"version\":\"0.0.2\",\"data\":{\"content\":\"<h2>Unicode 🔐</h2><p><strong>Text</strong>  </p>\"}}",
+      "ciphertext": "U2FsdGVkX18JCQkJCQkJCdPelmHcpis2NecLa5zn7uqhrVZZzzZz0qoVujEr+7m+62nyfTJgVRkN4L06Y/mljes1UV1zBwWY53nMqgCTOWdtWfsPzUGqtMS3mCD2nc352wIB+tO05Cqb8EGHEiku0qmjP3l1DiT/DTXjbfVhI04="
+    },
+    {
+      "plaintext": "{\"type\":\"password\",\"version\":\"0.0.1\",\"data\":{\"username\":\"001234 username 🔐  \",\"password\":\"001234 password 🔐  \",\"totp_secret\":\"001234 totp_secret 🔐  \",\"uri\":[\"first 🔐\",\"second  \"],\"note\":\"001234 note 🔐  \"}}",
+      "ciphertext": "U2FsdGVkX18JCQkJCQkJCUXecbzC/Ol7dW/eRpEZEVbgJHEXhOsvNM90ySDZ6VNxcbG6JHpptZIzN2FaOa0lZEGklAHBcDrKbD5GtIdU1D0az/ZWdXczBfALVF+nqQ4Hm/nlzQ7Qm5ds1VYecT/xJWa4XFpvNbUKTWAMNVpEH7wMurNebA8MqYAo5IyrvydK4Z+nvjpQrI3pBaGcS8vsz1i3Xa0RHKLTpPKVgmLukN2vYnU/re/cPhEJm+dIOKjOTC/k/0fAK2G7jx7X1TUt0k3mRDa8af0YAGhNxK31tYz0kvB9oLpMF90dSJ2UERwq"
+    },
+    {
+      "plaintext": "{\"type\":\"payment_card\",\"version\":\"0.0.1\",\"data\":{\"card_holder_name\":\"001234 card_holder_name 🔐  \",\"card_number\":\"001234 card_number 🔐  \",\"expiry_date\":\"001234 expiry_date 🔐  \",\"type\":\"001234 type 🔐  \",\"cvv\":\"001234 cvv 🔐  \",\"issuer\":\"001234 issuer 🔐  \",\"network\":\"001234 network 🔐  \",\"note\":\"001234 note 🔐  \"}}",
+      "ciphertext": "U2FsdGVkX18JCQkJCQkJCc1xBofekBwW+PeWhQTFpvd7UaBNpzV6qQB/0mwkh+mzrGcB/atP5ZInffl8ECvnMO+1mKCYGs/sMBwb8kX2tupElX95hIlkCb2nv0/7yWDAk66awHrKt6AF0YUT3h9wtgBUtSWXabALgdW5TzaakHnwUQHKo7kohfC6KnXJb1kjM8h3jkL53/bumpZFL2rUFHCoO8ZJ2ylI0aOuKxDOD5H+tDVQQyruy0QNZTMTfeXvYzIBWcr76NsTFCVSTN3v3QVvZEg+aFRo0ihJJUqnhDA/4s+/yBW58WYLWNmQqR5QJucqpdPQ3UwEYOuk2hWRkYeqX/+UV4hd7JQio7LvpndqQJT1Sa8u5FqMM3WFshEFtIMYJomyEyjnoinWf6fcNdaDJixcPMt3NeT078MWfkh0l9LQD5SpAzCbRIyKj/yTkkXJsaCvScxkylZViR0a+A=="
+    },
+    {
+      "plaintext": "{\"type\":\"seed_phrase\",\"version\":\"0.0.1\",\"data\":{\"phrase\":[\"first 🔐\",\"second  \"],\"public_key\":\"001234 public_key 🔐  \",\"note\":\"001234 note 🔐  \"}}",
+      "ciphertext": "U2FsdGVkX18JCQkJCQkJCSTbXkTnqE2qa2oo5ZPDgOazMbutHkLo0GNkJFPGsWkOYZOWlGl9tY8wJheZs5eGprntbe4k2gFsPY59p8DGZ8IRMJ+OXf/MMM+Fu7EPjN76hE57ClUhciNzyr0ZJ1QWWAy3TZapNNTS59+WikM1bdBi2bHqD8O8s+TvDOOsQ1JiEhc4Mdrzo3PU8xD1aU3CNrzI8700OPsC3CabHYia2sI="
+    },
+    {
+      "plaintext": "{\"type\":\"note\",\"version\":\"0.0.1\",\"data\":\"<p>Legacy note 🔐  </p>\"}",
+      "ciphertext": "U2FsdGVkX18JCQkJCQkJCdPelmHcpis2NecLa5zn7urg3M77PJybknpo8M5ZHKU4kvrV9fW/vJosWQZGq8hCDCMpZcbrzERZ7HPjtsokVECEgkhtfKjhEWIrlDaKrriw"
+    },
+    {
+      "plaintext": "{\"type\":\"note\",\"data\":\"<p>Unversioned legacy note</p>\"}",
+      "ciphertext": "U2FsdGVkX18JCQkJCQkJCdPelmHcpis2NecLa5zn7urvkagy6Y1CIC/R35ADFIJFiAgX41gBIcSLA+/7dwCHT+L5/l+NuCr6tZdkjUAwj5s="
+    }
+  ],
+  "factors": [
+    {
+      "type": "master-password",
+      "nonce": "12345",
+      "input": "Unicode 🔐 password  ",
+      "privateKey": "d04ca8b2de50dd2121e93ca90bf932a9fd774db9be331c282b86449010676c76",
+      "publicKey": "049b3724edaee2234c7f671fb7832f0c9de616204c1b90717314cf6524cc0b01ef972b83fb0f228bc8bc428a45b603168df95d4eb5a0318a480328d1e96976292e",
+      "wrapped": "{\"type\":\"E0\",\"ciphertext\":\"wJjLzM6Z+3yaKHsGu+fQMZHi+FafHubnJjvtLGLBzU+3Tw1f8OEv6ntrf58m7V+o3BA+cF0dNa4liGj00b5VRQ==\",\"ephemPublicKey\":\"BOhiP84fBn2Cq51VWjJhez2SB6mahyS0R0+BUK749g6Pjp9XDA3kfkPgkgVM2YimchBXDiZyyryoGuaXghHvZ9A=\",\"iv\":\"H3zWS3ds0cqgpeBm3711Mw==\",\"mac\":\"9BbvHVYqErhToqqRTAZsH2h0Y/52FKI2L+DbdecdRFo=\"}",
+      "beneficiary": "{\"type\":\"E0\",\"ciphertext\":\"NsHVkeByAvQwfl4Mrbuajzstr0kgrvxiyUepbiIfhJnENZzPCBwsHSzWIxnq8SUyCiTtTNR3a3lKM/mmwZNQOcfbT5aVxwXqxQtfFI3O+44uRvDeuFx6dX8XOqs1ZN2TrEaAo6c0bqFtj72DrEXXBwoohXdffaBNIcCXsOKa4cLhNiAFANVPDSm7oOi2l9d/d/9a45wz20UDd7QUSyvW77NRL7VRG8sLiBPKnCZolrgdCWzDhwyNrc2c9HKVorz+bkA8EUS4Rfce07/GlfOdWFIZha95/ha42DDpF9THDOjIpDYnnM2TmvmArFgdnk3WjucGBgkr0j4LT+24O6CbvNnqTTAKAf1OPI8Be6iTEM8U2gjpiuZ2Qk3p3qadH5pjFw8i33+2XkmM2Ry1oDAtcb1xhui13iHXOsWu89KR4Y4=\",\"ephemPublicKey\":\"BKARJlg3MxPA0BxCULc8IUzHXaqFQcujnfmMD3B2tv74SUuuAR3Efe+aobNmXMbG49uLFM50wIwO266hxqFP5JI=\",\"iv\":\"ATMVHfQYDeuKFvgWCjO9fw==\",\"mac\":\"TxwSW7D+NXn6kpAIz4u1Fx8nGpLNAQ/33S8I8o6Jwpk=\"}"
+    },
+    {
+      "type": "metamask",
+      "nonce": "654321",
+      "input": "0xabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababdeadbeef",
+      "privateKey": "ddb50564f2096f3ba656e0531b5af587aa572ca3f125456c933bef9f67189365",
+      "publicKey": "0408711d96ae37ef602370362f4eb2d9559b4a8b90832fe86676e6049eb0c134c9d6c9002852aa83dc7b241bc7b96e5fbf23961e2435a47ce21ca57c59d10c164f",
+      "wrapped": "{\"type\":\"E0\",\"ciphertext\":\"G3M/cC9TJlvxAS1LJyIey6QAyEJdMcl21mhdFryKo3dpMw/vQhPqELWuCB65BDZXQGt7KMYFZNyL2OG+WJqwcA==\",\"ephemPublicKey\":\"BIdt8yZ2t32b8puwcc9gSG1OdbiUD6JFh2HoF5UoJcFHAfhHPwDY2y3RrfjSXdfL4E3RmeqOZtvfWB7UGB6uN0w=\",\"iv\":\"Hf00rRrAxNXaIZzkEDL0DQ==\",\"mac\":\"vuIKrmKmmjJtndfJ8HjKwLcZqTWOyH8vZjAzcasUl/A=\"}",
+      "beneficiary": "{\"type\":\"E0\",\"ciphertext\":\"c9ex/v3BpRIdhoGFs2MXT9rcIk0GzMwS2tgcottkehsky3jAr7ElIO3lNX64ALwgoc/nnarNIrWF0MPyxmnAxzW0XnCUx3leURRxK6z/iuCFXRYLl7Wqtp8Vu+h6nGIw9hBmOltYAP+D3fQHA3rYHybp5l0dAwhYr8IPbuH9dJmHbJvp+4MPXCQNU3R8pkTB2+WdoXZDI71qheb2Pt/YiSm5ZTyPHdSFrMhh6BJ/Mh5Fn9NqFAjnZ3vsojJ5p3zvf+MZp9wpogrr3k+Fp9UUS+FmeaaR0LDZ8VWE3X8WsXWG/4AMJWsXzF0FF12Lo3hkE7OVSkB46ZCuFjIu2fvpAU3ypNqbGwX7Bklq2gwjkxyMHyXP+978bRd0eS9n9Jx67DdxPI4dkdkCNs/bYX1YnXnyNUIVhXzrCE0EuamuQOw=\",\"ephemPublicKey\":\"BBvn6XOp1V2a/G3UA10/0Nc9itXpWsEmxgwyUr3sh+kCweYc7K2hH4uxG+SmYOnIijhSPRooDZSkhymA3/8qJw8=\",\"iv\":\"3OphG4gM/c2lP5O7Ja377g==\",\"mac\":\"nM4yyQ3G/8DQc2FuoPab0yXxnSNWxfZxOvv5stl0Pb4=\"}"
+    },
+    {
+      "type": "passkey",
+      "nonce": "AID/AQIDBAU=",
+      "input": "/wCABAUGBwg=",
+      "privateKey": "2da1cfbec8795032b614429648e0a235307684e986086aecabe057405d43958d",
+      "publicKey": "04ed05e48875736a4bba12180a5c9eadbb304764b0fa958d900e95d759a9b33f485fd1252f24f47299d298e1aa8dec4c280343832aa0d5abc3b50d33e0937f5b08",
+      "wrapped": "{\"type\":\"E0\",\"ciphertext\":\"ysQpF9ChDbRebqYvaxANvoAehfugKkV1H6DB5J+e7O1t/Fugfy5NpF8zpQX+JQYWzh5vlHilC4lroeQgZ5JHtQ==\",\"ephemPublicKey\":\"BNtn2Y5DyuaA+fnB0WE6Ro2EXJvuBWc2opYYT5ZqxxLkn60O4udgYz6sp/Ny1vNoW2IPqJBsUs9rl+guiPUCkYI=\",\"iv\":\"oYYaXYznroJcv2qfZwURNg==\",\"mac\":\"ghxNFwQwdZHRB5CYQH8Dg+h9dEPU2W7bNtL560isRxE=\"}",
+      "beneficiary": "{\"type\":\"E0\",\"ciphertext\":\"G7PEPEyMlwC7lQes/+zQYm6+uYaMqSi9LAoCLScvw9AeBAYvoFKH7vc1kfeeUZlMMgRIy9SmoNBvLQ7tUwM1vco55fWbXLeM6UVW3hmUGuQG//WdS4pJo9/4ZiwKduEs/yTUlJioFKh0bWNx5XBZ0EiplLoyatti0EnKkss3M9AB2YaQLa9PpzVVY0psGqVklcdWRnG7/38kdt7lWkcwP6/c6r7alHGlvfBG0pjYQVkbCtt52q/hjqozAog56/Lx8IGEGNKLxfjrePzUEEwFJUs8M3yXQCtnh08TN2m3wwMnKSolIiCeOMHIbLRZuY6ovscDg8CnfibQwSM/hvbxAZkNbAg/AAKjp6WbHyQ7BN2Y49Gms/l3DambWMrVB5qwvQeQjyK7MV/h5QPa1PvbD64bhdcpm/sF59sP2MqdeV0=\",\"ephemPublicKey\":\"BGDB9sWsXxGjfnHMjUQWAdGm6BpuecdaQkCCLmlXJFWJcdSJuiIAEcjcn+DEztAtcXM4iZzPk89a/FTpwMkMzZ4=\",\"iv\":\"KSwGGWk5yNu8ZFgDGcyawA==\",\"mac\":\"DiJ4PRxgxRpgXbM5yJtui3kHJYknUOCZ0bYCZZxHlBI=\"}"
+    }
+  ],
+  "capsulePrivate": "0000000000000000000000000000000000000000000000000000000000000002",
+  "beneficiaryWithoutFactor": "{\"type\":\"E1\",\"ciphertext\":\"hPcwp9w1yk3HhZaHOQnMxTBsqL5RAXOjrXj7cX0XGLlC+HdlVlJzaYbf0jKXtwYERTCfHFR1KQXyj0aUq9tDDA==\",\"ephemPublicKey\":\"BMCIKC/0hg+kQn16mSp0xc/gG+Wl5vcfy8CSGsgVDYDDINesLkYPw1X65bDzpnYdGaE7SkTOqf1F2VSS+Drst3Q=\",\"iv\":\"ZTi/rWauSCtwXukrXKizMQ==\",\"mac\":\"iR9YFlylRZaRbcQ2AhBb5uFHhn3R5o4HC2q38wjJJM0=\"}",
+  "binaryPlaintext": "AAF/gP8KDQA=",
+  "binary": "a+eoF95I/Pd9ymsT3Vu6jA=="
+}

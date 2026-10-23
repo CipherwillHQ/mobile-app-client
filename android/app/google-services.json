@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "200526322095",
+    "project_id": "project-cipherwill",
+    "storage_bucket": "project-cipherwill.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:200526322095:android:4ecc4cbaf5474c5ca3775a",
+        "android_client_info": {
+          "package_name": "com.cipherwill.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "200526322095-6lbr8iq35m5pg5pntpe6a0h0rih8d5pj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cipherwill.app",
+            "certificate_hash": "e071e78afc67a18afd12d1f3d0673c67b75519db"
+          }
+        },
+        {
+          "client_id": "200526322095-7cpqopr74n57rouj3isudvijuarj43ar.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbRN7E5FISbpZAqX-DY0ZhMtDqd52ylBU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "200526322095-7cpqopr74n57rouj3isudvijuarj43ar.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "200526322095-5knra0882hit6q2qk8rmnv7cn8t4rnta.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cipherwill.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

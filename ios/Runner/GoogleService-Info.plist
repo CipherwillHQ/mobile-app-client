@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>200526322095-5knra0882hit6q2qk8rmnv7cn8t4rnta.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.200526322095-5knra0882hit6q2qk8rmnv7cn8t4rnta</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>200526322095-6lbr8iq35m5pg5pntpe6a0h0rih8d5pj.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB3Tgmn2eBmZfjnwUu0fzf0OaL_4fJYG48</string>
+	<key>GCM_SENDER_ID</key>
+	<string>200526322095</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.cipherwill.app</string>
+	<key>PROJECT_ID</key>
+	<string>project-cipherwill</string>
+	<key>STORAGE_BUCKET</key>
+	<string>project-cipherwill.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:200526322095:ios:a23b55152484fe83a3775a</string>
+</dict>
+</plist>

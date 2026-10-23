@@ -1,0 +1,21 @@
+# Mirrors an existing Cipherwill web operation.
+# Owns the mobile selection contract.
+# Does not alter backend authorization.
+mutation createUploadPodSession(
+    $data_model_version: String!
+    $ref_id: ID!
+    $required_space: Int!
+    $require_missing_pod: Boolean
+  ) {
+    createUploadPodSession(
+      data_model_version: $data_model_version
+      ref_id: $ref_id
+      required_space: $required_space
+      require_missing_pod: $require_missing_pod
+    ) {
+      id
+      status
+      type
+      presigned_upload_url
+    }
+  }

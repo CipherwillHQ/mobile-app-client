@@ -1,0 +1,6 @@
+# Mirrors an existing Cipherwill web operation.
+# Owns the mobile selection contract.
+# Does not alter backend authorization.
+mutation VERIFY_USER_PHONE_NUMBER($id: ID!, $otp: String!) {
+    verifyUserPhoneNumber(id: $id, otp: $otp)
+  }

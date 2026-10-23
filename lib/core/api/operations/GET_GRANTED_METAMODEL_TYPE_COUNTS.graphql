@@ -1,0 +1,9 @@
+# Mirrors an existing Cipherwill web operation.
+# Owns the mobile selection contract.
+# Does not alter backend authorization.
+query GET_GRANTED_METAMODEL_TYPE_COUNTS($access_id: ID!) {
+    getGrantedMetamodelTypeCounts(access_id: $access_id) {
+      type
+      count
+    }
+  }

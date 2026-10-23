@@ -1,0 +1,1 @@
+mutation COMPLETE_GUIDED_ACTION($objectiveId:String!,$answers:JSON!,$version:Int){completeGuidedAction(objectiveId:$objectiveId,answers:$answers,version:$version){status beneficiaryPersonId data recovery}}

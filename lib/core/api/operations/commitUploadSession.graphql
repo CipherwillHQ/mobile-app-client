@@ -1,0 +1,10 @@
+# Mirrors an existing Cipherwill web operation.
+# Owns the mobile selection contract.
+# Does not alter backend authorization.
+mutation commitUploadSession($session_id: ID!) {
+    commitUploadSession(session_id: $session_id) {
+      id
+      status
+      type
+    }
+  }

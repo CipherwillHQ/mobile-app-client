@@ -1,0 +1,87 @@
+// Defines the Payment cards form from the existing web contract
+// Owns field names and serialization versions.
+// Does not encrypt records or enforce server permissions.
+import '../asset_category.dart';
+
+const paymentCardCategory = AssetCategory(
+  'PAYMENT_CARD',
+  'Payment cards',
+  'payment_card',
+  '0.0.1',
+  'segment_payment_cards',
+  false,
+  [
+    AssetField(
+      'card_holder_name',
+      'Card Holder Name',
+      required: true,
+      sensitive: false,
+      array: false,
+      multiline: false,
+      rich: false,
+    ),
+    AssetField(
+      'card_number',
+      'Card Number',
+      required: true,
+      sensitive: false,
+      array: false,
+      multiline: false,
+      rich: false,
+    ),
+    AssetField(
+      'expiry_date',
+      'Expiry Date',
+      required: true,
+      sensitive: false,
+      array: false,
+      multiline: false,
+      rich: false,
+    ),
+    AssetField(
+      'type',
+      'Type',
+      required: false,
+      sensitive: false,
+      array: false,
+      multiline: false,
+      rich: false,
+    ),
+    AssetField(
+      'cvv',
+      'CVV',
+      required: false,
+      sensitive: true,
+      array: false,
+      multiline: false,
+      rich: false,
+    ),
+    AssetField(
+      'issuer',
+      'Issuer',
+      required: false,
+      sensitive: false,
+      array: false,
+      multiline: false,
+      rich: false,
+    ),
+    AssetField(
+      'network',
+      'Network',
+      required: false,
+      sensitive: false,
+      array: false,
+      multiline: false,
+      rich: false,
+    ),
+    AssetField(
+      'note',
+      'Note',
+      required: false,
+      sensitive: false,
+      array: false,
+      multiline: true,
+      rich: false,
+    ),
+  ],
+);

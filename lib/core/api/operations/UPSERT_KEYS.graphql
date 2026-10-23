@@ -1,0 +1,6 @@
+# Mirrors an existing Cipherwill web operation.
+# Owns the mobile selection contract.
+# Does not alter backend authorization.
+mutation UPSERT_KEYS($items: [KeyInput!]!) {
+    upsertKeys(items: $items)
+  }

@@ -1,0 +1,6 @@
+# Mirrors an existing Cipherwill web operation.
+# Owns the mobile selection contract.
+# Does not alter backend authorization.
+mutation REVOKE_ACCESS_TO_MY_WILL($id: ID!) {
+    revokeAccessToMyWill(id: $id)
+  }

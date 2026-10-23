@@ -1,0 +1,13 @@
+# Mirrors an existing Cipherwill web operation.
+# Owns the mobile selection contract.
+# Does not alter backend authorization.
+query GET_GRANTED_METAMODEL($access_id: ID!, $model_id: ID!) {
+    getGrantedMetamodel(access_id: $access_id, model_id: $model_id) {
+      id
+      type
+      ignored_beneficiaries
+      metadata
+      created_at
+      updated_at
+    }
+  }
