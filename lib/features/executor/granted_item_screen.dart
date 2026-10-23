@@ -12,6 +12,10 @@ import '../security/session_controller.dart';
 import '../vault/categories.dart';
 import '../notes/rich_note_editor.dart';
 import 'executor_repository.dart';
+import '../../shared/ui/status_pill.dart';
+import '../../shared/ui/loading_panel.dart';
+import '../../shared/ui/error_panel.dart';
+import '../../shared/ui/panel_section.dart';
 
 class GrantedItemScreen extends ConsumerStatefulWidget {
   final String access;
@@ -31,6 +35,10 @@ class _GrantedItemScreenState extends ConsumerState<GrantedItemScreen> {
   }
 
   Future<void> load() async {
+    setState(() {
+      item = null;
+      error = null;
+    });
     try {
       final result = await ExecutorRepository(
         ref.read(apiProvider),
@@ -56,11 +64,12 @@ class _GrantedItemScreenState extends ConsumerState<GrantedItemScreen> {
   Widget build(BuildContext context) => PageFrame(
     title: 'Granted item',
     children: [
+      const StatusPill('Read-only access', icon: Icons.visibility_outlined),
+      const SizedBox(height: 16),
       if (error != null) ...[
-        Text(error!),
-        TextButton(onPressed: load, child: const Text('Retry')),
+        ErrorPanel(message: error!, retry: load),
       ] else if (item == null)
-        const Center(child: CircularProgressIndicator())
+        const LoadingPanel()
       else ...[
         Text(
           label(asJson(jsonDecode(item!.$1['metadata']))),
@@ -74,11 +83,16 @@ class _GrantedItemScreenState extends ConsumerState<GrantedItemScreen> {
             readOnly: true,
           )
         else
-          AssetFields(
-            fields: categoryFor(item!.$1['type']).fields,
-            initial: item!.$2,
-            onChanged: (_) {},
-            readOnly: true,
+          PanelSection(
+            title: 'Vault contents',
+            children: [
+              AssetFields(
+                fields: categoryFor(item!.$1['type']).fields,
+                initial: item!.$2,
+                onChanged: (_) {},
+                readOnly: true,
+              ),
+            ],
           ),
       ],
     ],

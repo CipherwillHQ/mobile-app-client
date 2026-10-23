@@ -1,18 +1,25 @@
-// Manages current factor names, migrations and biometric protection
-// Owns security-factor actions.
+// Manages current factors, migrations and biometric protection.
+// Owns security-factor actions and authentic save feedback.
 // Does not change the legacy derivation protocol.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
 import '../../app/native_handoff.dart';
+import '../../core/api/json_values.dart';
 import '../../shared/ui/page_frame.dart';
 import '../../shared/ui/actions.dart';
 import '../../shared/ui/async_panel.dart';
+import '../../shared/ui/remote_panel.dart';
+import '../../shared/ui/guide_panel.dart';
+import '../../shared/ui/section_heading.dart';
+import '../../shared/ui/empty_state.dart';
 import 'session_controller.dart';
 import 'factor_service.dart';
 import 'factor_authenticator.dart';
 import 'wallet_factor.dart';
 import 'key_migration.dart';
+import 'factor_card.dart';
+import 'factor_visuals.dart';
 
 class FactorsScreen extends ConsumerStatefulWidget {
   const FactorsScreen({super.key});
@@ -36,12 +43,17 @@ class _FactorsScreenState extends ConsumerState<FactorsScreen> {
     await perform(context, action);
     if (mounted) {
       ref.invalidate(factorsProvider);
+      ref.invalidate(remoteProvider);
       setState(() => busy = false);
     }
   }
 
   Future<void> add(String type) async {
-    final name = await prompt(context, 'Factor name', initial: type);
+    final name = await prompt(
+      context,
+      'Factor name',
+      initial: factorTitle(type),
+    );
     if (name == null) return;
     String? password;
     if (type == 'master-password') {
@@ -65,117 +77,104 @@ class _FactorsScreenState extends ConsumerState<FactorsScreen> {
   @override
   Widget build(BuildContext context) => PageFrame(
     title: 'Security factors',
+    subtitle: 'Your vault. Your keys.',
     children: [
-      const Text(
-        'Account sign-in and vault encryption are separate. Keep a factor you can recover.',
+      const GuidePanel(
+        title: 'Keep a way back in',
+        message:
+            'Account sign-in and vault encryption are separate. Keep a security factor you can recover.',
+        icon: Icons.shield_outlined,
       ),
-      const SizedBox(height: 16),
+      const SectionHeading('Your factors'),
       AsyncPanel(
         value: ref.watch(factorsProvider),
         retry: () => ref.invalidate(factorsProvider),
         builder: (factors) => Column(
           children: [
+            if (factors.isEmpty)
+              const EmptyState(
+                title: 'Add your first security factor',
+                message:
+                    'Choose a master password, wallet or passkey for your vault.',
+                icon: Icons.key_rounded,
+              ),
             for (final factor in factors)
-              Card(
-                child: Column(
-                  children: [
-                    ListTile(
-                      title: Text(factor['name']),
-                      subtitle: Text(factor['type']),
+              RemotePanel(
+                operation: 'GET_ALL_KEY_COUNT',
+                builder: (r) => FactorCard(
+                  factor: factor,
+                  count:
+                      jsonList(r['getAllKeyCount'])
+                          .where(
+                            (count) =>
+                                count['publicKey'] == factor['publicKey'],
+                          )
+                          .firstOrNull?['count'] ??
+                      0,
+                  busy: busy,
+                  rename: () => run(() async {
+                    final name = await prompt(
+                      context,
+                      'Factor name',
+                      initial: factor['name'],
+                    );
+                    if (name != null) {
+                      await ref.read(apiProvider).run('UPDATE_FACTOR', {
+                        'id': factor['id'],
+                        'name': name,
+                      });
+                    }
+                  }),
+                  migrate: () => run(
+                    () => KeyMigration(
+                      ref.read(apiProvider),
+                      ref.read(sessionProvider.notifier).lease(),
+                    ).factor(factor['publicKey']),
+                  ),
+                  enable: () => run(
+                    () => nativeHandoff(
+                      ref,
+                      () => ref
+                          .read(sessionProvider.notifier)
+                          .enableBiometrics(factor),
                     ),
-                    Wrap(
-                      children: [
-                        TextButton(
-                          onPressed: busy
-                              ? null
-                              : () => run(() async {
-                                  final name = await prompt(
-                                    context,
-                                    'Factor name',
-                                    initial: factor['name'],
-                                  );
-                                  if (name != null) {
-                                    await ref.read(apiProvider).run(
-                                      'UPDATE_FACTOR',
-                                      {'id': factor['id'], 'name': name},
-                                    );
-                                  }
-                                }),
-                          child: const Text('Rename'),
+                  ),
+                  disable: () => run(
+                    () => ref
+                        .read(securityProvider)
+                        .delete(
+                          ref.read(sessionProvider.notifier).alias(factor),
                         ),
-                        TextButton(
-                          onPressed: busy
-                              ? null
-                              : () => run(
-                                  () => KeyMigration(
-                                    ref.read(apiProvider),
-                                    ref.read(sessionProvider.notifier).lease(),
-                                  ).factor(factor['publicKey']),
-                                ),
-                          child: const Text('Migrate keys'),
-                        ),
-                        TextButton(
-                          onPressed: busy
-                              ? null
-                              : () => run(
-                                  () => nativeHandoff(
-                                    ref,
-                                    () => ref
-                                        .read(sessionProvider.notifier)
-                                        .enableBiometrics(factor),
-                                  ),
-                                ),
-                          child: const Text('Enable biometrics'),
-                        ),
-                        TextButton(
-                          onPressed: busy
-                              ? null
-                              : () => run(
-                                  () => ref
-                                      .read(securityProvider)
-                                      .delete(
-                                        ref
-                                            .read(sessionProvider.notifier)
-                                            .alias(factor),
-                                      ),
-                                ),
-                          child: const Text('Disable biometrics'),
-                        ),
-                        TextButton(
-                          onPressed: busy
-                              ? null
-                              : () => run(() async {
-                                  if (!await confirm(
-                                    context,
-                                    'Remove this security factor?',
-                                  )) {
-                                    return;
-                                  }
-                                  await service().remove(factor);
-                                  await ref
-                                      .read(securityProvider)
-                                      .delete(
-                                        ref
-                                            .read(sessionProvider.notifier)
-                                            .alias(factor),
-                                      );
-                                  ref.read(sessionProvider.notifier).lock();
-                                }),
-                          child: const Text('Remove'),
-                        ),
-                      ],
-                    ),
-                  ],
+                  ),
+                  remove: () => run(() async {
+                    if (!await confirm(
+                      context,
+                      'Remove this security factor?',
+                    )) {
+                      return;
+                    }
+                    await service().remove(factor);
+                    await ref
+                        .read(securityProvider)
+                        .delete(
+                          ref.read(sessionProvider.notifier).alias(factor),
+                        );
+                    ref.read(sessionProvider.notifier).lock();
+                  }),
                 ),
               ),
           ],
         ),
       ),
-      const SizedBox(height: 20),
+      const SectionHeading('Add a factor'),
       for (final type in ['master-password', 'metamask', 'passkey'])
-        OutlinedButton(
-          onPressed: busy ? null : () => add(type),
-          child: Text('Add ' + type),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: OutlinedButton.icon(
+            onPressed: busy ? null : () => add(type),
+            icon: Icon(factorIcon(type)),
+            label: Text('Add ' + factorTitle(type)),
+          ),
         ),
       TextButton(
         onPressed: () => ref.read(sessionProvider.notifier).lock(),

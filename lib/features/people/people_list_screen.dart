@@ -2,6 +2,7 @@
 // Owns person details, add and remove actions.
 // Does not decrypt asset contents.
 import 'package:flutter/material.dart';
+import '../../shared/person_name.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../app/providers.dart';
@@ -9,6 +10,8 @@ import '../../core/api/json_values.dart';
 import '../../shared/ui/page_frame.dart';
 import '../../shared/ui/remote_panel.dart';
 import '../../shared/ui/actions.dart';
+import '../../shared/ui/person_avatar.dart';
+import '../../shared/ui/empty_state.dart';
 
 class PeopleListScreen extends ConsumerWidget {
   final bool friends;
@@ -16,6 +19,9 @@ class PeopleListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => PageFrame(
     title: friends ? 'Friends and family' : 'Beneficiaries',
+    subtitle: friends
+        ? 'The people who help us reach your loved ones.'
+        : 'Choose who can receive your digital legacy.',
     actions: [
       IconButton(
         tooltip: 'Add person',
@@ -38,7 +44,19 @@ class PeopleListScreen extends ConsumerWidget {
                     .map((id) => <String, dynamic>{'id': id, 'person_id': id})
                     .toList()
               : jsonList(response['getSmartWillBeneficiaries']);
-          if (people.isEmpty) return const Text('No people added yet.');
+          if (people.isEmpty) {
+            return EmptyState(
+              title: friends
+                  ? 'Your circle of trust'
+                  : 'Plan for someone you love',
+              message: friends
+                  ? 'Friends help us contact beneficiaries when needed.'
+                  : 'Add a beneficiary to prepare their access after your will is released.',
+              icon: Icons.people_outline_rounded,
+              action: 'Add person',
+              onAction: () => context.push('/people/add?friend=$friends'),
+            );
+          }
           return Column(
             children: [
               for (final person in people)
@@ -47,7 +65,11 @@ class PeopleListScreen extends ConsumerWidget {
                   variables: {'id': person['person_id']},
                   builder: (result) => Card(
                     child: ListTile(
-                      title: Text(label(asJson(result['getPerson']))),
+                      contentPadding: const EdgeInsets.all(16),
+                      leading: PersonAvatar(
+                        personName(asJson(result['getPerson'])),
+                      ),
+                      title: Text(personName(asJson(result['getPerson']))),
                       subtitle: Text(
                         asJson(result['getPerson'])['email']?.toString() ?? '',
                       ),

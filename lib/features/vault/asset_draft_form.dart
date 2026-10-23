@@ -1,10 +1,13 @@
 // Renders one category draft and its committed-save status.
-// Owns field layout and native note editing.
-// Does not write the draft to the backend.
+// Owns grouped fields, note editing and sharing navigation.
+// Does not write drafts or declare incomplete saves successful.
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/api/json_values.dart';
 import '../../shared/ui/asset_fields.dart';
+import '../../shared/ui/panel_section.dart';
+import '../../shared/ui/status_pill.dart';
+import '../../app/design_tokens.dart';
 import '../notes/rich_note_editor.dart';
 import 'asset_category.dart';
 
@@ -36,35 +39,69 @@ class AssetDraftForm extends StatelessWidget {
   Widget build(BuildContext context) => Form(
     key: form,
     child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        TextFormField(
-          controller: title,
-          decoration: const InputDecoration(labelText: 'Title'),
-          onChanged: (_) => changed({...draft}),
-          validator: (v) => v == null || v.isEmpty ? 'Enter a title' : null,
+        PanelSection(
+          title: 'Item details',
+          children: [
+            TextFormField(
+              controller: title,
+              decoration: const InputDecoration(labelText: 'Title'),
+              onChanged: (_) => changed({...draft}),
+              validator: (v) => v == null || v.isEmpty ? 'Enter a title' : null,
+            ),
+          ],
+        ),
+        PanelSection(
+          title: category.type == 'NOTE' ? 'Your note' : 'Vault contents',
+          description: category.type == 'NOTE'
+              ? 'Changes save automatically after you pause typing.'
+              : 'Sensitive values stay hidden until you choose to reveal them.',
+          children: [
+            if (category.type == 'NOTE')
+              RichNoteEditor(
+                content: initial['content']?.toString() ?? '',
+                onChanged: (html) => changed({'content': html}),
+              )
+            else
+              AssetFields(
+                fields: category.fields,
+                initial: initial,
+                onChanged: changed,
+              ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Semantics(
+            liveRegion: true,
+            child: StatusPill(
+              status,
+              icon: status == 'Saved'
+                  ? Icons.check_circle_outline_rounded
+                  : status == 'Saving…'
+                  ? Icons.sync_rounded
+                  : Icons.info_outline_rounded,
+              color: status == 'Saved'
+                  ? CipherwillColors.sage
+                  : status.startsWith('Save failed')
+                  ? Theme.of(context).colorScheme.error
+                  : CipherwillColors.clay,
+            ),
+          ),
         ),
         const SizedBox(height: 20),
-        if (category.type == 'NOTE')
-          RichNoteEditor(
-            content: initial['content']?.toString() ?? '',
-            onChanged: (html) => changed({'content': html}),
-          )
-        else
-          AssetFields(
-            fields: category.fields,
-            initial: initial,
-            onChanged: changed,
-          ),
-        const SizedBox(height: 16),
-        Semantics(liveRegion: true, child: Text(status)),
-        const SizedBox(height: 12),
-        FilledButton(
+        FilledButton.icon(
           onPressed: saving ? null : save,
-          child: const Text('Save'),
+          icon: const Icon(Icons.check_rounded),
+          label: Text(saving ? 'Saving…' : 'Save changes'),
         ),
-        TextButton(
+        const SizedBox(height: 12),
+        OutlinedButton.icon(
           onPressed: () => context.push('/item/' + id + '/sharing'),
-          child: const Text('Beneficiary access'),
+          icon: const Icon(Icons.people_outline_rounded),
+          label: const Text('Beneficiary access'),
         ),
       ],
     ),

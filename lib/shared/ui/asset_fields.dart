@@ -2,6 +2,7 @@
 // Owns field editors and explicit secret visibility.
 // Does not serialize metadata or save records.
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../features/vault/asset_category.dart';
 import '../../core/api/json_values.dart';
 
@@ -65,6 +66,9 @@ class _AssetFieldsState extends State<AssetFields> {
             readOnly: widget.readOnly,
             autocorrect: !field.sensitive,
             enableSuggestions: !field.sensitive,
+            style: field.sensitive
+                ? const TextStyle(fontFamily: 'monospace')
+                : null,
             obscureText: field.sensitive && !revealed.contains(field.key),
             maxLines: field.sensitive && !revealed.contains(field.key)
                 ? 1
@@ -81,8 +85,11 @@ class _AssetFieldsState extends State<AssetFields> {
             decoration: InputDecoration(
               labelText: field.label,
               helperText: field.array ? 'One value per line' : null,
-              suffixIcon: field.sensitive
-                  ? IconButton(
+              suffixIcon: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (field.sensitive)
+                    IconButton(
                       tooltip: revealed.contains(field.key)
                           ? 'Hide value'
                           : 'Reveal value',
@@ -96,8 +103,29 @@ class _AssetFieldsState extends State<AssetFields> {
                             ? Icons.visibility_off
                             : Icons.visibility,
                       ),
-                    )
-                  : null,
+                    ),
+                  IconButton(
+                    tooltip: 'Copy ' + field.label,
+                    onPressed: () async {
+                      final value = controllers[field.key]!.text;
+                      if (value.isEmpty) return;
+                      await Clipboard.setData(
+                        ClipboardData(
+                          text: field.key == 'phrase'
+                              ? value.split('\n').join(' ')
+                              : value,
+                        ),
+                      );
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Copied to clipboard.')),
+                        );
+                      }
+                    },
+                    icon: const Icon(Icons.copy_outlined, size: 19),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

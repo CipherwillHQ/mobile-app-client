@@ -17,6 +17,12 @@ import 'file_service.dart';
 import 'file_preview.dart';
 import 'upload_recovery.dart';
 import '../executor/executor_repository.dart';
+import '../../shared/ui/status_pill.dart';
+import '../../shared/ui/guide_panel.dart';
+import '../../shared/ui/loading_panel.dart';
+import '../../shared/ui/error_panel.dart';
+import '../../shared/ui/icon_badge.dart';
+import 'file_details.dart';
 
 class FileScreen extends ConsumerStatefulWidget {
   final String id;
@@ -94,15 +100,38 @@ class _FileScreenState extends ConsumerState<FileScreen> {
   Widget build(BuildContext context) => PageFrame(
     title: 'File',
     children: [
+      if (widget.access != null)
+        const StatusPill('Read-only access', icon: Icons.visibility_outlined),
       if (error != null) ...[
-        Text(error!),
-        TextButton(onPressed: load, child: const Text('Retry')),
+        ErrorPanel(
+          message:
+              'The file could not be opened. Retry or check a pending upload.',
+          retry: load,
+        ),
         if (widget.access == null) UploadRecovery(id: widget.id, saved: load),
       ] else if (file == null)
-        const Center(child: CircularProgressIndicator())
+        const LoadingPanel()
       else ...[
-        Text(file!.path.split(Platform.pathSeparator).last),
+        const Align(
+          alignment: Alignment.centerLeft,
+          child: IconBadge(Icons.insert_drive_file_outlined, size: 58),
+        ),
+        const SizedBox(height: 16),
+        if (widget.access == null)
+          FileDetails(id: widget.id)
+        else
+          Text(
+            file!.path.split(Platform.pathSeparator).last,
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
         const SizedBox(height: 20),
+        const GuidePanel(
+          title: 'Exporting creates a decrypted copy',
+          message:
+              'Choose a trusted destination when saving or sharing this file.',
+          icon: Icons.ios_share_rounded,
+        ),
+        const SizedBox(height: 16),
         FilePreview(file: file!),
         const SizedBox(height: 20),
         FilledButton.icon(

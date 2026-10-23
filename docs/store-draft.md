@@ -31,6 +31,7 @@ Outside-app deletion URL: confirm an existing public request route before Play s
 | Beneficiary/friend details and custom messages | User-entered relationships and release communication |
 | Vault text and financial/account/file content | Existing encrypted vault storage; metadata/exclusions follow the web protocol |
 | Subscription/invoice details | Existing-subscriber management through Cipherwill/payment provider |
+| Web upgrade account attribution | Account email and backend user ID are passed to the public Cipherwill upgrade page; Paddle collects payment details on the web |
 | Authentication/device information | Firebase/provider security; actual SDK collection needs platform review |
 | Crash diagnostics | Optional configured Sentry; redacted Dart reports, native reports disabled |
 | Biometrics | Device OS authorization; derived keys stay in protected native storage |
@@ -48,7 +49,7 @@ Supply disposable credentials through App Store Connect/Play Console review fiel
 - A free account for restrictions.
 - A recoverable security factor and documented biometric/passkey fallback.
 
-Review flow: sign in, unlock the sample factor, open Home/Vault/People/Settings, edit a synthetic note, inspect beneficiary access, enter the executor workspace, and view existing subscription details. Explain that encrypted file storage/seed phrases/DeFi follow the existing account plan and that ordinary new checkout/upgrades are excluded.
+Review flow: sign in, unlock the sample factor, open Home/Vault/People/Settings, edit a synthetic note, inspect beneficiary access, enter the executor workspace, and view existing subscription details. Explain that encrypted file storage/seed phrases/DeFi follow the existing account plan. Free accounts can open the existing Cipherwill web upgrade page from Subscription and invoices; the backend confirms Premium after payment processing.
 
 Account deletion is under Settings → Reset or delete account. Use disposable accounts because deletion/reset affects backend data. Provide a sample archive for backup review and disclose its decrypted contents.
 

@@ -120,7 +120,7 @@ class _AssetEditScreenState extends ConsumerState<AssetEditScreen> {
         ).showSnackBar(SnackBar(content: Text(e.toString())));
       }
     } finally {
-      saving = false;
+      if (mounted) setState(() => saving = false);
     }
   }
 

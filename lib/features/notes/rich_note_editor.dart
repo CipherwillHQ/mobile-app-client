@@ -51,29 +51,50 @@ class _RichNoteEditorState extends State<RichNoteEditor> {
   }
 
   @override
-  Widget build(BuildContext context) => Column(
-    children: [
-      if (!widget.readOnly)
-        QuillSimpleToolbar(
-          controller: controller,
-          config: const QuillSimpleToolbarConfig(
-            showFontFamily: false,
-            showFontSize: false,
-            showColorButton: false,
-            showBackgroundColorButton: false,
-            showSearchButton: false,
+  Widget build(BuildContext context) => Container(
+    clipBehavior: Clip.antiAlias,
+    decoration: BoxDecoration(
+      color: Theme.of(context).colorScheme.surface,
+      border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+      borderRadius: BorderRadius.circular(14),
+    ),
+    child: Column(
+      children: [
+        if (!widget.readOnly)
+          QuillSimpleToolbar(
+            controller: controller,
+            config: const QuillSimpleToolbarConfig(
+              multiRowsDisplay: false,
+              toolbarSize: 54,
+              showFontFamily: false,
+              showFontSize: false,
+              showColorButton: false,
+              showBackgroundColorButton: false,
+              showSearchButton: false,
+            ),
+          ),
+        if (!widget.readOnly) ...[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+            child: Text(
+              'Swipe for more formatting',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+          const Divider(height: 1),
+        ],
+        SizedBox(
+          height: 360,
+          child: QuillEditor.basic(
+            controller: controller,
+            config: const QuillEditorConfig(
+              padding: EdgeInsets.all(18),
+              placeholder: 'Write something worth keeping…',
+              embedBuilders: [HtmlEmbedBuilder()],
+            ),
           ),
         ),
-      SizedBox(
-        height: 360,
-        child: QuillEditor.basic(
-          controller: controller,
-          config: const QuillEditorConfig(
-            padding: EdgeInsets.all(12),
-            embedBuilders: [HtmlEmbedBuilder()],
-          ),
-        ),
-      ),
-    ],
+      ],
+    ),
   );
 }

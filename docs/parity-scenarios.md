@@ -20,11 +20,11 @@ Every row requires an Android and iOS result against the existing backend. All l
 | Payment cards | CRUD, holder/number/expiry/CVV/network/issuer/note | Web field snapshot and crypto |
 | Seed phrases | CRUD, word arrays/public key/note, premium restrictions | Web field snapshot and crypto |
 | DeFi staking | CRUD, platform/amount/asset/lock/wallet/login/note, premium restrictions | Web field snapshot and crypto |
-| Files | Upload/download/preview/share, folders/delete/usage/quota, large files | Binary streaming and stable-retry tests |
+| Files | Upload/download/preview/share, rename, beneficiary exclusions, folders/delete/usage/quota, large files | Binary streaming, metadata preservation and stable-retry tests |
 | Upload recovery | Interrupted transfer, lost commit response, same-ID retry/reselection, expired URLs, duplicate prevention | Commit/pending-upload tests |
 | People | Search, new guest invite/anonymous choice, beneficiaries, friends and removal | Generated API validation |
 | Beneficiary sharing | Custom messages, exclusions, rewrapping and account-factor changes | Exclusion and migration tests |
-| Planning | Check-in interval/days, cumulative reminders, current defaults, next event and account score | Backend contracts |
+| Planning | Check-in interval/days, cumulative reminders, current defaults, next event and account score/details | Backend contracts and score JSON parser tests |
 | Activity recording | Authenticated activity eventually appears; eight-hour deduplication and pending job handling | Backend code reviewed; live pending |
 | Guidance | Every active catalog definition; input validation, eligibility/dependencies, skip/resume, encrypted effects | Rules, input effects and schema tests |
 | Guidance recovery | Failed effects/completion, catalog changes, lost acknowledgements, durable recovery | Guidance session retry tests |
@@ -32,13 +32,14 @@ Every row requires an Android and iOS result against the existing backend. All l
 | Communication | Add/verify/delete phone, SMS/WhatsApp/phone preferences, feedback | Generated API validation |
 | Reset/deletion | Clear local keys, deliberately request/reset/delete account; repeat/cancel/failure | Cancel/failure feedback tests |
 | Existing subscriptions | Details, invoices, portal, period-end cancellation, eligible immediate refund | Generated API validation |
+| Web upgrade | Free-account /upgrade attribution, Paddle checkout, success/error/close, webhook delay, refresh, retries and payment handoffs | WebView contract, routed callback/recovery and account-switch tests |
 | Executor lists | Granted wills, donor details, allowed categories/items and folder traversal | Generated API validation |
 | Executor protected reads | Unreleased/expired/revoked grants; changed exclusions; E0/E1 decryption | Permission/revocation tests and web crypto |
 | Backups | Web/mobile ZIP v0.0.2, import v0.0.1; text only; plaintext disclosure | ZIP codec and restore tests |
 | Repeated restore | Preserve readable content, exclusions and concurrent saves; fail on unreadable saved data | Restore regression tests |
 | Links | Cold/warm verification/reset/executor links, wallet return, expired/invalid links | Owner/executor URI mapping and action-code/cancellation tests; live pending |
-| Accessibility | Large text, screen readers, keyboards, touch targets, safe areas, both themes | Large-text navigation widget test |
+| Accessibility | Large text, screen readers, keyboards, touch targets, safe areas, both themes, reduced motion | 25-screen phone/theme/large-text renders, all text forms and auth keyboard widget tests |
 
 Free/premium authorization and quota rejection must be exercised on real test accounts. All save failures must preserve a retry route and avoid reporting success. Temporary exported copies must be removed after sharing and on the next launch after an interruption.
 
-Exclude unfinished chat, wishes and end-of-life placeholders, marketing/HQ, push, offline vault caching, checkout and upgrade flows. Confirm no existing-subscriber portal route introduces an in-app purchase/upgrade flow.
+Exclude unfinished chat, wishes and end-of-life placeholders, marketing/HQ, push, offline vault caching and native checkout. Upgrades use the existing public web page in a WebView; backend subscription activation remains authoritative.

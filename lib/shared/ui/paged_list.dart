@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
 import '../../core/api/json_values.dart';
+import 'empty_state.dart';
+import 'loading_panel.dart';
+import 'error_panel.dart';
 
 class PagedList extends ConsumerStatefulWidget {
   final String operation;
@@ -13,6 +16,8 @@ class PagedList extends ConsumerStatefulWidget {
   final String itemsField;
   final Json variables;
   final Widget Function(Json) itemBuilder;
+  final Widget? empty;
+  final bool Function(Json)? filter;
   const PagedList({
     super.key,
     required this.operation,
@@ -20,6 +25,8 @@ class PagedList extends ConsumerStatefulWidget {
     required this.itemsField,
     this.variables = const {},
     required this.itemBuilder,
+    this.empty,
+    this.filter,
   });
   @override
   ConsumerState<PagedList> createState() => _PagedListState();
@@ -30,6 +37,8 @@ class _PagedListState extends ConsumerState<PagedList> {
   bool more = true;
   bool loading = false;
   String? error;
+  Iterable<Json> get visibleItems =>
+      widget.filter == null ? items : items.where(widget.filter!);
   @override
   void initState() {
     super.initState();
@@ -91,20 +100,19 @@ class _PagedListState extends ConsumerState<PagedList> {
           label: const Text('Refresh'),
         ),
       ),
-      for (final item in items) widget.itemBuilder(item),
-      if (items.isEmpty && !loading && error == null)
-        const Padding(
-          padding: EdgeInsets.all(24),
-          child: Text('No items yet.'),
-        ),
-      if (error != null) Text(error!),
+      for (final item in visibleItems) widget.itemBuilder(item),
+      if (visibleItems.isEmpty && !loading && error == null)
+        widget.empty ??
+            const EmptyState(
+              title: 'Nothing here yet',
+              message: 'Items will appear here when added.',
+              icon: Icons.inventory_2_outlined,
+            ),
+      if (error != null) ErrorPanel(message: error!, retry: load),
       if (loading)
-        const CircularProgressIndicator()
-      else if (more || error != null)
-        TextButton(
-          onPressed: load,
-          child: Text(error != null ? 'Retry' : 'Load more'),
-        ),
+        const LoadingPanel()
+      else if (more && error == null)
+        TextButton(onPressed: load, child: const Text('Load more')),
     ],
   );
 }

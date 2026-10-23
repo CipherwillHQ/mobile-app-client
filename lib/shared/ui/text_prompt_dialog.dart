@@ -8,11 +8,13 @@ class TextPromptDialog extends StatefulWidget {
   final String title;
   final String initial;
   final bool secret;
+  final bool multiline;
   const TextPromptDialog({
     super.key,
     required this.title,
     required this.initial,
     required this.secret,
+    this.multiline = false,
   });
 
   @override
@@ -37,6 +39,8 @@ class _TextPromptDialogState extends State<TextPromptDialog> {
       autocorrect: !widget.secret,
       enableSuggestions: !widget.secret,
       autofocus: true,
+      minLines: widget.multiline && !widget.secret ? 4 : 1,
+      maxLines: widget.multiline && !widget.secret ? 8 : 1,
     ),
     actions: [
       TextButton(

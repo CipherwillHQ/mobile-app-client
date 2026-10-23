@@ -7,6 +7,8 @@ import '../../app/providers.dart';
 import '../../core/api/json_values.dart';
 import '../../shared/ui/page_frame.dart';
 import '../../shared/ui/actions.dart';
+import '../../shared/ui/photo_banner.dart';
+import '../../shared/ui/section_heading.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   final Json onboarding;
@@ -55,14 +57,20 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget build(BuildContext context) => PageFrame(
     title: 'Welcome to Cipherwill',
     children: [
+      const PhotoBanner(
+        title: 'For everyone you love.',
+        message: 'Let’s make your plan feel like you.',
+      ),
+      const SizedBox(height: 24),
       Text(
         'A little about you',
         style: Theme.of(context).textTheme.headlineSmall,
       ),
       const SizedBox(height: 16),
-      const Text('Where did you hear about Cipherwill?'),
+      const SectionHeading('Where did you hear about us?'),
       Wrap(
         spacing: 8,
+        runSpacing: 8,
         children: [
           for (final option in jsonList(
             widget.onboarding['heard_from_options_catalog'],
@@ -84,9 +92,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           decoration: const InputDecoration(labelText: 'Tell us more'),
         ),
       const SizedBox(height: 24),
-      const Text('What would you like to do?'),
+      const SectionHeading('What would you like to do?'),
       Wrap(
         spacing: 8,
+        runSpacing: 8,
         children: [
           for (final option in jsonList(
             widget.onboarding['expectation_options_catalog'],

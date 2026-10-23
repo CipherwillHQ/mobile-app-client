@@ -1,71 +1,57 @@
-// Shows the account overview and planning entry points
-// Owns dashboard navigation and public metrics.
-// Does not decrypt vault contents on the home screen.
+// Presents the owner's overview with clear planning and security entry points.
+// Owns dashboard layout and native navigation.
+// Does not decrypt vault contents or invent account metrics.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../app/providers.dart';
 import '../../shared/ui/page_frame.dart';
-import '../../shared/ui/remote_panel.dart';
+import '../../shared/ui/section_heading.dart';
+import '../../shared/ui/feature_card.dart';
 import 'planning_summary.dart';
+import 'home_hero.dart';
+import 'dashboard_metrics.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(accountProvider).value ?? {};
+    final account = ref.watch(accountProvider).value ?? {};
+    final name = account['first_name']?.toString() ?? '';
     return PageFrame(
       title: 'Cipherwill',
+      actions: [
+        IconButton(
+          tooltip: 'Your profile',
+          onPressed: () => context.push('/profile'),
+          icon: const Icon(Icons.person_outline_rounded),
+        ),
+      ],
       children: [
         Text(
-          'Welcome, ' + (user['first_name'] ?? user['email'] ?? '').toString(),
-          style: Theme.of(context).textTheme.headlineSmall,
+          name.isEmpty ? 'Welcome home.' : 'Welcome home, $name.',
+          style: Theme.of(context).textTheme.headlineMedium,
         ),
-        const SizedBox(height: 12),
-        const Text('Your legacy, one manageable step at a time.'),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
+        const Align(alignment: Alignment.centerLeft, child: VaultStateLabel()),
+        const SizedBox(height: 24),
+        const HomeHero(),
+        const SectionHeading('Your overview'),
+        const DashboardMetrics(),
+        const SectionHeading('Keep your plan moving'),
         const PlanningSummary(),
-        RemotePanel(
-          operation: 'GET_USER_SCORE',
-          builder: (r) => Card(
-            child: ListTile(
-              title: const Text('Account score'),
-              trailing: Text(r['getUserScore'].toString()),
-            ),
-          ),
+        const SectionHeading('Stay in control'),
+        FeatureCard(
+          title: 'Security factors',
+          subtitle: 'Your keys, recovery and biometric access',
+          icon: Icons.shield_outlined,
+          onTap: () => context.push('/factors'),
         ),
-        RemotePanel(
-          operation: 'GET_METAMODEL_TYPE_COUNTS',
-          builder: (r) => Card(
-            child: ListTile(
-              title: const Text('Vault items'),
-              trailing: Text(
-                (r['getMetamodelTypeCounts'] as List)
-                    .fold<int>(
-                      0,
-                      (total, item) => total + (item['count'] as int),
-                    )
-                    .toString(),
-              ),
-            ),
-          ),
-        ),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.lock_outline),
-            title: const Text('Security factors'),
-            onTap: () => context.push('/factors'),
-          ),
-        ),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.vpn_key_outlined),
-            title: const Text('Granted access'),
-            subtitle: const Text(
-              'Review and revoke released access to your will',
-            ),
-            onTap: () => context.push('/granted-access'),
-          ),
+        FeatureCard(
+          title: 'Granted access',
+          subtitle: 'Review and revoke released access to your will',
+          icon: Icons.vpn_key_outlined,
+          onTap: () => context.push('/granted-access'),
         ),
       ],
     );

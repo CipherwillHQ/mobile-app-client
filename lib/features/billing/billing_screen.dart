@@ -1,6 +1,6 @@
-// Manages existing subscriptions and invoices
-// Owns cancellation and invoice links.
-// Does not offer checkout or upgrades.
+// Manages subscriptions and offers the existing web upgrade entry.
+// Owns cancellation, invoice links and billing refresh controls.
+// Does not implement checkout or activate Premium locally.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,24 +11,44 @@ import '../../shared/time.dart';
 import '../../shared/ui/page_frame.dart';
 import '../../shared/ui/remote_panel.dart';
 import '../../shared/ui/actions.dart';
+import '../../shared/ui/panel_section.dart';
+import '../../shared/ui/status_pill.dart';
+import '../../shared/ui/empty_state.dart';
+import '../../shared/ui/section_heading.dart';
+import '../../shared/ui/feature_card.dart';
+import 'billing_refresh.dart';
+import 'upgrade_entry.dart';
 
 class BillingScreen extends ConsumerWidget {
   const BillingScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) => PageFrame(
     title: 'Subscription and invoices',
+    subtitle: 'Your plan and billing, in one place.',
+    actions: const [BillingRefreshButton()],
     children: [
+      const UpgradeEntry(),
       RemotePanel(
         operation: 'GET_MY_SUBSCRIPTION',
         builder: (r) {
           final raw = r['getMySubscription'];
-          if (raw == null) return const Text('No existing subscription.');
+          if (raw == null) {
+            return const EmptyState(
+              title: 'No active subscription',
+              message: 'Your existing subscription details will appear here.',
+              icon: Icons.workspace_premium_outlined,
+            );
+          }
           final s = asJson(raw);
-          return Column(
+          return PanelSection(
+            title: s['plan_name'],
             children: [
-              ListTile(
-                title: Text(s['plan_name']),
-                subtitle: Text(s['status']),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: StatusPill(
+                  s['status'],
+                  icon: Icons.workspace_premium_outlined,
+                ),
               ),
               ListTile(
                 title: const Text('Next billing'),
@@ -86,35 +106,41 @@ class BillingScreen extends ConsumerWidget {
           );
         },
       ),
+      const SectionHeading('Invoices'),
       RemotePanel(
         operation: 'GET_MY_INVOICES',
         builder: (r) => Column(
           children: [
             for (final invoice in jsonList(r['getMyInvoices']))
-              Card(
-                child: ListTile(
-                  title: Text(invoice['plan_name']),
-                  subtitle: Text(
+              FeatureCard(
+                icon: Icons.receipt_long_outlined,
+                title: invoice['plan_name'],
+                subtitle:
                     invoice['status'] +
-                        ' · ' +
-                        localTime(invoice['created_at']),
-                  ),
-                  trailing: Text(
-                    invoice['amount'].toString() + ' ' + invoice['currency'],
-                  ),
-                  onTap: () => perform(context, () async {
-                    final url = (await ref.read(apiProvider).run(
-                      'GET_INVOICE_PDF',
-                      {'invoiceId': invoice['id']},
-                    ))['getInvoicePdf'];
-                    if (!await launchUrl(
-                      Uri.parse(url),
-                      mode: LaunchMode.externalApplication,
-                    )) {
-                      throw StateError('Unable to open invoice.');
-                    }
-                  }),
-                ),
+                    ' · ' +
+                    localTime(invoice['created_at']) +
+                    '\n' +
+                    invoice['amount'].toString() +
+                    ' ' +
+                    invoice['currency'],
+                onTap: () => perform(context, () async {
+                  final url = (await ref.read(apiProvider).run(
+                    'GET_INVOICE_PDF',
+                    {'invoiceId': invoice['id']},
+                  ))['getInvoicePdf'];
+                  if (!await launchUrl(
+                    Uri.parse(url),
+                    mode: LaunchMode.externalApplication,
+                  )) {
+                    throw StateError('Unable to open invoice.');
+                  }
+                }),
+              ),
+            if (jsonList(r['getMyInvoices']).isEmpty)
+              const EmptyState(
+                title: 'No invoices yet',
+                message: 'Invoices for your subscription appear here.',
+                icon: Icons.receipt_long_outlined,
               ),
           ],
         ),

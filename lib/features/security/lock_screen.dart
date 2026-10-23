@@ -12,6 +12,9 @@ import '../../shared/ui/actions.dart';
 import 'session_controller.dart';
 import 'factor_authenticator.dart';
 import 'wallet_factor.dart';
+import '../../shared/ui/vault_emblem.dart';
+import '../../shared/ui/icon_badge.dart';
+import 'factor_visuals.dart';
 
 class LockScreen extends ConsumerStatefulWidget {
   final List<Json> factors;
@@ -58,10 +61,15 @@ class _LockScreenState extends ConsumerState<LockScreen> {
   Widget build(BuildContext context) => PageFrame(
     title: 'Unlock Cipherwill',
     children: [
-      const Icon(Icons.lock_outline, size: 48),
+      const VaultEmblem(),
       const SizedBox(height: 20),
+      Text(
+        'Your vault.\nYour keys.',
+        style: Theme.of(context).textTheme.headlineLarge,
+      ),
+      const SizedBox(height: 12),
       const Text(
-        'You are signed in. Unlock your security factor to open your vault.',
+        'You’re signed in. Choose a security factor to open your private vault.',
       ),
       const SizedBox(height: 20),
       for (final factor in widget.factors)
@@ -69,15 +77,16 @@ class _LockScreenState extends ConsumerState<LockScreen> {
           child: Column(
             children: [
               ListTile(
+                leading: IconBadge(factorIcon(factor['type'])),
                 title: Text(factor['name']),
-                subtitle: Text(factor['type']),
-                trailing: const Icon(Icons.key),
+                subtitle: Text(factorTitle(factor['type'])),
+                trailing: const Icon(Icons.arrow_forward_rounded, size: 20),
                 onTap: busy ? null : () => unlock(factor),
               ),
               TextButton.icon(
                 onPressed: busy ? null : () => unlock(factor, biometric: true),
                 icon: const Icon(Icons.fingerprint),
-                label: const Text('Use saved biometric factor'),
+                label: const Text('Unlock with biometrics'),
               ),
             ],
           ),

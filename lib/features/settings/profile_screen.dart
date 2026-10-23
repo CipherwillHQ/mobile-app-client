@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
 import '../../shared/ui/page_frame.dart';
 import '../../shared/ui/actions.dart';
+import '../people/person_identity.dart';
+import 'profile_fields.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -85,24 +87,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return PageFrame(
       title: 'Profile',
       children: [
-        Text(account['email'].toString()),
-        for (final entry in fields.entries)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: TextField(
-              controller: entry.value,
-              decoration: InputDecoration(
-                labelText: entry.key.replaceAll('_', ' '),
-                hintText: entry.key == 'birth_date' ? 'YYYY-MM-DD' : null,
-              ),
-              keyboardType: entry.key == 'birth_date'
-                  ? TextInputType.datetime
-                  : TextInputType.text,
-            ),
-          ),
-        FilledButton(
+        PersonIdentity(person: account, caption: 'Your Cipherwill account'),
+        ProfileFields(fields: fields),
+        const SizedBox(height: 16),
+        FilledButton.icon(
           onPressed: busy ? null : save,
-          child: const Text('Save profile'),
+          icon: const Icon(Icons.check_rounded),
+          label: Text(busy ? 'Saving…' : 'Save profile'),
         ),
       ],
     );

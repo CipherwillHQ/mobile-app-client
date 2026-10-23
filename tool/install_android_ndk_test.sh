@@ -1,5 +1,5 @@
 # Exercises NDK installation recovery with a controlled SDK manager.
-# Owns cache reuse, partial-download cleanup and retry exhaustion checks.
+# Owns SDK-tool discovery, cache reuse, partial cleanup and retry exhaustion.
 # Does not download SDK packages or touch the machine's Android installation.
 set -euo pipefail
 
@@ -34,7 +34,7 @@ echo "Pkg.Revision = $ndk_version" > "$ndk_directory/source.properties"
 printf '#!/usr/bin/env bash\nexit 0\n' > "$ndk_directory/ndk-build"
 chmod +x "$ndk_directory/ndk-build"
 MOCK
-printf '#!/usr/bin/env bash\nexit 0\n' > "$test_directory/bin/sleep"
+printf '#!/usr/bin/env bash\necho slept >> "$NDK_TEST_DIRECTORY/sleeps"\n' > "$test_directory/bin/sleep"
 chmod +x "$test_directory/bin/sdkmanager" "$test_directory/bin/sleep"
 ndk_version=28.2.13676358
 
@@ -62,4 +62,34 @@ if bash "$tool_directory/install_android_ndk.sh" "$test_directory/sdk" '../unexp
   echo 'A package version must not escape the SDK directory.' >&2
   exit 1
 fi
+
+export NDK_TEST_CASE=success
+mv -- "$test_directory/bin/sdkmanager" "$test_directory/manager-stub"
+rm -- "$test_directory/calls"
+latest_sdk="$test_directory/latest sdk"
+mkdir -p "$latest_sdk/cmdline-tools/latest/bin"
+cp -- "$test_directory/manager-stub" "$latest_sdk/cmdline-tools/latest/bin/sdkmanager"
+PATH="$test_directory/bin:/usr/bin:/bin" bash "$tool_directory/install_android_ndk.sh" "$latest_sdk" "$ndk_version"
+[[ "$(wc -l < "$test_directory/calls")" -eq 1 ]]
+
+mv -- "$latest_sdk/cmdline-tools/latest/bin/sdkmanager" "$test_directory/latest-manager"
+PATH="$test_directory/bin:/usr/bin:/bin" bash "$tool_directory/install_android_ndk.sh" "$latest_sdk" "$ndk_version"
+[[ "$(wc -l < "$test_directory/calls")" -eq 1 ]]
+
+versioned_sdk="$test_directory/versioned-sdk"
+mkdir -p "$versioned_sdk/cmdline-tools/19.0/bin"
+cp -- "$test_directory/manager-stub" "$versioned_sdk/cmdline-tools/19.0/bin/sdkmanager"
+rm -- "$test_directory/calls"
+PATH="$test_directory/bin:/usr/bin:/bin" bash "$tool_directory/install_android_ndk.sh" "$versioned_sdk" "$ndk_version"
+[[ "$(wc -l < "$test_directory/calls")" -eq 1 ]]
+
+mkdir -p "$test_directory/missing-tools-sdk"
+if PATH="$test_directory/bin:/usr/bin:/bin" bash "$tool_directory/install_android_ndk.sh" "$test_directory/missing-tools-sdk" "$ndk_version"; then
+  echo 'Missing SDK command-line tools must fail before installation retries.' >&2
+  exit 1
+else
+  [[ "$?" -eq 127 ]]
+fi
+[[ "$(wc -l < "$test_directory/calls")" -eq 1 ]]
+[[ "$(wc -l < "$test_directory/sleeps")" -eq 4 ]]
 echo 'NDK cache and recovery checks passed.'

@@ -2,6 +2,7 @@
 // Owns explicit sharing changes and recipient rewrapping.
 // Does not change executor release conditions.
 import 'package:flutter/material.dart';
+import '../../shared/person_name.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
 import '../../core/api/json_values.dart';
@@ -10,6 +11,9 @@ import '../../shared/ui/remote_panel.dart';
 import '../../shared/ui/actions.dart';
 import '../security/session_controller.dart';
 import '../security/key_migration.dart';
+import '../../shared/ui/guide_panel.dart';
+import '../../shared/ui/person_avatar.dart';
+import '../../shared/ui/empty_state.dart';
 
 class ItemSharingScreen extends ConsumerWidget {
   final String id;
@@ -18,6 +22,12 @@ class ItemSharingScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => PageFrame(
     title: 'Beneficiary access',
     children: [
+      const GuidePanel(
+        icon: Icons.people_outline_rounded,
+        title: 'Choose who receives this item',
+        message:
+            'Access applies after will release. Turning it off excludes this beneficiary.',
+      ),
       RemotePanel(
         operation: 'GET_METAMODEL',
         variables: {'id': id},
@@ -35,31 +45,43 @@ class ItemSharingScreen extends ConsumerWidget {
                   RemotePanel(
                     operation: 'GET_PERSON',
                     variables: {'id': beneficiary['person_id']},
-                    builder: (person) => SwitchListTile(
-                      title: Text(label(asJson(person['getPerson']))),
-                      subtitle: const Text(
-                        'Receive this item after will release',
+                    builder: (person) => Card(
+                      child: SwitchListTile(
+                        secondary: PersonAvatar(
+                          personName(asJson(person['getPerson'])),
+                        ),
+                        title: Text(personName(asJson(person['getPerson']))),
+                        subtitle: const Text(
+                          'Receive this item after will release',
+                        ),
+                        value: !ignored.contains(beneficiary['id']),
+                        onChanged: (enabled) => perform(context, () async {
+                          await ref.read(apiProvider).run(
+                            enabled
+                                ? 'REMOVE_IGNORED_BENEFICIARY'
+                                : 'ADD_IGNORED_BENEFICIARY',
+                            {
+                              'metamodel_id': id,
+                              'beneficiary_id': beneficiary['id'],
+                            },
+                          );
+                          if (enabled) {
+                            await KeyMigration(
+                              ref.read(apiProvider),
+                              ref.read(sessionProvider.notifier).lease(),
+                            ).beneficiary(beneficiary['id']);
+                          }
+                          ref.invalidate(remoteProvider);
+                        }),
                       ),
-                      value: !ignored.contains(beneficiary['id']),
-                      onChanged: (enabled) => perform(context, () async {
-                        await ref.read(apiProvider).run(
-                          enabled
-                              ? 'REMOVE_IGNORED_BENEFICIARY'
-                              : 'ADD_IGNORED_BENEFICIARY',
-                          {
-                            'metamodel_id': id,
-                            'beneficiary_id': beneficiary['id'],
-                          },
-                        );
-                        if (enabled) {
-                          await KeyMigration(
-                            ref.read(apiProvider),
-                            ref.read(sessionProvider.notifier).lease(),
-                          ).beneficiary(beneficiary['id']);
-                        }
-                        ref.invalidate(remoteProvider);
-                      }),
                     ),
+                  ),
+                if (jsonList(result['getSmartWillBeneficiaries']).isEmpty)
+                  const EmptyState(
+                    title: 'No beneficiaries yet',
+                    message:
+                        'Add beneficiaries in People to manage their access here.',
+                    icon: Icons.people_outline_rounded,
                   ),
               ],
             ),

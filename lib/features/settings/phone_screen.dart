@@ -1,7 +1,6 @@
-// Manages phone verification and existing communication channels
-// Owns OTP entry and per-number channel preferences.
+// Manages phone verification and existing communication channels.
+// Owns adding numbers and refreshing their server state.
 // Does not introduce push notifications.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
@@ -9,14 +8,21 @@ import '../../core/api/json_values.dart';
 import '../../shared/ui/page_frame.dart';
 import '../../shared/ui/remote_panel.dart';
 import '../../shared/ui/actions.dart';
+import '../../shared/ui/section_heading.dart';
+import '../../shared/ui/empty_state.dart';
+import 'email_preferences.dart';
+import 'phone_card.dart';
 
 class PhoneScreen extends ConsumerWidget {
   const PhoneScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) => PageFrame(
-    title: 'Phone and communication',
+    title: 'Communication',
+    subtitle: 'Choose how Cipherwill keeps in touch.',
     children: [
-      FilledButton(
+      const EmailPreferences(),
+      const SectionHeading('Phone numbers'),
+      FilledButton.icon(
         onPressed: () => perform(context, () async {
           final code = await prompt(
             context,
@@ -32,101 +38,26 @@ class PhoneScreen extends ConsumerWidget {
           });
           ref.invalidate(remoteProvider);
         }, success: 'Phone number added.'),
-        child: const Text('Add phone number'),
+        icon: const Icon(Icons.add_rounded),
+        label: const Text('Add phone number'),
       ),
+      const SizedBox(height: 16),
       RemotePanel(
         operation: 'GET_USER_PHONE_NUMBERS',
-        builder: (r) => Column(
-          children: [
-            for (final phone in jsonList(r['getUserPhoneNumbers']))
-              Card(
-                child: Column(
-                  children: [
-                    ListTile(
-                      title: Text(
-                        '+' + phone['phone_code'] + ' ' + phone['phone_num'],
-                      ),
-                      subtitle: Text(
-                        phone['verified'] == true
-                            ? 'Verified'
-                            : 'Verification required',
-                      ),
-                    ),
-                    if (phone['verified'] != true) ...[
-                      TextButton(
-                        onPressed: () => perform(context, () async {
-                          await ref.read(apiProvider).run(
-                            'SEND_USER_PHONE_VERIFICATION_CODE',
-                            {'id': phone['id']},
-                          );
-                        }, success: 'Code requested.'),
-                        child: const Text('Send verification code'),
-                      ),
-                      TextButton(
-                        onPressed: () => perform(context, () async {
-                          final otp = await prompt(
-                            context,
-                            'Verification code',
-                          );
-                          if (otp == null) throw const ActionCancelled();
-                          final result = await ref.read(apiProvider).run(
-                            'VERIFY_USER_PHONE_NUMBER',
-                            {'id': phone['id'], 'otp': otp},
-                          );
-                          if (result['verifyUserPhoneNumber'] != true) {
-                            throw StateError('Verification failed.');
-                          }
-                          ref.invalidate(remoteProvider);
-                        }, success: 'Number verified.'),
-                        child: const Text('Enter code'),
-                      ),
-                    ],
-                    for (final key in [
-                      'mandatory_phone_calls',
-                      'mandatory_sms',
-                      'mandatory_whatsapp',
-                      'promotional_phone_calls',
-                      'promotional_sms',
-                      'promotional_whatsapp',
-                    ])
-                      SwitchListTile(
-                        title: Text(key.replaceAll('_', ' ')),
-                        value: phone[key] == true,
-                        onChanged: phone['verified'] != true
-                            ? null
-                            : (value) => perform(context, () async {
-                                await ref.read(apiProvider).run(
-                                  'UPDATE_MOBILE_PREFERENCES',
-                                  {
-                                    'id': phone['id'],
-                                    'key': key,
-                                    'value': value,
-                                  },
-                                );
-                                ref.invalidate(remoteProvider);
-                              }),
-                      ),
-                    TextButton(
-                      onPressed: () => perform(context, () async {
-                        if (!await confirm(
-                          context,
-                          'Remove this phone number?',
-                        )) {
-                          throw const ActionCancelled();
-                        }
-                        await ref.read(apiProvider).run(
-                          'REMOVE_USER_PHONE_NUMBER',
-                          {'id': phone['id']},
-                        );
-                        ref.invalidate(remoteProvider);
-                      }),
-                      child: const Text('Remove number'),
-                    ),
-                  ],
-                ),
-              ),
-          ],
-        ),
+        builder: (r) {
+          final phones = jsonList(r['getUserPhoneNumbers']);
+          if (phones.isEmpty) {
+            return const EmptyState(
+              title: 'Add another way to reach you',
+              message:
+                  'Verify a phone number to enable SMS, WhatsApp and phone channels.',
+              icon: Icons.phone_outlined,
+            );
+          }
+          return Column(
+            children: [for (final phone in phones) PhoneCard(phone: phone)],
+          );
+        },
       ),
     ],
   );

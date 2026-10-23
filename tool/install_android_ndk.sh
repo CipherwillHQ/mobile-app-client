@@ -14,8 +14,23 @@ if [[ -s "$ndk_directory/source.properties" && -x "$ndk_directory/ndk-build" ]];
   exit 0
 fi
 
+sdk_manager=''
+for candidate in "$sdk_root/cmdline-tools/latest/bin/sdkmanager" "$sdk_root"/cmdline-tools/*/bin/sdkmanager; do
+  if [[ -x "$candidate" ]]; then
+    sdk_manager="$candidate"
+    break
+  fi
+done
+if [[ -z "$sdk_manager" ]]; then
+  sdk_manager="$(command -v sdkmanager || true)"
+fi
+if [[ -z "$sdk_manager" ]]; then
+  echo "Android SDK command-line tools are missing. Install them under $sdk_root/cmdline-tools or add sdkmanager to PATH." >&2
+  exit 127
+fi
+
 for attempt in 1 2 3; do
-  if sdkmanager --sdk_root="$sdk_root" --install "ndk;$ndk_version" &&
+  if "$sdk_manager" --sdk_root="$sdk_root" --install "ndk;$ndk_version" &&
       [[ -s "$ndk_directory/source.properties" && -x "$ndk_directory/ndk-build" ]]; then
     echo "Installed NDK $ndk_version."
     exit 0

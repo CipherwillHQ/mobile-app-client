@@ -53,8 +53,13 @@ Future<String?> prompt(
   String title, {
   String initial = '',
   bool secret = false,
+  bool multiline = false,
 }) => showDialog<String>(
   context: context,
-  builder: (_) =>
-      TextPromptDialog(title: title, initial: initial, secret: secret),
+  builder: (_) => TextPromptDialog(
+    title: title,
+    initial: initial,
+    secret: secret,
+    multiline: multiline,
+  ),
 );

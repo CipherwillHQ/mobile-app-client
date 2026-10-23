@@ -1,41 +1,53 @@
-// Presents beneficiaries, friends and executor navigation
-// Owns people entry points.
+// Presents trusted contacts and the separate executor workspace.
+// Owns People navigation and contextual release explanations.
 // Does not grant friends access to vault data.
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../app/design_tokens.dart';
 import '../../shared/ui/page_frame.dart';
+import '../../shared/ui/photo_banner.dart';
+import '../../shared/ui/section_heading.dart';
+import '../../shared/ui/feature_card.dart';
+import '../../shared/ui/guide_panel.dart';
 
 class PeopleScreen extends StatelessWidget {
   const PeopleScreen({super.key});
   @override
   Widget build(BuildContext context) => PageFrame(
-    title: 'People',
+    title: 'Your people',
+    subtitle: 'A thoughtful handoff starts with the people you trust.',
     children: [
-      Card(
-        child: ListTile(
-          leading: const Icon(Icons.people_outline),
-          title: const Text('Beneficiaries'),
-          subtitle: const Text('The people who receive your legacy'),
-          onTap: () => context.push('/beneficiaries'),
-        ),
+      const PhotoBanner(
+        title: 'For the people\nyou love.',
+        message: 'Your digital legacy is a way to keep taking care of them.',
       ),
-      Card(
-        child: ListTile(
-          leading: const Icon(Icons.favorite_outline),
-          title: const Text('Friends and family'),
-          subtitle: const Text(
-            'Trusted contacts who help us reach your beneficiaries',
-          ),
-          onTap: () => context.push('/friends'),
-        ),
+      const SectionHeading('Your trusted circle'),
+      FeatureCard(
+        title: 'Beneficiaries',
+        subtitle: 'The people who receive your legacy',
+        icon: Icons.people_outline_rounded,
+        color: CipherwillColors.clay,
+        onTap: () => context.push('/beneficiaries'),
       ),
-      Card(
-        child: ListTile(
-          leading: const Icon(Icons.lock_open_outlined),
-          title: const Text('Executor workspace'),
-          subtitle: const Text('Read the wills released to you'),
-          onTap: () => context.push('/executor'),
-        ),
+      FeatureCard(
+        title: 'Friends and family',
+        subtitle: 'Trusted contacts who help us reach your beneficiaries',
+        icon: Icons.favorite_outline_rounded,
+        color: CipherwillColors.sage,
+        onTap: () => context.push('/friends'),
+      ),
+      const SectionHeading('When someone trusts you'),
+      FeatureCard(
+        title: 'Executor workspace',
+        subtitle: 'Read the wills released to you',
+        icon: Icons.lock_open_outlined,
+        onTap: () => context.push('/executor'),
+      ),
+      const SizedBox(height: 18),
+      const GuidePanel(
+        title: 'Access stays in your hands',
+        message:
+            'Beneficiaries receive only the information you allow, when the conditions in your timeline are met.',
       ),
     ],
   );

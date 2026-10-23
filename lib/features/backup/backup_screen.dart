@@ -16,6 +16,9 @@ import '../../shared/ui/actions.dart';
 import '../security/session_controller.dart';
 import 'backup_codec.dart';
 import 'backup_service.dart';
+import '../../shared/ui/guide_panel.dart';
+import '../../shared/ui/panel_section.dart';
+import '../../shared/ui/vault_emblem.dart';
 
 class BackupScreen extends ConsumerStatefulWidget {
   const BackupScreen({super.key});
@@ -102,18 +105,39 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
   @override
   Widget build(BuildContext context) => PageFrame(
     title: 'Backups',
+    subtitle: 'Keep a copy. Bring your memories with you.',
     children: [
-      const Text(
-        'Backups contain decrypted text assets. Files are excluded. Restore keeps existing saved items and beneficiary exclusions.',
+      const VaultEmblem(),
+      const SizedBox(height: 24),
+      const GuidePanel(
+        title: 'Handle with care',
+        message:
+            'Exported ZIPs contain decrypted text assets. Store and share them securely. Files are excluded.',
+        icon: Icons.privacy_tip_outlined,
       ),
       const SizedBox(height: 20),
-      FilledButton(
-        onPressed: busy ? null : export,
-        child: const Text('Export backup'),
+      PanelSection(
+        title: 'Export your vault',
+        description: 'A compatible Cipherwill backup of your text assets.',
+        children: [
+          FilledButton.icon(
+            onPressed: busy ? null : export,
+            icon: const Icon(Icons.ios_share_rounded),
+            label: const Text('Export backup'),
+          ),
+        ],
       ),
-      TextButton(
-        onPressed: busy ? null : restore,
-        child: const Text('Restore backup'),
+      PanelSection(
+        title: 'Restore a backup',
+        description:
+            'Import versions 0.0.1 or 0.0.2. Existing readable items and beneficiary exclusions are preserved.',
+        children: [
+          OutlinedButton.icon(
+            onPressed: busy ? null : restore,
+            icon: const Icon(Icons.restore_rounded),
+            label: const Text('Choose backup ZIP'),
+          ),
+        ],
       ),
       if (busy) const LinearProgressIndicator(),
       Semantics(liveRegion: true, child: Text(status)),

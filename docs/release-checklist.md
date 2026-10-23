@@ -47,6 +47,24 @@ Verified on 2026-10-23 using Flutter 3.41.4 and Dart 3.11.1:
 - An earlier APK was installed and cold-launched on the I2011 (Android 13); its sign-in screen was observed.
 - Reinstalling this fixed APK returned "no devices/emulators found". Physical-device confirmation of the dialog fix remains pending reconnection.
 
+## Flutter redesign verified on 2026-10-24
+
+- Web-inspired branding, photographic authentication, owner/executor screens and reduced-motion-aware transitions are implemented.
+- flutter test --no-pub lib test --dart-define=DESIGN_REVIEW=true: 100 tests passed.
+- flutter analyze, handwritten source/format rules, operation registry and git diff --check: passed.
+- Development Android debug APK compiled successfully at build/app/outputs/flutter-apk/app-debug.apk.
+- Synthetic visual review covers 25 screens in both themes, narrow phones at 2× text size and all eight text-asset forms; see mobile-design.md.
+- ADB is disconnected; live Android acceptance and iOS compilation/testing on macOS remain pending.
+
+## Web upgrade integration verified on 2026-10-24
+
+- Free accounts can open the existing public /upgrade page using webview_flutter and fresh GraphQL account attribution.
+- The full regression suite passed 114 tests; after the final duplicate-tap guard, all 16 focused upgrade tests passed, including two additional route tests.
+- Flutter analysis, source/format rules and git diff --check: passed.
+- The public https://www.cipherwill.com/upgrade endpoint returned HTTP 200.
+- Development Android debug compilation passed; live Paddle/payment-handoff and iOS acceptance remain pending.
+- No ADB device is connected. See web-upgrade.md for the integration contract and device scenarios.
+
 ## Required before acceptance
 
 - [x] Firebase CLI account can access project-cipherwill; registered Android/iOS configurations are installed.
@@ -72,6 +90,7 @@ Verified on 2026-10-23 using Flutter 3.41.4 and Dart 3.11.1:
 - [ ] Confirm privacy policy, support and outside-app deletion request access with the product owner.
 - [ ] Complete App Store privacy and Play Data Safety forms against actual production SDK configuration.
 - [ ] Review existing-subscriber portal behavior under both store policies.
+- [ ] Validate embedded web upgrades, payment handoffs and permitted distribution under both store policies.
 - [ ] Replace pending store metadata/screenshots with actual accepted builds.
 - [ ] Approve public release only when every parity scenario passes on both platforms.
 

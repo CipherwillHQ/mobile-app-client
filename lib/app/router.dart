@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../features/home/home_screen.dart';
+import '../features/home/score_screen.dart';
 import '../features/vault/vault_screen.dart';
 import '../features/vault/asset_list_screen.dart';
 import '../features/vault/asset_edit_screen.dart';
@@ -27,6 +28,7 @@ import '../features/settings/preferences_screen.dart';
 import '../features/settings/phone_screen.dart';
 import '../features/settings/account_actions_screen.dart';
 import '../features/billing/billing_screen.dart';
+import '../features/billing/upgrade_screen.dart';
 import '../features/backup/backup_screen.dart';
 import '../features/guidance/guidance_screen.dart';
 import '../features/timeline/timeline_screen.dart';
@@ -149,9 +151,11 @@ GoRouter createRouter() => GoRouter(
         ),
         GoRoute(path: '/feedback', builder: (_, _) => const FeedbackScreen()),
         GoRoute(path: '/billing', builder: (_, _) => const BillingScreen()),
+        GoRoute(path: '/upgrade', builder: (_, _) => const UpgradeScreen()),
         GoRoute(path: '/backup', builder: (_, _) => const BackupScreen()),
         GoRoute(path: '/guide', builder: (_, _) => const GuidanceScreen()),
         GoRoute(path: '/timeline', builder: (_, _) => const TimelineScreen()),
+        GoRoute(path: '/score', builder: (_, _) => const ScoreScreen()),
       ],
     ),
   ],

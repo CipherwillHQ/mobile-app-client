@@ -12,6 +12,7 @@ import '../../shared/ui/page_frame.dart';
 import '../../shared/ui/actions.dart';
 import '../security/return_authentication.dart';
 import '../security/session_controller.dart';
+import '../../shared/ui/vault_emblem.dart';
 
 class ReauthenticationScreen extends ConsumerWidget {
   const ReauthenticationScreen({super.key});
@@ -73,8 +74,12 @@ class ReauthenticationScreen extends ConsumerWidget {
     return PageFrame(
       title: 'Unlock Cipherwill',
       children: [
-        const Icon(Icons.lock_outline, size: 48),
+        const VaultEmblem(),
+        const SizedBox(height: 24),
+        Text('Welcome back.', style: Theme.of(context).textTheme.headlineLarge),
+        const SizedBox(height: 12),
         const Text('Authenticate your account to reopen your vault.'),
+        const SizedBox(height: 24),
         if (providers.contains('password'))
           FilledButton(
             onPressed: () => authenticate(context, ref, 'password'),

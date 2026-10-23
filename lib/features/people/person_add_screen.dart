@@ -2,6 +2,7 @@
 // Owns invitation choices and beneficiary key synchronization.
 // Does not send invitations without a user action.
 import 'package:flutter/material.dart';
+import '../../shared/person_name.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../app/providers.dart';
@@ -11,6 +12,9 @@ import '../../shared/ui/actions.dart';
 import '../../shared/ui/remote_panel.dart';
 import '../security/session_controller.dart';
 import '../security/key_migration.dart';
+import '../../shared/ui/section_heading.dart';
+import '../../shared/ui/person_avatar.dart';
+import '../../shared/ui/guide_panel.dart';
 
 class PersonAddScreen extends ConsumerStatefulWidget {
   final bool friend;
@@ -65,7 +69,16 @@ class _PersonAddScreenState extends ConsumerState<PersonAddScreen> {
   @override
   Widget build(BuildContext context) => PageFrame(
     title: widget.friend ? 'Add friend' : 'Add beneficiary',
+    subtitle: 'Start with their email address.',
     children: [
+      GuidePanel(
+        icon: Icons.person_add_outlined,
+        title: 'Invite someone you trust',
+        message: widget.friend
+            ? 'Friends help us reach your beneficiaries.'
+            : 'Your beneficiary can receive the items you allow after will release.',
+      ),
+      const SizedBox(height: 20),
       TextField(
         controller: email,
         keyboardType: TextInputType.emailAddress,
@@ -84,18 +97,20 @@ class _PersonAddScreenState extends ConsumerState<PersonAddScreen> {
                   setState(() => matches = jsonList(result['searchPerson']));
                 }
               }),
-        child: const Text('Find person'),
+        child: Text(busy ? 'Please wait…' : 'Find person'),
       ),
       if (matches != null)
         for (final person in matches!)
           ListTile(
-            title: Text(label(person)),
+            leading: PersonAvatar(personName(person)),
+            trailing: const Icon(Icons.person_add_outlined),
+            title: Text(personName(person)),
             subtitle: Text(person['email']),
             onTap: busy ? null : () => run(() => add(person['id'])),
           ),
       if (matches != null && matches!.isEmpty) ...[
         const SizedBox(height: 20),
-        const Text('Invite someone new'),
+        const SectionHeading('Invite someone new'),
         TextField(
           controller: name,
           decoration: const InputDecoration(labelText: 'First name'),

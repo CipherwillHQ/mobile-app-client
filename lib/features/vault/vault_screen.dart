@@ -1,49 +1,51 @@
-// Presents enabled vault categories and backend plan restrictions
-// Owns category navigation.
-// Does not load or decrypt individual assets.
+// Organizes the complete vault into searchable, recognizable category cards.
+// Owns category discovery and existing preference status.
+// Does not load decrypted records or change backend plan restrictions.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../app/providers.dart';
+import '../../core/api/json_values.dart';
 import '../../shared/ui/page_frame.dart';
 import '../../shared/ui/async_panel.dart';
-import 'categories.dart';
+import '../../shared/ui/remote_panel.dart';
+import '../../shared/ui/section_heading.dart';
+import 'category_grid.dart';
 
-class VaultScreen extends ConsumerWidget {
+class VaultScreen extends ConsumerStatefulWidget {
   const VaultScreen({super.key});
   @override
-  Widget build(BuildContext context, WidgetRef ref) => PageFrame(
+  ConsumerState<VaultScreen> createState() => _VaultScreenState();
+}
+
+class _VaultScreenState extends ConsumerState<VaultScreen> {
+  String query = '';
+  @override
+  Widget build(BuildContext context) => PageFrame(
     title: 'Your vault',
+    subtitle: 'Everything important. Thoughtfully organized.',
     children: [
-      const Text('Your information, organized for the people you trust.'),
-      const SizedBox(height: 16),
+      TextField(
+        onChanged: (value) => setState(() => query = value),
+        decoration: const InputDecoration(
+          hintText: 'Find a category',
+          prefixIcon: Icon(Icons.search_rounded),
+          filled: true,
+        ),
+      ),
+      const SectionHeading('Your categories'),
       AsyncPanel(
         value: ref.watch(preferencesProvider),
         retry: () => ref.invalidate(preferencesProvider),
-        builder: (preferences) => Column(
-          children: [
-            for (final category in categories)
-              Card(
-                child: ListTile(
-                  leading: Icon(
-                    category.type == 'FILE'
-                        ? Icons.folder_outlined
-                        : Icons.lock_outline,
-                  ),
-                  title: Text(category.title),
-                  subtitle: Text(
-                    category.preference != null &&
-                            preferences[category.preference] != true
-                        ? 'Enable in Settings'
-                        : category.premium
-                        ? 'Premium'
-                        : 'Included',
-                  ),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => context.push('/vault/' + category.type),
-                ),
-              ),
-          ],
+        builder: (preferences) => RemotePanel(
+          operation: 'GET_METAMODEL_TYPE_COUNTS',
+          builder: (result) => CategoryGrid(
+            preferences: preferences,
+            query: query,
+            counts: {
+              for (final item in jsonList(result['getMetamodelTypeCounts']))
+                item['type'].toString(): item['count'] as int,
+            },
+          ),
         ),
       ),
     ],
