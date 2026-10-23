@@ -33,6 +33,7 @@ import '../features/timeline/timeline_screen.dart';
 import '../features/auth/auth_action_screen.dart';
 import 'navigation_shell.dart';
 import 'deep_links.dart';
+import 'account_gate.dart';
 
 GoRouter createRouter() => GoRouter(
   initialLocation: '/home',
@@ -46,104 +47,119 @@ GoRouter createRouter() => GoRouter(
       ),
     ),
     ShellRoute(
-      builder: (_, state, child) =>
-          NavigationShell(location: state.uri.path, child: child),
+      builder: (_, _, child) => AccountGate(child: child),
       routes: [
-        GoRoute(path: '/home', builder: (_, _) => const HomeScreen()),
-        GoRoute(path: '/vault', builder: (_, _) => const VaultScreen()),
-        GoRoute(path: '/people', builder: (_, _) => const PeopleScreen()),
-        GoRoute(path: '/settings', builder: (_, _) => const SettingsScreen()),
+        ShellRoute(
+          builder: (_, state, child) =>
+              NavigationShell(location: state.uri.path, child: child),
+          routes: [
+            GoRoute(path: '/home', builder: (_, _) => const HomeScreen()),
+            GoRoute(path: '/vault', builder: (_, _) => const VaultScreen()),
+            GoRoute(path: '/people', builder: (_, _) => const PeopleScreen()),
+            GoRoute(
+              path: '/settings',
+              builder: (_, _) => const SettingsScreen(),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: '/vault/:type',
+          builder: (_, s) => s.pathParameters['type'] == 'FILE'
+              ? const StorageScreen()
+              : AssetListScreen(type: s.pathParameters['type']!),
+        ),
+        GoRoute(
+          path: '/item/:id',
+          builder: (_, s) => AssetEditScreen(
+            id: s.pathParameters['id']!,
+            type: s.uri.queryParameters['type'] ?? 'NOTE',
+            newItem: s.uri.queryParameters['new'] == 'true',
+          ),
+        ),
+        GoRoute(
+          path: '/item/:id/sharing',
+          builder: (_, s) => ItemSharingScreen(id: s.pathParameters['id']!),
+        ),
+        GoRoute(
+          path: '/beneficiaries',
+          builder: (_, _) => const PeopleListScreen(),
+        ),
+        GoRoute(
+          path: '/friends',
+          builder: (_, _) => const PeopleListScreen(friends: true),
+        ),
+        GoRoute(
+          path: '/beneficiaries/:id',
+          builder: (_, s) => BeneficiaryScreen(id: s.pathParameters['id']!),
+        ),
+        GoRoute(
+          path: '/people/add',
+          builder: (_, s) => PersonAddScreen(
+            friend: s.uri.queryParameters['friend'] == 'true',
+          ),
+        ),
+        GoRoute(path: '/factors', builder: (_, _) => const FactorsScreen()),
+        GoRoute(
+          path: '/storage',
+          builder: (_, s) => StorageScreen(
+            folder: s.uri.queryParameters['folder'],
+            access: s.uri.queryParameters['access'],
+          ),
+        ),
+        GoRoute(
+          path: '/file/:id',
+          builder: (_, s) => FileScreen(
+            id: s.pathParameters['id']!,
+            access: s.uri.queryParameters['access'],
+          ),
+        ),
+        GoRoute(path: '/executor', builder: (_, _) => const ExecutorScreen()),
+        GoRoute(
+          path: '/executor/:id',
+          builder: (_, s) =>
+              GrantedCategoriesScreen(id: s.pathParameters['id']!),
+        ),
+        GoRoute(
+          path: '/executor/:id/category/:type',
+          builder: (_, s) => GrantedItemsScreen(
+            access: s.pathParameters['id']!,
+            type: s.pathParameters['type']!,
+          ),
+        ),
+        GoRoute(
+          path: '/executor/:id/item/:item',
+          builder: (_, s) => GrantedItemScreen(
+            access: s.pathParameters['id']!,
+            id: s.pathParameters['item']!,
+          ),
+        ),
+        GoRoute(
+          path: '/granted-access',
+          builder: (_, _) => const GrantedAccessScreen(),
+        ),
+        GoRoute(path: '/profile', builder: (_, _) => const ProfileScreen()),
+        GoRoute(
+          path: '/preferences',
+          builder: (_, _) => const PreferencesScreen(),
+        ),
+        GoRoute(path: '/phones', builder: (_, _) => const PhoneScreen()),
+        GoRoute(
+          path: '/account-actions',
+          builder: (_, _) => const AccountActionsScreen(),
+        ),
+        GoRoute(path: '/feedback', builder: (_, _) => const FeedbackScreen()),
+        GoRoute(path: '/billing', builder: (_, _) => const BillingScreen()),
+        GoRoute(path: '/backup', builder: (_, _) => const BackupScreen()),
+        GoRoute(path: '/guide', builder: (_, _) => const GuidanceScreen()),
+        GoRoute(path: '/timeline', builder: (_, _) => const TimelineScreen()),
       ],
     ),
-    GoRoute(
-      path: '/vault/:type',
-      builder: (_, s) => s.pathParameters['type'] == 'FILE'
-          ? const StorageScreen()
-          : AssetListScreen(type: s.pathParameters['type']!),
-    ),
-    GoRoute(
-      path: '/item/:id',
-      builder: (_, s) => AssetEditScreen(
-        id: s.pathParameters['id']!,
-        type: s.uri.queryParameters['type'] ?? 'NOTE',
-        newItem: s.uri.queryParameters['new'] == 'true',
-      ),
-    ),
-    GoRoute(
-      path: '/item/:id/sharing',
-      builder: (_, s) => ItemSharingScreen(id: s.pathParameters['id']!),
-    ),
-    GoRoute(
-      path: '/beneficiaries',
-      builder: (_, _) => const PeopleListScreen(),
-    ),
-    GoRoute(
-      path: '/friends',
-      builder: (_, _) => const PeopleListScreen(friends: true),
-    ),
-    GoRoute(
-      path: '/beneficiaries/:id',
-      builder: (_, s) => BeneficiaryScreen(id: s.pathParameters['id']!),
-    ),
-    GoRoute(
-      path: '/people/add',
-      builder: (_, s) =>
-          PersonAddScreen(friend: s.uri.queryParameters['friend'] == 'true'),
-    ),
-    GoRoute(path: '/factors', builder: (_, _) => const FactorsScreen()),
-    GoRoute(
-      path: '/storage',
-      builder: (_, s) => StorageScreen(
-        folder: s.uri.queryParameters['folder'],
-        access: s.uri.queryParameters['access'],
-      ),
-    ),
-    GoRoute(
-      path: '/file/:id',
-      builder: (_, s) => FileScreen(
-        id: s.pathParameters['id']!,
-        access: s.uri.queryParameters['access'],
-      ),
-    ),
-    GoRoute(path: '/executor', builder: (_, _) => const ExecutorScreen()),
-    GoRoute(
-      path: '/executor/:id',
-      builder: (_, s) => GrantedCategoriesScreen(id: s.pathParameters['id']!),
-    ),
-    GoRoute(
-      path: '/executor/:id/category/:type',
-      builder: (_, s) => GrantedItemsScreen(
-        access: s.pathParameters['id']!,
-        type: s.pathParameters['type']!,
-      ),
-    ),
-    GoRoute(
-      path: '/executor/:id/item/:item',
-      builder: (_, s) => GrantedItemScreen(
-        access: s.pathParameters['id']!,
-        id: s.pathParameters['item']!,
-      ),
-    ),
-    GoRoute(
-      path: '/granted-access',
-      builder: (_, _) => const GrantedAccessScreen(),
-    ),
-    GoRoute(path: '/profile', builder: (_, _) => const ProfileScreen()),
-    GoRoute(path: '/preferences', builder: (_, _) => const PreferencesScreen()),
-    GoRoute(path: '/phones', builder: (_, _) => const PhoneScreen()),
-    GoRoute(
-      path: '/account-actions',
-      builder: (_, _) => const AccountActionsScreen(),
-    ),
-    GoRoute(path: '/feedback', builder: (_, _) => const FeedbackScreen()),
-    GoRoute(path: '/billing', builder: (_, _) => const BillingScreen()),
-    GoRoute(path: '/backup', builder: (_, _) => const BackupScreen()),
-    GoRoute(path: '/guide', builder: (_, _) => const GuidanceScreen()),
-    GoRoute(path: '/timeline', builder: (_, _) => const TimelineScreen()),
   ],
-  errorBuilder: (_, _) => const Scaffold(
-    body: SafeArea(
-      child: Center(child: Text('This Cipherwill link is unavailable.')),
+  errorBuilder: (_, _) => const AccountGate(
+    child: Scaffold(
+      body: SafeArea(
+        child: Center(child: Text('This Cipherwill link is unavailable.')),
+      ),
     ),
   ),
 );

@@ -5,9 +5,14 @@ name: Source contract compatibility
 on: [workflow_dispatch, pull_request]
 permissions:
   contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   contracts:
     runs-on: ubuntu-latest
+    env:
+      YARN_CACHE_FOLDER: ${{ github.workspace }}/.yarn-cache
     steps:
       - uses: actions/checkout@v4
         with:
@@ -25,10 +30,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: cipherwill-backend/package-lock.json
+      - name: Cache Yarn downloads
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.YARN_CACHE_FOLDER }}
+          key: ${{ runner.os }}-${{ runner.arch }}-yarn-${{ hashFiles('Cipherwill/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-${{ runner.arch }}-yarn-
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.41.4
           channel: stable
+          cache: true
       - run: npm ci --ignore-scripts
         working-directory: cipherwill-backend
       - run: corepack enable

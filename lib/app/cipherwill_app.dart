@@ -8,7 +8,6 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../features/settings/appearance.dart';
-import 'account_gate.dart';
 import 'privacy_guard.dart';
 import 'router.dart';
 import 'theme.dart';
@@ -42,14 +41,6 @@ class _CipherwillAppState extends ConsumerState<CipherwillApp> {
       FlutterQuillLocalizations.delegate,
     ],
     supportedLocales: const [Locale('en')],
-    builder: (context, child) => PrivacyGuard(
-      child: ListenableBuilder(
-        listenable: router.routeInformationProvider,
-        builder: (context, _) =>
-            router.routeInformationProvider.value.uri.path == '/auth-action'
-            ? child!
-            : AccountGate(child: child!),
-      ),
-    ),
+    builder: (context, child) => PrivacyGuard(child: child!),
   );
 }

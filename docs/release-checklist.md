@@ -36,6 +36,17 @@ Verified on 2026-10-23 using Flutter 3.41.4 and Dart 3.11.1:
 - Android debug APK rebuilt successfully with the registered Firebase configuration and development defines.
 - No Android device is currently connected; live sign-in and iOS compilation remain pending.
 
+## Master-password dialog regression verified on 2026-10-24
+
+- Reproduced the missing Navigator error by tapping a master-password factor through the actual application widget.
+- Moved the account gate into protected routes so locked screens can open native dialogs; email account-action routes remain accessible.
+- Regression checks cover private password entry, incorrect-password rejection, cancellation/retry, locked tab/detail routes and account-action return navigation.
+- flutter analyze --no-pub: no issues; flutter test --no-pub lib test: 85 tests passed.
+- Handwritten source limits, formatting and git diff --check: passed.
+- Development Android debug APK rebuilt successfully at build/app/outputs/flutter-apk/app-debug.apk.
+- An earlier APK was installed and cold-launched on the I2011 (Android 13); its sign-in screen was observed.
+- Reinstalling this fixed APK returned "no devices/emulators found". Physical-device confirmation of the dialog fix remains pending reconnection.
+
 ## Required before acceptance
 
 - [x] Firebase CLI account can access project-cipherwill; registered Android/iOS configurations are installed.
@@ -64,4 +75,4 @@ Verified on 2026-10-23 using Flutter 3.41.4 and Dart 3.11.1:
 - [ ] Replace pending store metadata/screenshots with actual accepted builds.
 - [ ] Approve public release only when every parity scenario passes on both platforms.
 
-No signed builds, device/emulator sessions, TestFlight/Play uploads or public release have occurred. Windows cannot verify iOS. Firebase Android/iOS configuration is installed as of 2026-10-24. Provider linking, live sign-in and production signing acceptance remain pending.
+No signed builds, TestFlight/Play uploads or public release have occurred. Windows cannot verify iOS. Firebase Android/iOS configuration is installed as of 2026-10-24. Provider linking, live sign-in and production signing acceptance remain pending.
