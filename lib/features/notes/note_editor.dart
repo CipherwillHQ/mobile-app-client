@@ -22,6 +22,8 @@ class NoteEditor extends StatefulWidget {
 
 class _NoteEditorState extends State<NoteEditor> {
   late final QuillController controller;
+  final focusNode = FocusNode();
+  final scrollController = ScrollController();
   String last = '';
   @override
   void initState() {
@@ -47,6 +49,8 @@ class _NoteEditorState extends State<NoteEditor> {
   void dispose() {
     controller.removeListener(changed);
     controller.dispose();
+    focusNode.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -55,6 +59,8 @@ class _NoteEditorState extends State<NoteEditor> {
     height: 440,
     child: QuillEditor.basic(
       controller: controller,
+      focusNode: focusNode,
+      scrollController: scrollController,
       config: const QuillEditorConfig(
         padding: EdgeInsets.symmetric(vertical: 12),
         placeholder: 'Write something…',
