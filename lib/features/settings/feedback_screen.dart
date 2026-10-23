@@ -41,7 +41,6 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
   @override
   Widget build(BuildContext context) => PageFrame(
     title: 'Feedback',
-    subtitle: 'Help shape a more thoughtful Cipherwill.',
     children: [
       const GuidePanel(
         title: 'We’re listening',

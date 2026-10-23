@@ -32,8 +32,7 @@ class PreferencesScreen extends ConsumerWidget {
   }, success: 'Preference saved.');
   @override
   Widget build(BuildContext context, WidgetRef ref) => PageFrame(
-    title: 'Planning & categories',
-    subtitle: 'Choose what you keep and how your will is prepared.',
+    title: 'Segments & planning',
     children: [
       AsyncPanel(
         value: ref.watch(preferencesProvider),

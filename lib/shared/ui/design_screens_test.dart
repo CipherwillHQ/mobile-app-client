@@ -13,6 +13,7 @@ import '../../features/security/factors_screen.dart';
 import '../../features/people/people_list_screen.dart';
 import '../../features/people/beneficiary_screen.dart';
 import '../../features/settings/profile_screen.dart';
+import '../../features/settings/usage_screen.dart';
 import '../../features/settings/preferences_screen.dart';
 import '../../features/settings/phone_screen.dart';
 import '../../features/settings/account_actions_screen.dart';
@@ -35,25 +36,27 @@ void main() {
     '/vault': null,
     '/people': null,
     '/settings': null,
+    '/platform': null,
     '/auth': const AuthScreen(),
     '/lock': const LockScreen(factors: [previewFactor]),
     '/factors': const FactorsScreen(),
     '/beneficiaries': const PeopleListScreen(),
-    '/beneficiary': const BeneficiaryScreen(id: 'beneficiary'),
+    '/beneficiaries/beneficiary': const BeneficiaryScreen(id: 'beneficiary'),
     '/profile': const ProfileScreen(),
+    '/usage': const UsageScreen(),
     '/preferences': const PreferencesScreen(),
-    '/communication': const PhoneScreen(),
+    '/phones': const PhoneScreen(),
     '/billing': const BillingScreen(),
     '/storage': const StorageScreen(),
     '/backup': const BackupScreen(),
-    '/guidance': const GuidanceScreen(),
+    '/guide': const GuidanceScreen(),
     '/timeline': const TimelineScreen(),
     '/executor': const ExecutorScreen(),
-    '/released': const GrantedCategoriesScreen(id: 'grant'),
-    '/notes': const AssetListScreen(type: 'NOTE'),
-    '/passwords': const AssetListScreen(type: 'PASSWORD'),
+    '/executor/grant': const GrantedCategoriesScreen(id: 'grant'),
+    '/vault/NOTE': const AssetListScreen(type: 'NOTE'),
+    '/vault/PASSWORD': const AssetListScreen(type: 'PASSWORD'),
     '/score': const ScoreScreen(),
-    '/account': const AccountActionsScreen(),
+    '/account-actions': const AccountActionsScreen(),
     '/feedback': const FeedbackScreen(),
     '/onboarding': OnboardingScreen(
       onboarding: const {
@@ -91,7 +94,7 @@ void main() {
         expect(find.byType(ErrorPanel), findsNothing, reason: entry.key);
         await captureDesign(
           tester,
-          entry.key.substring(1) + '-' + brightness.name,
+          entry.key.substring(1).replaceAll('/', '-') + '-' + brightness.name,
         );
         for (final scrollable in find.byType(Scrollable).evaluate().toList()) {
           final state =

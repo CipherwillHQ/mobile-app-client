@@ -19,15 +19,19 @@ class AppBrand extends StatelessWidget {
       ),
       if (!compact) ...[
         const SizedBox(width: 10),
-        Text(
-          'Cipherwill',
-          style: TextStyle(
-            fontSize: 21,
-            fontWeight: FontWeight.w700,
-            letterSpacing: -.7,
-            color: light
-                ? Colors.white
-                : Theme.of(context).colorScheme.onSurface,
+        Flexible(
+          child: Text(
+            'Cipherwill',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 21,
+              fontWeight: FontWeight.w700,
+              letterSpacing: -.7,
+              color: light
+                  ? Colors.white
+                  : Theme.of(context).colorScheme.onSurface,
+            ),
           ),
         ),
       ],

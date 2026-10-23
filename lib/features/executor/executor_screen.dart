@@ -17,7 +17,6 @@ class ExecutorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => PageFrame(
     title: 'Executor workspace',
-    subtitle: 'Digital legacies entrusted to you.',
     children: [
       const GuidePanel(
         title: 'A responsibility, thoughtfully shared',

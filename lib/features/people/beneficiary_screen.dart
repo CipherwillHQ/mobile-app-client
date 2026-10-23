@@ -22,7 +22,7 @@ class BeneficiaryScreen extends ConsumerWidget {
   const BeneficiaryScreen({super.key, required this.id});
   @override
   Widget build(BuildContext context, WidgetRef ref) => PageFrame(
-    title: 'Beneficiary',
+    title: 'Beneficiary details',
     children: [
       RemotePanel(
         operation: 'GET_SMARTWILL_BENEFICIARY',

@@ -85,8 +85,7 @@ class _GuidanceScreenState extends ConsumerState<GuidanceScreen> {
       s.account['deferrals'],
     ).where((choice) => choice['dismissed'] != true).toList();
     return PageFrame(
-      title: 'Your guide',
-      subtitle: 'Thoughtful steps towards a prepared digital legacy.',
+      title: 'Guide',
       children: [
         if (busy && flow == null) const LoadingPanel(),
         if (error != null)

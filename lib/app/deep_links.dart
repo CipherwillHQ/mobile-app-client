@@ -17,12 +17,12 @@ const webPageRoutes = {
   'beneficiaries': '/beneficiaries',
   'friends': '/friends',
   'network': '/people',
-  'platform': '/settings',
+  'platform': '/platform',
   'factors': '/factors',
   'backup': '/backup',
   'timeline': '/timeline',
   'guide': '/guide',
-  'score': '/home',
+  'score': '/score',
   'profile': '/profile',
   'segments': '/preferences',
   'notifications': '/phones',
@@ -94,8 +94,8 @@ String? cipherwillLocation(Uri uri) {
         return switch (uri.queryParameters['tab']?.toLowerCase()) {
           'profile' => '/profile',
           'backup' => '/backup',
-          'usage' => '/vault',
-          _ => '/preferences',
+          'usage' => '/usage',
+          _ => '/settings',
         };
       }
       return webPageRoutes[segments[1]];

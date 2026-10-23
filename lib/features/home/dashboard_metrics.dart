@@ -1,104 +1,88 @@
-// Shows real server-provided vault counts and account score.
-// Owns responsive metric cards and accessible number animation.
-// Does not invent progress percentages or decrypt asset contents.
+// Matches the web Secured Data breakdown using server category counts.
+// Owns count labels and the total without oversized metric cards.
+// Does not decrypt items or infer account completion.
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/api/json_values.dart';
 import '../../shared/ui/remote_panel.dart';
-import '../../shared/ui/icon_badge.dart';
-import '../../shared/ui/motion.dart';
-import '../../app/design_tokens.dart';
-import 'account_score.dart';
+import '../vault/categories.dart';
 
 class DashboardMetrics extends StatelessWidget {
   const DashboardMetrics({super.key});
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
-    builder: (context, constraints) {
-      final stacked =
-          constraints.maxWidth < 320 ||
-          MediaQuery.textScalerOf(context).scale(14) > 21;
-      final children = [
-        RemotePanel(
-          operation: 'GET_METAMODEL_TYPE_COUNTS',
-          builder: (result) => MetricCard(
-            label: 'Vault items',
-            value: jsonList(
-              result['getMetamodelTypeCounts'],
-            ).fold<int>(0, (total, item) => total + (item['count'] as int)),
-            icon: Icons.inventory_2_outlined,
-            color: CipherwillColors.blue,
-          ),
-        ),
-        RemotePanel(
-          operation: 'GET_USER_SCORE',
-          builder: (result) => MetricCard(
-            label: 'Account score',
-            value: accountScore(result['getUserScore']),
-            icon: Icons.auto_awesome_outlined,
-            color: CipherwillColors.sage,
-            onTap: () => context.push('/score'),
-          ),
-        ),
-      ];
-      return stacked
-          ? Column(children: children)
-          : Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child: children[0]),
-                const SizedBox(width: 12),
-                Expanded(child: children[1]),
-              ],
-            );
-    },
-  );
-}
-
-class MetricCard extends StatelessWidget {
-  final String label;
-  final int value;
-  final IconData icon;
-  final Color color;
-  final VoidCallback? onTap;
-  const MetricCard({
-    super.key,
-    required this.label,
-    required this.value,
-    required this.icon,
-    required this.color,
-    this.onTap,
-  });
-  @override
-  Widget build(BuildContext context) => Card(
-    child: InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.all(18),
+  Widget build(BuildContext context) => RemotePanel(
+    operation: 'GET_METAMODEL_TYPE_COUNTS',
+    builder: (result) {
+      final counts = jsonList(result['getMetamodelTypeCounts']);
+      final total = counts.fold<int>(
+        0,
+        (sum, item) => sum + (item['count'] as int),
+      );
+      if (total == 0) return const SizedBox.shrink();
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            IconBadge(icon, color: color, size: 38),
-            const SizedBox(height: 16),
-            Semantics(
-              label: '$value $label',
-              child: ExcludeSemantics(
-                child: TweenAnimationBuilder<double>(
-                  tween: Tween(begin: 0, end: value.toDouble()),
-                  duration: AppMotion.duration(context),
-                  curve: Curves.easeOutCubic,
-                  builder: (_, number, _) => Text(
-                    number.round().toString(),
-                    style: Theme.of(context).textTheme.headlineMedium,
+            Row(
+              children: [
+                Icon(
+                  Icons.verified_user_outlined,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 24,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  'Secured Data',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text("You've secured ${counts.length} types of data"),
+            const SizedBox(height: 12),
+            for (final item in counts)
+              InkWell(
+                onTap: () => context.push('/vault/${item['type']}'),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          categories
+                                  .where((c) => c.type == item['type'])
+                                  .firstOrNull
+                                  ?.title ??
+                              item['type'].toString().replaceAll('_', ' '),
+                        ),
+                      ),
+                      Text(
+                        item['count'].toString(),
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ],
                   ),
                 ),
               ),
+            const Divider(),
+            Row(
+              children: [
+                const Expanded(
+                  child: Text(
+                    'Total Secured Data Points',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ),
+                Text(
+                  total.toString(),
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+              ],
             ),
-            const SizedBox(height: 2),
-            Text(label, style: Theme.of(context).textTheme.bodySmall),
           ],
         ),
-      ),
-    ),
+      );
+    },
   );
 }

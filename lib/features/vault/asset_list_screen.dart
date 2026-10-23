@@ -78,7 +78,6 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
     }
     return PageFrame(
       title: category.title,
-      subtitle: visual.description,
       actions: [
         IconButton(
           tooltip: 'Add item',
@@ -88,12 +87,13 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
       ],
       children: [
         TextField(
-          decoration: const InputDecoration(
-            hintText: 'Search item titles',
-            prefixIcon: Icon(Icons.search_rounded),
+          decoration: InputDecoration(
+            hintText: type == 'NOTE' ? 'Search notes…' : 'Search item titles',
+            prefixIcon: const Icon(Icons.search_rounded, size: 20),
           ),
           onChanged: (value) => setState(() => query = value),
         ),
+        const SizedBox(height: 12),
         PagedList(
           key: ValueKey(revision),
           operation: 'GET_METAMODELS',

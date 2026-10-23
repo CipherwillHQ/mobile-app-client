@@ -76,8 +76,19 @@ class _FactorsScreenState extends ConsumerState<FactorsScreen> {
 
   @override
   Widget build(BuildContext context) => PageFrame(
-    title: 'Security factors',
-    subtitle: 'Your vault. Your keys.',
+    title: 'Security Factors',
+    actions: [
+      PopupMenuButton<String>(
+        tooltip: 'Add a factor',
+        enabled: !busy,
+        icon: const Icon(Icons.add),
+        onSelected: add,
+        itemBuilder: (_) => [
+          for (final type in ['master-password', 'metamask', 'passkey'])
+            PopupMenuItem(value: type, child: Text('Add ' + factorTitle(type))),
+        ],
+      ),
+    ],
     children: [
       const GuidePanel(
         title: 'Keep a way back in',
@@ -166,16 +177,6 @@ class _FactorsScreenState extends ConsumerState<FactorsScreen> {
           ],
         ),
       ),
-      const SectionHeading('Add a factor'),
-      for (final type in ['master-password', 'metamask', 'passkey'])
-        Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: OutlinedButton.icon(
-            onPressed: busy ? null : () => add(type),
-            icon: Icon(factorIcon(type)),
-            label: Text('Add ' + factorTitle(type)),
-          ),
-        ),
       TextButton(
         onPressed: () => ref.read(sessionProvider.notifier).lock(),
         child: const Text('Lock and switch factor'),

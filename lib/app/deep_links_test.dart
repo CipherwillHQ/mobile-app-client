@@ -97,7 +97,8 @@ void main() {
       cipherwillLocation(Uri.parse('/app/settings?tab=backup')),
       '/backup',
     );
-    expect(cipherwillLocation(Uri.parse('/app/settings')), '/preferences');
+    expect(cipherwillLocation(Uri.parse('/app/settings')), '/settings');
+    expect(cipherwillLocation(Uri.parse('/app/settings?tab=usage')), '/usage');
   });
   test(
     'verification returns use the account gate without requiring a code',

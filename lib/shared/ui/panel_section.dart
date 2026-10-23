@@ -1,4 +1,4 @@
-// Groups related controls into a consistent mobile surface.
+// Groups related controls in flat web-style page sections.
 // Owns section spacing, titles and optional explanatory text.
 // Does not fetch data or change form semantics.
 import 'package:flutter/material.dart';
@@ -14,21 +14,19 @@ class PanelSection extends StatelessWidget {
     required this.children,
   });
   @override
-  Widget build(BuildContext context) => Card(
-    child: Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(title, style: Theme.of(context).textTheme.titleLarge),
-          if (description != null) ...[
-            const SizedBox(height: 6),
-            Text(description!, style: Theme.of(context).textTheme.bodySmall),
-          ],
-          const SizedBox(height: 20),
-          ...children,
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(top: 12, bottom: 16),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(title, style: Theme.of(context).textTheme.titleMedium),
+        if (description != null) ...[
+          const SizedBox(height: 6),
+          Text(description!, style: Theme.of(context).textTheme.bodySmall),
         ],
-      ),
+        const SizedBox(height: 12),
+        ...children,
+      ],
     ),
   );
 }

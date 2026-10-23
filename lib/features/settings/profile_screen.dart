@@ -9,6 +9,7 @@ import '../../shared/ui/page_frame.dart';
 import '../../shared/ui/actions.dart';
 import '../people/person_identity.dart';
 import 'profile_fields.dart';
+import 'settings_tabs.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -55,7 +56,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final account = ref.watch(accountProvider).value;
     if (account == null) {
       return const PageFrame(
-        title: 'Profile',
+        title: 'Settings',
+        tabs: SettingsTabs(location: '/profile'),
         children: [CircularProgressIndicator()],
       );
     }
@@ -85,7 +87,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       loaded = true;
     }
     return PageFrame(
-      title: 'Profile',
+      title: 'Settings',
+      tabs: const SettingsTabs(location: '/profile'),
       children: [
         PersonIdentity(person: account, caption: 'Your Cipherwill account'),
         ProfileFields(fields: fields),

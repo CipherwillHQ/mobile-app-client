@@ -23,8 +23,7 @@ class BillingScreen extends ConsumerWidget {
   const BillingScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) => PageFrame(
-    title: 'Subscription and invoices',
-    subtitle: 'Your plan and billing, in one place.',
+    title: 'Billing',
     actions: const [BillingRefreshButton()],
     children: [
       const UpgradeEntry(),

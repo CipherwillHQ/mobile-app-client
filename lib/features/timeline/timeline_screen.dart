@@ -22,8 +22,7 @@ class TimelineScreen extends ConsumerWidget {
   const TimelineScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) => PageFrame(
-    title: 'Will timeline',
-    subtitle: 'A clear plan for what happens next.',
+    title: 'Cipherwill Timeline',
     children: [
       const GuidePanel(
         title: 'Stay connected',
@@ -60,22 +59,20 @@ class TimelineScreen extends ConsumerWidget {
           final account = ref.watch(accountProvider).value;
           if (account == null) return const Text('Loading account…');
           final events = plannedEvents(account, p);
-          return Card(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  for (var index = 0; index < events.length; index++)
-                    TimelineEntry(
-                      title: planningLabels[events[index].$1]!,
-                      date: dateLabel(
-                        events[index].$2.millisecondsSinceEpoch,
-                        includeTime: true,
-                      ),
-                      last: index == events.length - 1,
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Column(
+              children: [
+                for (var index = 0; index < events.length; index++)
+                  TimelineEntry(
+                    title: planningLabels[events[index].$1]!,
+                    date: dateLabel(
+                      events[index].$2.millisecondsSinceEpoch,
+                      includeTime: true,
                     ),
-                ],
-              ),
+                    last: index == events.length - 1,
+                  ),
+              ],
             ),
           );
         },

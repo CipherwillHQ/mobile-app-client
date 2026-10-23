@@ -1,8 +1,7 @@
-// Presents a native, labeled destination with a clear touch target.
-// Owns consistent card hierarchy, icon treatments and feedback.
+// Presents a flat, labeled web-style row with a clear touch target.
+// Owns compact destination hierarchy and clear navigation feedback.
 // Does not implement navigation or feature authorization.
 import 'package:flutter/material.dart';
-import 'icon_badge.dart';
 
 class FeatureCard extends StatelessWidget {
   final String title;
@@ -21,14 +20,19 @@ class FeatureCard extends StatelessWidget {
     this.onTap,
   });
   @override
-  Widget build(BuildContext context) => Card(
+  Widget build(BuildContext context) => Material(
+    color: Colors.transparent,
     child: InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 4),
         child: Row(
           children: [
-            IconBadge(icon, color: color),
+            Icon(
+              icon,
+              size: 22,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
             const SizedBox(width: 14),
             Expanded(
               child: Column(

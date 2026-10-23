@@ -1,47 +1,33 @@
-// Verifies the native navigation remains usable at large text sizes.
-// Owns a lightweight accessible shell smoke test.
+// Verifies the web mobile section bar at accessible text sizes.
+// Owns a lightweight shell layout check in light and dark themes.
 // Does not require Firebase or native authentication plugins.
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
-import 'package:cipherwill/app/navigation_shell.dart';
-import 'package:cipherwill/app/theme.dart';
+import 'package:cipherwill/testing/design_harness.dart';
 
 void main() {
-  testWidgets('four accessible tabs render with large text in both themes', (
+  testWidgets('four web section labels render with large text in both themes', (
     tester,
   ) async {
+    tester.view.physicalSize = const Size(320, 740);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
     for (final brightness in Brightness.values) {
-      final router = GoRouter(
-        routes: [
-          GoRoute(
-            path: '/',
-            builder: (_, _) => const NavigationShell(
-              location: '/home',
-              child: Center(child: Text('Welcome')),
-            ),
-          ),
-        ],
-      );
       await tester.pumpWidget(
-        MaterialApp.router(
-          theme: cipherwillTheme(brightness),
-          routerConfig: router,
-          builder: (context, child) => MediaQuery(
-            data: MediaQuery.of(
-              context,
-            ).copyWith(textScaler: const TextScaler.linear(2)),
-            child: child!,
-          ),
+        DesignHarness(
+          key: ValueKey(brightness),
+          location: '/platform',
+          brightness: brightness,
+          textScale: 2,
         ),
       );
       await tester.pumpAndSettle();
-      for (final label in ['Home', 'Vault', 'People', 'Settings']) {
-        expect(find.text(label), findsOneWidget);
+      for (final label in ['Home', 'Data', 'Network', 'Platform']) {
+        expect(find.text(label), findsWidgets);
       }
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
-      router.dispose();
     }
   });
 }

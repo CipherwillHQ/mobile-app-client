@@ -1,0 +1,119 @@
+# Builds signed Android artifacts for release-prefixed push commits.
+# Owns version validation, temporary signing inputs and APK/AAB artifacts.
+# Does not upload to Google Play or create a GitHub release.
+name: Android release artifacts
+on:
+  workflow_call:
+    secrets:
+      ANDROID_UPLOAD_KEYSTORE_BASE64:
+        required: true
+      ANDROID_KEYSTORE_PASSWORD:
+        required: true
+      ANDROID_KEY_ALIAS:
+        required: true
+      ANDROID_KEY_PASSWORD:
+        required: true
+      CIPHERWILL_PRODUCTION_CONFIG:
+        required: true
+permissions:
+  contents: read
+env:
+  FLUTTER_VERSION: '3.41.4'
+  ANDROID_NDK_VERSION: '28.2.13676358'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GRADLE_OPTS: -Dorg.gradle.caching=true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate release version and increasing build number
+        id: version
+        run: node tool/release_version_cli.mjs
+      - name: Prepare temporary upload signing and production configuration
+        run: node tool/prepare_android_release.mjs
+        env:
+          ANDROID_UPLOAD_KEYSTORE_BASE64: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          CIPHERWILL_PRODUCTION_CONFIG: ${{ secrets.CIPHERWILL_PRODUCTION_CONFIG }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Validate upload keystore and alias
+        run: >-
+          keytool -list -keystore "$RUNNER_TEMP/cipherwill-upload-key.jks"
+          -storepass:env ANDROID_KEYSTORE_PASSWORD -alias "$ANDROID_KEY_ALIAS" > /dev/null
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - name: Locate Android NDK
+        id: ndk
+        run: echo "path=$ANDROID_HOME/ndk/$ANDROID_NDK_VERSION" >> "$GITHUB_OUTPUT"
+      - name: Cache Android NDK
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.ndk.outputs.path }}
+          key: ${{ runner.os }}-${{ runner.arch }}-ndk-${{ env.ANDROID_NDK_VERSION }}
+      - name: Install Android NDK
+        run: bash tool/install_android_ndk.sh "$ANDROID_HOME" "$ANDROID_NDK_VERSION"
+      - run: flutter pub get
+      - name: Build signed production APK and App Bundle
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          BUILD_NUMBER: ${{ steps.version.outputs.build_number }}
+        run: |
+          flutter build apk --release --dart-define-from-file=config/production.json \
+            --build-name="$VERSION" --build-number="$BUILD_NUMBER"
+          flutter build appbundle --release --dart-define-from-file=config/production.json \
+            --build-name="$VERSION" --build-number="$BUILD_NUMBER"
+      - name: Verify release signatures
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          apksigner=$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort -V | tail -n 1)
+          test -n "$apksigner"
+          "$apksigner" verify --verbose build/app/outputs/flutter-apk/app-release.apk
+          jarsigner -verify -strict -keystore "$RUNNER_TEMP/cipherwill-upload-key.jks" \
+            -storepass:env ANDROID_KEYSTORE_PASSWORD \
+            build/app/outputs/bundle/release/app-release.aab "$ANDROID_KEY_ALIAS"
+      - name: Collect versioned release files
+        env:
+          LABEL: ${{ steps.version.outputs.label }}
+        run: |
+          mkdir -p build/release-artifacts
+          cp build/app/outputs/flutter-apk/app-release.apk "build/release-artifacts/cipherwill-$LABEL.apk"
+          cp build/app/outputs/bundle/release/app-release.aab "build/release-artifacts/cipherwill-$LABEL.aab"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-release-${{ steps.version.outputs.label }}
+          path: |
+            build/release-artifacts/*.apk
+            build/release-artifacts/*.aab
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+      - name: Explain release artifacts
+        env:
+          LABEL: ${{ steps.version.outputs.label }}
+        run: |
+          echo "Download android-release-$LABEL from this run's Artifacts section." >> "$GITHUB_STEP_SUMMARY"
+          echo "Upload the signed AAB to Play Console; use the APK for direct installation." >> "$GITHUB_STEP_SUMMARY"
+          echo "Artifacts are retained for 90 days. See release.md for the release procedure." >> "$GITHUB_STEP_SUMMARY"
+      - name: Remove temporary signing and configuration files
+        if: ${{ always() }}
+        run: rm -f "$RUNNER_TEMP/cipherwill-upload-key.jks" android/key.properties config/production.json

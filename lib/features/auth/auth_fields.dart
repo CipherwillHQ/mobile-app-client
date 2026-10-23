@@ -38,6 +38,11 @@ class _AuthFieldsState extends State<AuthFields> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: 24),
+          const Text(
+            'Email address',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
           TextFormField(
             controller: widget.email,
             enabled: !widget.busy,
@@ -48,13 +53,14 @@ class _AuthFieldsState extends State<AuthFields> {
             validator: (value) => value == null || value.trim().isEmpty
                 ? 'Enter your email'
                 : null,
-            decoration: const InputDecoration(
-              labelText: 'Email address',
-              hintText: 'you@example.com',
-              prefixIcon: Icon(Icons.alternate_email_rounded, size: 20),
-            ),
+            decoration: const InputDecoration(hintText: 'you@example.com'),
           ),
           const SizedBox(height: 18),
+          const Text(
+            'Account password',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
           TextFormField(
             controller: widget.password,
             enabled: !widget.busy,
@@ -72,8 +78,7 @@ class _AuthFieldsState extends State<AuthFields> {
                 ? 'Enter your account password'
                 : null,
             decoration: InputDecoration(
-              labelText: 'Account password',
-              prefixIcon: const Icon(Icons.lock_outline_rounded, size: 20),
+              hintText: 'Enter password',
               suffixIcon: IconButton(
                 tooltip: revealed ? 'Hide password' : 'Show password',
                 onPressed: () => setState(() => revealed = !revealed),
@@ -97,6 +102,7 @@ class _AuthFieldsState extends State<AuthFields> {
           else
             const SizedBox(height: 20),
           FilledButton(
+            style: FilledButton.styleFrom(shape: const StadiumBorder()),
             onPressed: widget.busy ? null : submit,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -120,10 +126,6 @@ class _AuthFieldsState extends State<AuthFields> {
                         : 'Sign in',
                   ),
                 ),
-                if (!widget.busy) ...[
-                  const SizedBox(width: 8),
-                  const Icon(Icons.arrow_forward_rounded, size: 18),
-                ],
               ],
             ),
           ),

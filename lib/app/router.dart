@@ -23,6 +23,8 @@ import '../features/executor/granted_items_screen.dart';
 import '../features/executor/granted_item_screen.dart';
 import '../features/executor/granted_access_screen.dart';
 import '../features/settings/settings_screen.dart';
+import '../features/settings/usage_screen.dart';
+import '../features/settings/platform_screen.dart';
 import '../features/settings/profile_screen.dart';
 import '../features/settings/preferences_screen.dart';
 import '../features/settings/phone_screen.dart';
@@ -49,21 +51,16 @@ GoRouter createRouter() => GoRouter(
       ),
     ),
     ShellRoute(
-      builder: (_, _, child) => AccountGate(child: child),
+      builder: (_, state, child) => AccountGate(
+        child: NavigationShell(location: state.uri.toString(), child: child),
+      ),
       routes: [
-        ShellRoute(
-          builder: (_, state, child) =>
-              NavigationShell(location: state.uri.path, child: child),
-          routes: [
-            GoRoute(path: '/home', builder: (_, _) => const HomeScreen()),
-            GoRoute(path: '/vault', builder: (_, _) => const VaultScreen()),
-            GoRoute(path: '/people', builder: (_, _) => const PeopleScreen()),
-            GoRoute(
-              path: '/settings',
-              builder: (_, _) => const SettingsScreen(),
-            ),
-          ],
-        ),
+        GoRoute(path: '/home', builder: (_, _) => const HomeScreen()),
+        GoRoute(path: '/vault', builder: (_, _) => const VaultScreen()),
+        GoRoute(path: '/people', builder: (_, _) => const PeopleScreen()),
+        GoRoute(path: '/platform', builder: (_, _) => const PlatformScreen()),
+        GoRoute(path: '/settings', builder: (_, _) => const SettingsScreen()),
+        GoRoute(path: '/usage', builder: (_, _) => const UsageScreen()),
         GoRoute(
           path: '/vault/:type',
           builder: (_, s) => s.pathParameters['type'] == 'FILE'

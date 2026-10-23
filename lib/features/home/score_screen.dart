@@ -25,7 +25,6 @@ class ScoreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => PageFrame(
     title: 'Account score',
-    subtitle: 'See how your account is coming together.',
     children: [
       RemotePanel(
         operation: 'GET_USER_SCORE',

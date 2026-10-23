@@ -10,11 +10,11 @@ class SectionHeading extends StatelessWidget {
   const SectionHeading(this.title, {super.key, this.action, this.onAction});
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(top: 22, bottom: 10),
+    padding: const EdgeInsets.only(top: 18, bottom: 10),
     child: Row(
       children: [
         Expanded(
-          child: Text(title, style: Theme.of(context).textTheme.titleLarge),
+          child: Text(title, style: Theme.of(context).textTheme.titleMedium),
         ),
         if (action != null)
           TextButton(onPressed: onAction, child: Text(action!)),

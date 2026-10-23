@@ -52,12 +52,10 @@ void main() {
         tester.widget<EditableText>(find.byType(EditableText).last).obscureText,
         false,
       );
-      await tester.ensureVisible(
-        find.text('New to Cipherwill? Create an account'),
-      );
-      await tester.tap(find.text('New to Cipherwill? Create an account'));
+      await tester.ensureVisible(find.text('Create an account'));
+      await tester.tap(find.text('Create an account'));
       await tester.pumpAndSettle();
-      expect(find.text('Begin your legacy'), findsOneWidget);
+      expect(find.text('Create your account'), findsOneWidget);
       expect(find.text('Create account'), findsOneWidget);
       expect(
         tester

@@ -17,8 +17,7 @@ class PhoneScreen extends ConsumerWidget {
   const PhoneScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) => PageFrame(
-    title: 'Communication',
-    subtitle: 'Choose how Cipherwill keeps in touch.',
+    title: 'Notifications',
     children: [
       const EmailPreferences(),
       const SectionHeading('Phone numbers'),

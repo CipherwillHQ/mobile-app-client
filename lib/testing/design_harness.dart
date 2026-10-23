@@ -7,12 +7,14 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../app/providers.dart';
+import '../core/api/json_values.dart';
 import '../app/theme.dart';
 import '../app/navigation_shell.dart';
 import '../features/home/home_screen.dart';
 import '../features/vault/vault_screen.dart';
 import '../features/people/people_screen.dart';
 import '../features/settings/settings_screen.dart';
+import '../features/settings/platform_screen.dart';
 import '../features/settings/appearance.dart';
 import 'design_fixtures.dart';
 import 'fake_api.dart';
@@ -30,6 +32,7 @@ class DesignHarness extends StatefulWidget {
   final double textScale;
   final bool reducedMotion;
   final double keyboard;
+  final Json? preferences;
   const DesignHarness({
     super.key,
     this.screen,
@@ -38,6 +41,7 @@ class DesignHarness extends StatefulWidget {
     this.textScale = 1,
     this.reducedMotion = false,
     this.keyboard = 0,
+    this.preferences,
   });
   @override
   State<DesignHarness> createState() => _DesignHarnessState();
@@ -53,14 +57,15 @@ class _DesignHarnessState extends State<DesignHarness> {
         '/vault': const VaultScreen(),
         '/people': const PeopleScreen(),
         '/settings': const SettingsScreen(),
+        '/platform': const PlatformScreen(),
         if (widget.screen != null) widget.location: widget.screen!,
       }.entries)
         GoRoute(
           path: entry.key,
           builder: (_, _) =>
-              ['/home', '/vault', '/people', '/settings'].contains(entry.key)
-              ? NavigationShell(location: entry.key, child: entry.value)
-              : entry.value,
+              ['/auth', '/lock', '/onboarding', '/upgrade'].contains(entry.key)
+              ? entry.value
+              : NavigationShell(location: entry.key, child: entry.value),
         ),
     ],
   );
@@ -77,7 +82,9 @@ class _DesignHarnessState extends State<DesignHarness> {
       apiProvider.overrideWithValue(api),
       firebaseProvider.overrideWithValue(FakeAuth()),
       accountProvider.overrideWith((ref) async => previewAccount),
-      preferencesProvider.overrideWith((ref) async => previewPreferences),
+      preferencesProvider.overrideWith(
+        (ref) async => widget.preferences ?? previewPreferences,
+      ),
       factorsProvider.overrideWith((ref) async => [previewFactor]),
       appearanceProvider.overrideWith(PreviewAppearance.new),
     ],

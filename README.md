@@ -54,4 +54,6 @@ Home, Vault, People and Settings provide the primary navigation. Features own th
 
 See [security compatibility](docs/security.md), [platform configuration](docs/platform-setup.md), [parity scenarios](docs/parity-scenarios.md), and [store draft](docs/store-draft.md).
 
+Signed Android APK/AAB artifacts are built for `release VERSION+BUILD` push commits. Always increase the build number in that commit; see [release instructions](release.md) for signing setup and downloads.
+
 Existing backend authorization, quotas and release conditions remain authoritative. Account authentication is separate from factor unlocking. Saved biometric keys use native secret retrieval controls. Backups contain decrypted text; files are excluded. Free accounts can upgrade through the existing web /upgrade page embedded with webview_flutter; see [web upgrade integration](docs/web-upgrade.md). There is no native checkout implementation, persistent offline vault cache, push notification setup, chat, wishes, marketing or HQ workspace.

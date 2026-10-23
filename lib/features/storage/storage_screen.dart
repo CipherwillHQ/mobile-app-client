@@ -17,7 +17,6 @@ import '../../shared/ui/section_heading.dart';
 import '../security/session_controller.dart';
 import 'file_service.dart';
 import 'pending_upload.dart';
-import 'storage_usage.dart';
 import 'storage_lists.dart';
 
 class StorageScreen extends ConsumerStatefulWidget {
@@ -87,7 +86,7 @@ class _StorageScreenState extends ConsumerState<StorageScreen> {
     final executor = widget.access != null;
     if (!executor && ref.watch(accountProvider).value?['plan'] == 'free') {
       return const PageFrame(
-        title: 'File storage',
+        title: 'File Storage',
         children: [
           EmptyState(
             title: 'Premium file storage',
@@ -98,28 +97,25 @@ class _StorageScreenState extends ConsumerState<StorageScreen> {
       );
     }
     return PageFrame(
-      title: executor ? 'Granted files' : 'File storage',
-      subtitle: widget.folder != null
-          ? 'Inside your selected folder'
-          : 'Important documents. Safely kept together.',
+      title: executor ? 'Granted files' : 'File Storage',
+      subtitle: widget.folder != null ? 'Inside your selected folder' : null,
+      actions: executor
+          ? null
+          : [
+              IconButton(
+                tooltip: 'Create folder',
+                onPressed: busy ? null : folder,
+                icon: const Icon(Icons.create_new_folder_outlined),
+              ),
+              IconButton(
+                tooltip: 'Upload file',
+                onPressed: busy ? null : upload,
+                icon: const Icon(Icons.upload_file_outlined),
+              ),
+            ],
       children: [
         if (executor)
-          const StatusPill('Read-only access', icon: Icons.visibility_outlined)
-        else ...[
-          const StorageUsage(),
-          const SizedBox(height: 16),
-          FilledButton.icon(
-            onPressed: busy ? null : upload,
-            icon: const Icon(Icons.upload_file_rounded),
-            label: const Text('Upload file'),
-          ),
-          const SizedBox(height: 10),
-          OutlinedButton.icon(
-            onPressed: busy ? null : folder,
-            icon: const Icon(Icons.create_new_folder_outlined),
-            label: const Text('Create folder'),
-          ),
-        ],
+          const StatusPill('Read-only access', icon: Icons.visibility_outlined),
         if (busy)
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 16),

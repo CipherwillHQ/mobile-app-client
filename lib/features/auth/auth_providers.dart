@@ -34,6 +34,7 @@ class AuthProviders extends StatelessWidget {
       ),
       const SizedBox(height: 14),
       OutlinedButton.icon(
+        style: OutlinedButton.styleFrom(shape: const StadiumBorder()),
         onPressed: busy ? null : google,
         icon: Image.asset(
           'assets/images/google.png',
@@ -46,6 +47,7 @@ class AuthProviders extends StatelessWidget {
       if (Platform.isIOS) ...[
         const SizedBox(height: 10),
         OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(shape: const StadiumBorder()),
           onPressed: busy ? null : apple,
           icon: const Icon(Icons.apple, size: 22),
           label: const Text('Continue with Apple'),

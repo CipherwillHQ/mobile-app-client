@@ -1,9 +1,7 @@
-// Gives sensitive tasks a calm, contextual explanation.
-// Owns the web-inspired clay guide treatment and accessible label.
+// Presents contextual guidance as a flat web-style page notice.
+// Owns compact icon, title and explanatory text spacing.
 // Does not make security or release decisions.
 import 'package:flutter/material.dart';
-import '../../app/design_tokens.dart';
-import 'icon_badge.dart';
 
 class GuidePanel extends StatelessWidget {
   final String title;
@@ -16,16 +14,16 @@ class GuidePanel extends StatelessWidget {
     this.icon = Icons.lightbulb_outline_rounded,
   });
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(18),
-    decoration: BoxDecoration(
-      color: CipherwillColors.clay.withValues(alpha: .08),
-      borderRadius: BorderRadius.circular(20),
-    ),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        IconBadge(icon, color: CipherwillColors.clay, size: 38),
+        Icon(
+          icon,
+          size: 22,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
         const SizedBox(width: 12),
         Expanded(
           child: Column(

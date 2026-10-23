@@ -18,7 +18,7 @@ import 'backup_codec.dart';
 import 'backup_service.dart';
 import '../../shared/ui/guide_panel.dart';
 import '../../shared/ui/panel_section.dart';
-import '../../shared/ui/vault_emblem.dart';
+import '../settings/settings_tabs.dart';
 
 class BackupScreen extends ConsumerStatefulWidget {
   const BackupScreen({super.key});
@@ -104,11 +104,9 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
 
   @override
   Widget build(BuildContext context) => PageFrame(
-    title: 'Backups',
-    subtitle: 'Keep a copy. Bring your memories with you.',
+    title: 'Settings',
+    tabs: const SettingsTabs(location: '/backup'),
     children: [
-      const VaultEmblem(),
-      const SizedBox(height: 24),
       const GuidePanel(
         title: 'Handle with care',
         message:

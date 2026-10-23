@@ -1,6 +1,6 @@
-# Checks native app code and unsigned platform builds.
-# Owns Android and macOS validation jobs.
-# Does not publish builds or use production credentials.
+# Checks native code and builds Android/iOS validation artifacts.
+# Owns validation, caches and dispatch of signed Android release builds.
+# Does not publish to app stores or expose signing credentials.
 name: Mobile validation
 on: [push, pull_request, workflow_dispatch]
 permissions:
@@ -25,6 +25,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - run: node --test tool/release_*_test.mjs tool/android_signing_test.mjs
       - run: flutter pub get
       - uses: actions/cache@v4
         with:
@@ -40,6 +41,7 @@ jobs:
   android:
     runs-on: ubuntu-latest
     needs: validate
+    if: ${{ github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'release') }}
     env:
       GRADLE_OPTS: -Dorg.gradle.caching=true
     steps:
@@ -72,6 +74,16 @@ jobs:
         with:
           name: android-debug
           path: build/app/outputs/flutter-apk/app-debug.apk
+  android-release:
+    needs: validate
+    if: ${{ github.event_name == 'push' && startsWith(github.event.head_commit.message, 'release') }}
+    uses: ./.github/workflows/android-release.yml
+    secrets:
+      ANDROID_UPLOAD_KEYSTORE_BASE64: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      CIPHERWILL_PRODUCTION_CONFIG: ${{ secrets.CIPHERWILL_PRODUCTION_CONFIG }}
   ios:
     runs-on: macos-15
     needs: validate

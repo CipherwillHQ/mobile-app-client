@@ -1,12 +1,13 @@
-// Provides the four primary native navigation destinations
-// Owns tab selection and safe-area layout.
-// Does not cache hidden vault screens.
+// Matches the web mobile shell with a drawer and flat section navigation.
+// Owns protected page framing and explicit menu access.
+// Does not cache hidden vault screens or bypass account locking.
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../shared/ui/motion.dart';
+import 'app_sidebar.dart';
+import 'mobile_section_bar.dart';
+import 'navigation_scope.dart';
 
-class NavigationShell extends StatelessWidget {
+class NavigationShell extends StatefulWidget {
   final Widget child;
   final String location;
   const NavigationShell({
@@ -15,58 +16,23 @@ class NavigationShell extends StatelessWidget {
     required this.location,
   });
   @override
+  State<NavigationShell> createState() => _NavigationShellState();
+}
+
+class _NavigationShellState extends State<NavigationShell> {
+  final scaffold = GlobalKey<ScaffoldState>();
+  void openMenu() => scaffold.currentState?.openDrawer();
+  @override
   Widget build(BuildContext context) {
-    final index = location.startsWith('/vault')
-        ? 1
-        : location.startsWith('/people')
-        ? 2
-        : location.startsWith('/settings')
-        ? 3
-        : 0;
+    if (Uri.parse(widget.location).path == '/upgrade') return widget.child;
     return Scaffold(
-      body: child,
-      bottomNavigationBar: SafeArea(
-        top: false,
-        child: Container(
-          margin: const EdgeInsets.fromLTRB(16, 4, 16, 10),
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardTheme.color,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: Theme.of(context).colorScheme.outlineVariant,
-            ),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: NavigationBar(
-            animationDuration: AppMotion.duration(context),
-            selectedIndex: index,
-            onDestinationSelected: (index) =>
-                context.go(['/home', '/vault', '/people', '/settings'][index]),
-            destinations: const [
-              NavigationDestination(
-                icon: Icon(Icons.home_outlined),
-                selectedIcon: Icon(Icons.home),
-                label: 'Home',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.shield_outlined),
-                selectedIcon: Icon(Icons.shield),
-                label: 'Vault',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.people_outline),
-                selectedIcon: Icon(Icons.people),
-                label: 'People',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.settings_outlined),
-                selectedIcon: Icon(Icons.settings),
-                label: 'Settings',
-              ),
-            ],
-          ),
-        ),
-      ),
+      key: scaffold,
+      resizeToAvoidBottomInset: false,
+      drawer: AppSidebar(location: widget.location),
+      body: NavigationScope(openMenu: openMenu, child: widget.child),
+      bottomNavigationBar: MediaQuery.viewInsetsOf(context).bottom > 0
+          ? null
+          : MobileSectionBar(location: widget.location, openMenu: openMenu),
     );
   }
 }

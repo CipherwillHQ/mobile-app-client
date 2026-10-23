@@ -17,14 +17,16 @@ ThemeData cipherwillTheme(Brightness brightness) {
         onPrimary: Colors.white,
         onSurface: dark ? CipherwillColors.cream : CipherwillColors.forest,
         onSurfaceVariant: Color(dark ? 0xffb5b5ad : 0xff6d7475),
-        primaryContainer: Color(dark ? 0xff18294c : 0xffedf2ff),
+        primaryContainer: Color(dark ? 0xff333330 : 0xffecf7ff),
         onPrimaryContainer: Color(dark ? 0xffb8ccff : 0xff003ecb),
-        outlineVariant: Color(dark ? 0xff40403c : 0xffe7e8e2),
+        outlineVariant:
+            (dark ? CipherwillColors.cream : CipherwillColors.forest)
+                .withValues(alpha: .1),
         error: CipherwillColors.error,
       );
   final card = dark ? CipherwillColors.darkCard : Colors.white;
   final outline = OutlineInputBorder(
-    borderRadius: BorderRadius.circular(14),
+    borderRadius: BorderRadius.circular(8),
     borderSide: BorderSide(color: scheme.outlineVariant),
   );
   final text = ThemeData(brightness: brightness, fontFamily: 'Gilroy').textTheme
@@ -38,19 +40,19 @@ ThemeData cipherwillTheme(Brightness brightness) {
           color: scheme.onSurface,
         ),
         headlineMedium: TextStyle(
-          fontSize: 30,
+          fontSize: 24,
           fontWeight: FontWeight.w600,
           letterSpacing: -1,
           color: scheme.onSurface,
         ),
         headlineSmall: TextStyle(
-          fontSize: 26,
+          fontSize: 22,
           fontWeight: FontWeight.w600,
           letterSpacing: -.7,
           color: scheme.onSurface,
         ),
         titleLarge: TextStyle(
-          fontSize: 22,
+          fontSize: 20,
           fontWeight: FontWeight.w600,
           letterSpacing: -.4,
           color: scheme.onSurface,
@@ -85,12 +87,12 @@ ThemeData cipherwillTheme(Brightness brightness) {
     textTheme: text,
     scaffoldBackgroundColor: scheme.surface,
     appBarTheme: AppBarTheme(
-      backgroundColor: scheme.surface,
+      backgroundColor: card,
       centerTitle: false,
       elevation: 0,
       scrolledUnderElevation: 0,
       surfaceTintColor: Colors.transparent,
-      toolbarHeight: 72,
+      toolbarHeight: 56,
       titleTextStyle: text.titleLarge,
     ),
     cardTheme: CardThemeData(
@@ -98,7 +100,7 @@ ThemeData cipherwillTheme(Brightness brightness) {
       elevation: 0,
       margin: const EdgeInsets.symmetric(vertical: 6),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(16),
         side: BorderSide(color: scheme.outlineVariant),
       ),
       clipBehavior: Clip.antiAlias,
@@ -113,23 +115,23 @@ ThemeData cipherwillTheme(Brightness brightness) {
       ),
       floatingLabelBehavior: FloatingLabelBehavior.always,
       labelStyle: TextStyle(color: scheme.onSurfaceVariant, fontSize: 14),
-      contentPadding: EdgeInsets.all(16),
+      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        minimumSize: const Size(48, 54),
+        minimumSize: const Size(44, 44),
         backgroundColor: const Color(0xff003ecb),
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         textStyle: text.labelLarge,
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        minimumSize: const Size(48, 54),
+        minimumSize: const Size(44, 44),
         foregroundColor: scheme.onSurface,
         side: BorderSide(color: scheme.outlineVariant),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         textStyle: text.labelLarge,
       ),
     ),
@@ -140,11 +142,11 @@ ThemeData cipherwillTheme(Brightness brightness) {
       ),
     ),
     listTileTheme: ListTileThemeData(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       iconColor: scheme.onSurfaceVariant,
       titleTextStyle: text.titleMedium,
       subtitleTextStyle: text.bodySmall,
-      minVerticalPadding: 12,
+      minVerticalPadding: 8,
     ),
     dividerTheme: DividerThemeData(
       color: scheme.outlineVariant,

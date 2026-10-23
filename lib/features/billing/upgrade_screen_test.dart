@@ -136,7 +136,7 @@ void main() {
       harness.api.plan = 'premium';
       await harness.mount(tester);
       expect(find.text('Upgrade to Premium'), findsNothing);
-      expect(find.text('Subscription and invoices'), findsOneWidget);
+      expect(find.text('Billing'), findsOneWidget);
     },
   );
 }

@@ -18,10 +18,7 @@ class PeopleListScreen extends ConsumerWidget {
   const PeopleListScreen({super.key, this.friends = false});
   @override
   Widget build(BuildContext context, WidgetRef ref) => PageFrame(
-    title: friends ? 'Friends and family' : 'Beneficiaries',
-    subtitle: friends
-        ? 'The people who help us reach your loved ones.'
-        : 'Choose who can receive your digital legacy.',
+    title: friends ? 'Friends & Family' : 'Beneficiaries',
     actions: [
       IconButton(
         tooltip: 'Add person',
