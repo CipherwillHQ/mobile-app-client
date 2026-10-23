@@ -9,6 +9,8 @@ class AssetField {
   final bool array;
   final bool multiline;
   final bool rich;
+  final String? group;
+  final String? inputType;
   const AssetField(
     this.key,
     this.label, {
@@ -17,6 +19,8 @@ class AssetField {
     this.array = false,
     this.multiline = false,
     this.rich = false,
+    this.group,
+    this.inputType,
   });
 }
 

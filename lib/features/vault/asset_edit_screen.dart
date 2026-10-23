@@ -4,6 +4,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import '../../shared/ui/app_notice.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../app/providers.dart';
@@ -115,9 +116,7 @@ class _AssetEditScreenState extends ConsumerState<AssetEditScreen> {
     } catch (e) {
       if (mounted) setState(() => status = 'Save failed. Retry.');
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(e.toString())));
+        showNotice(context, e.toString(), error: true);
       }
     } finally {
       if (mounted) setState(() => saving = false);

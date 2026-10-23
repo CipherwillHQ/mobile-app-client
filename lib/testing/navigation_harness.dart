@@ -8,6 +8,7 @@ import '../app/account_gate.dart';
 import '../app/cipherwill_app.dart';
 import '../app/providers.dart';
 import '../core/crypto/factor_key.dart';
+import '../core/api/json_values.dart';
 import '../features/security/session_controller.dart';
 import '../features/settings/appearance.dart';
 import 'design_fixtures.dart';
@@ -16,7 +17,10 @@ import 'fake_api.dart';
 import 'fake_auth.dart';
 
 class NavigationHarness {
-  final api = FakeApi(designResponse);
+  final bool hasFactors;
+  final Future<Json> Function(String, Json) respond;
+  NavigationHarness({this.hasFactors = true, this.respond = designResponse});
+  late final api = FakeApi(respond);
   final auth = FakeAuth();
   final key = FactorKey.master('test master password', '1234');
   late final factor = {
@@ -35,7 +39,7 @@ class NavigationHarness {
       accountProvider.overrideWith((ref) async => previewAccount),
       onboardingProvider.overrideWith((ref) async => {'is_completed': true}),
       preferencesProvider.overrideWith((ref) async => previewPreferences),
-      factorsProvider.overrideWith((ref) async => [factor]),
+      factorsProvider.overrideWith((ref) async => hasFactors ? [factor] : []),
     ],
   );
   late GoRouter router;
@@ -47,7 +51,9 @@ class NavigationHarness {
       ),
     );
     await tester.pumpAndSettle();
-    container.read(sessionProvider.notifier).unlock(factor, key);
+    if (hasFactors) {
+      container.read(sessionProvider.notifier).unlock(factor, key);
+    }
     await tester.pumpAndSettle();
     router = GoRouter.of(tester.element(find.byTooltip('Open menu')));
   }

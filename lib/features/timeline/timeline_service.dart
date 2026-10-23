@@ -20,16 +20,25 @@ Future<void> resetTimeline(ApiClient api) async {
   }
 }
 
-List<(String, DateTime)> plannedEvents(Json account, Json preferences) {
+List<(String, DateTime)> plannedEvents(
+  Json account,
+  Json preferences, {
+  DateTime? now,
+}) {
+  // Web estimates use the current date; last_accessed is displayed separately.
   var timestamp =
-      int.parse(account['last_accessed'].toString()) +
-      int.parse(preferences['check_in_interval'].toString()) * 86400000;
+      (now ?? DateTime.now()).millisecondsSinceEpoch +
+      (int.tryParse(preferences['check_in_interval']?.toString() ?? '') ??
+              365) *
+          86400000;
   return [
     for (final key in timelineDefaults.keys)
       (
         key,
         DateTime.fromMillisecondsSinceEpoch(
-          timestamp += int.parse(preferences[key].toString()),
+          timestamp += int.parse(
+            (preferences[key] ?? timelineDefaults[key]).toString(),
+          ),
         ),
       ),
   ];

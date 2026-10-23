@@ -10,14 +10,18 @@
           "label": "Account number",
           "required": true,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "bank_name",
           "label": "Bank name",
           "required": true,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         }
       ]
     },
@@ -29,56 +33,72 @@
           "label": "Platform",
           "required": true,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "asset_amount",
           "label": "Amount",
           "required": true,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "asset_name",
           "label": "Asset Name",
           "required": true,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "lock_period",
           "label": "Lock Period",
           "required": false,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "wallet_address",
           "label": "Wallet Address",
           "required": false,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "username",
           "label": "Username",
           "required": false,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": "Credentials",
+          "inputType": null
         },
         {
           "key": "password",
           "label": "Password",
           "required": false,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": "Credentials",
+          "inputType": null
         },
         {
           "key": "note",
           "label": "Note",
           "required": false,
           "array": false,
-          "multiline": true
+          "multiline": true,
+          "group": null,
+          "inputType": null
         }
       ]
     },
@@ -90,21 +110,27 @@
           "label": "Password",
           "required": true,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "pin",
           "label": "Pin",
           "required": true,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "note",
           "label": "Note",
           "required": false,
           "array": false,
-          "multiline": true
+          "multiline": true,
+          "group": null,
+          "inputType": null
         }
       ]
     },
@@ -116,70 +142,90 @@
           "label": "Email",
           "required": true,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": "email"
         },
         {
           "key": "password",
           "label": "Password",
           "required": true,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "provider",
           "label": "Provider",
           "required": false,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "recoveryEmail",
           "label": "Recovery Email",
           "required": false,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": "email"
         },
         {
           "key": "recoveryPhone",
           "label": "Recovery Phone",
           "required": false,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "securityQuestion",
           "label": "Security Question",
           "required": false,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": "security",
+          "inputType": null
         },
         {
           "key": "securityAnswer",
           "label": "Security Answer",
           "required": false,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": "security",
+          "inputType": null
         },
         {
           "key": "backupCodes",
           "label": "Backup Codes",
           "required": false,
           "array": true,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "aliasEmails",
           "label": "Alias Emails",
           "required": false,
           "array": true,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "note",
           "label": "Note",
           "required": false,
           "array": false,
-          "multiline": true
+          "multiline": true,
+          "group": null,
+          "inputType": null
         }
       ]
     },
@@ -203,35 +249,45 @@
           "label": "Username",
           "required": true,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "password",
           "label": "Password",
           "required": true,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "totp_secret",
           "label": "2FA Secret",
           "required": false,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "uri",
           "label": "Websites",
           "required": false,
           "array": true,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "note",
           "label": "Note",
           "required": false,
           "array": false,
-          "multiline": true
+          "multiline": true,
+          "group": null,
+          "inputType": null
         }
       ]
     },
@@ -243,56 +299,72 @@
           "label": "Card Holder Name",
           "required": true,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "card_number",
           "label": "Card Number",
           "required": true,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "expiry_date",
           "label": "Expiry Date",
           "required": true,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "type",
           "label": "Type",
           "required": false,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "cvv",
           "label": "CVV",
           "required": false,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "issuer",
           "label": "Issuer",
           "required": false,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "network",
           "label": "Network",
           "required": false,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "note",
           "label": "Note",
           "required": false,
           "array": false,
-          "multiline": true
+          "multiline": true,
+          "group": null,
+          "inputType": null
         }
       ]
     },
@@ -304,21 +376,27 @@
           "label": "Seed Phrase",
           "required": true,
           "array": true,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "public_key",
           "label": "Public Key",
           "required": false,
           "array": false,
-          "multiline": false
+          "multiline": false,
+          "group": null,
+          "inputType": null
         },
         {
           "key": "note",
           "label": "Note",
           "required": false,
           "array": false,
-          "multiline": true
+          "multiline": true,
+          "group": null,
+          "inputType": null
         }
       ]
     }

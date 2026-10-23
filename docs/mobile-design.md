@@ -7,11 +7,11 @@ The native layout follows the existing web mobile pages in the sibling Cipherwil
 
 ## Layout
 
-- A hamburger opens a 280px sidebar, capped at 85% of the viewport. It follows the web's Home, Guide, Segments, Notifications, Data, Web3 Finance, Finance, Storage, Network and Platform groups. Disabled data categories are hidden. Appearance, lock and logout controls stay below the scrollable links.
+- A hamburger opens a 280px sidebar, capped at 85% of the viewport. It follows the web's Home, Guide, Segments, Notifications, Data, Web3 Finance, Finance, Storage, Network and Platform groups. Disabled data categories are hidden. System, Light and Dark appearance choices stay below the scrollable links; lock and logout are absent from the sidebar.
 - Protected pages share the sidebar and flat Home / Data / Network / Platform section bar. Keyboard input hides the bar and resizes the page once. Authentication, onboarding and the lock gate remain outside this shell. Web checkout retains its separate screen.
 - Dashboard uses a compact score link, greeting, the web's profile/data/beneficiary checklist, secured-data breakdown, planning and security/access destinations. Checklist completion comes from existing profile, storage and beneficiary responses.
 - Manage Data, Network and Platform use the web's 128px icon/title tiles. The data hub groups enabled categories without extra descriptions and metrics.
-- Settings uses General Settings / Profile / Backup / Usage tabs. Provider linking, communication preferences, planning, account actions and feedback remain available. Existing web settings links open the corresponding native tab.
+- Settings uses General Settings / Profile / Backup / Usage tabs. Communication preferences and feedback remain available. Segments only configures categories; check-in and reminder controls live on Timeline. Account reset/deletion and Backup actions direct users to the desktop app. Existing web settings links open the corresponding native tab.
 - Notes use flat title/date rows. Other records use compact metadata cards. Text-asset forms retain grouped fields, sensitive-value visibility/copying and confirmed-save feedback. The HTML adapter and queued note autosave remain in place.
 - Security factors use compact type/key/count rows and an options menu for rename, migration, biometrics and removal. The header's add menu exposes all three factor types.
 - Storage places folder/upload actions in the header and retains retry controls for interrupted saves. Readable text/file usage is available in Settings → Usage.

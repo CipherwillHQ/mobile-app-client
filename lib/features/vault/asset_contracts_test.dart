@@ -28,6 +28,8 @@ void main() {
         expect(actual.required, expected['required'], reason: entry.key);
         expect(actual.array, expected['array'], reason: entry.key);
         expect(actual.multiline, expected['multiline'], reason: entry.key);
+        expect(actual.group, expected['group'], reason: entry.key);
+        expect(actual.inputType, expected['inputType'], reason: entry.key);
       }
     }
   });

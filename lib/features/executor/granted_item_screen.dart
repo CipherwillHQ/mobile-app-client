@@ -10,7 +10,7 @@ import '../../shared/ui/page_frame.dart';
 import '../../shared/ui/asset_fields.dart';
 import '../security/session_controller.dart';
 import '../vault/categories.dart';
-import '../notes/rich_note_editor.dart';
+import '../notes/note_editor.dart';
 import 'executor_repository.dart';
 import '../../shared/ui/status_pill.dart';
 import '../../shared/ui/loading_panel.dart';
@@ -77,7 +77,7 @@ class _GrantedItemScreenState extends ConsumerState<GrantedItemScreen> {
         ),
         const SizedBox(height: 20),
         if (item!.$1['type'] == 'NOTE')
-          RichNoteEditor(
+          NoteEditor(
             content: item!.$2['content'] ?? '',
             onChanged: (_) {},
             readOnly: true,

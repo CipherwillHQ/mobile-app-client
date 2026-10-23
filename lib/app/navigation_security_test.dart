@@ -15,15 +15,13 @@ void main() {
   late NavigationHarness harness;
   setUp(() => harness = NavigationHarness());
   tearDown(() => harness.dispose());
-  testWidgets('locking from an open drawer removes protected navigation', (
-    tester,
-  ) async {
+  testWidgets('factor locking removes protected navigation', (tester) async {
     await harness.mount(tester);
     harness.router.go('/vault/NOTE');
     await tester.pumpAndSettle();
     await tester.tap(find.byTooltip('Open menu'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Lock'));
+    harness.container.read(sessionProvider.notifier).lock();
     await tester.pumpAndSettle();
     expect(harness.container.read(sessionProvider), isNull);
     expect(find.byType(AppSidebar), findsNothing);

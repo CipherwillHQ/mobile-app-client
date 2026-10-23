@@ -64,6 +64,7 @@ const defiStakingCategory = AssetCategory(
       array: false,
       multiline: false,
       rich: false,
+      group: 'Credentials',
     ),
     AssetField(
       'password',
@@ -73,6 +74,7 @@ const defiStakingCategory = AssetCategory(
       array: false,
       multiline: false,
       rich: false,
+      group: 'Credentials',
     ),
     AssetField(
       'note',

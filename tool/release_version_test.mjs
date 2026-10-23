@@ -38,6 +38,13 @@ test('release version and build must match the package declaration', () => {
   }
 });
 
+test('a missing release bump reports both versions and the required declaration', () => {
+  assert.throws(() => validateRelease({
+    message: 'release 1.0.0+2: First Android release',
+    pubspec: 'version: 1.0.0+1', previousPubspec: 'version: 1.0.0+1',
+  }), /Release 1\.0\.0\+2 does not match pubspec\.yaml \(1\.0\.0\+1\).*Set version: 1\.0\.0\+2/);
+});
+
 test('a release must increase the build number even if the version changes', () => {
   for (const build of [1, 2]) {
     assert.throws(() => validateRelease({

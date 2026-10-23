@@ -11,7 +11,7 @@ Use the authorized Firebase project project-cipherwill and package/bundle ID com
 
 Enable email/password, Google and Apple providers in that project. This machine's Android debug SHA-1 and SHA-256 fingerprints are registered, and the Android OAuth client is present in google-services.json. Register release signing fingerprints and the Play app-signing certificate before distribution. Run the Google configuration synchronization tool to add the iOS reversed-client URL scheme and native client ID and the shared Google web client ID. GOOGLE_SERVER_CLIENT_ID may supply an explicit OAuth server client ID when needed.
 
-For Sign in with Apple, configure the Apple capability, Firebase provider integration and the Apple developer identifiers/keys outside source control. Existing users can explicitly link Google or Apple from Settings.
+For Sign in with Apple, configure the Apple capability, Firebase provider integration and the Apple developer identifiers/keys outside source control. Sign-in providers are offered on authentication screens; mobile Settings does not expose provider-linking actions.
 
 API_URL identifies the existing GraphQL endpoint. Tokens are supplied using its existing raw Authorization header format. Ordinary feature parity adds no backend business APIs or database migrations.
 

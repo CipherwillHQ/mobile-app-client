@@ -1,20 +1,21 @@
-// Searches and invites people before adding a trusted relationship
-// Owns invitation choices and beneficiary key synchronization.
-// Does not send invitations without a user action.
+// Finds a person first and then offers explicit invitation choices.
+// Owns search, guest retry flow, relationship creation and key migration.
+// Does not send emails before the user's Add person action.
 import 'package:flutter/material.dart';
-import '../../shared/person_name.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../app/providers.dart';
 import '../../core/api/json_values.dart';
+import '../../shared/email_validation.dart';
 import '../../shared/ui/page_frame.dart';
 import '../../shared/ui/actions.dart';
+import '../../shared/ui/app_notice.dart';
 import '../../shared/ui/remote_panel.dart';
+import 'person_search_form.dart';
 import '../security/session_controller.dart';
 import '../security/key_migration.dart';
-import '../../shared/ui/section_heading.dart';
-import '../../shared/ui/person_avatar.dart';
-import '../../shared/ui/guide_panel.dart';
+import 'person_invitation_form.dart';
+import 'invitation_result.dart';
 
 class PersonAddScreen extends ConsumerStatefulWidget {
   final bool friend;
@@ -24,12 +25,13 @@ class PersonAddScreen extends ConsumerStatefulWidget {
 }
 
 class _PersonAddScreenState extends ConsumerState<PersonAddScreen> {
-  final email = TextEditingController();
-  final name = TextEditingController();
+  final email = TextEditingController(), name = TextEditingController();
   List<Json>? matches;
-  bool sendEmail = true;
-  bool anonymous = false;
-  bool busy = false;
+  String? selectedEmail, addedId;
+  bool sendEmail = true,
+      anonymous = false,
+      busy = false,
+      attemptedEmail = false;
   @override
   void dispose() {
     email.dispose();
@@ -39,10 +41,13 @@ class _PersonAddScreenState extends ConsumerState<PersonAddScreen> {
 
   Future<void> add(String id) async {
     final api = ref.read(apiProvider);
-    await api.run(
-      widget.friend ? 'ADD_SMARTWILL_FRIEND' : 'ADD_SMARTWILL_BENEFICIARY',
-      {'id': id},
-    );
+    if (addedId != id) {
+      await api.run(
+        widget.friend ? 'ADD_SMARTWILL_FRIEND' : 'ADD_SMARTWILL_BENEFICIARY',
+        {'id': id},
+      );
+      addedId = id;
+    }
     ref.invalidate(remoteProvider);
     if (!widget.friend) {
       final beneficiaries = jsonList(
@@ -56,7 +61,13 @@ class _PersonAddScreenState extends ConsumerState<PersonAddScreen> {
         ref.read(sessionProvider.notifier).lease(),
       ).beneficiary(added['id']);
     }
-    if (mounted) context.pop();
+    if (mounted) {
+      showNotice(
+        context,
+        widget.friend ? 'Friend added.' : 'Beneficiary added.',
+      );
+      context.pop();
+    }
   }
 
   Future<void> run(Future<void> Function() action) async {
@@ -66,82 +77,73 @@ class _PersonAddScreenState extends ConsumerState<PersonAddScreen> {
     if (mounted) setState(() => busy = false);
   }
 
+  Future<void> search() => run(() async {
+    if (!validEmail(email.text)) {
+      throw StateError('Enter a valid email address.');
+    }
+    final query = email.text.trim();
+    final result = await ref.read(apiProvider).run('SEARCH_PERSON', {
+      'email': query,
+    });
+    if (mounted && email.text.trim() == query) {
+      setState(() => matches = jsonList(result['searchPerson']));
+    }
+  });
+  void chooseInvitation(String address, [String firstName = '']) {
+    setState(() {
+      selectedEmail = address;
+      name.text = firstName;
+      attemptedEmail = false;
+      sendEmail = true;
+      anonymous = false;
+    });
+  }
+
+  Future<void> invite() => run(() async {
+    if (name.text.trim().isEmpty) throw StateError('Enter their first name.');
+    final person = asJson(
+      (await ref.read(apiProvider).run('INVITE_USER', {
+        'first_name': name.text.trim(),
+        'email': selectedEmail!,
+        'send_email': sendEmail,
+        'anonymous_invite': sendEmail && anonymous,
+      }))['inviteUser'],
+    );
+    if (sendEmail && mounted) setState(() => attemptedEmail = true);
+    checkInvitation(person, sendEmail);
+    await add(person['id']);
+  });
   @override
   Widget build(BuildContext context) => PageFrame(
     title: widget.friend ? 'Add friend' : 'Add beneficiary',
-    subtitle: 'Start with their email address.',
+    subtitle: 'Find them by email address.',
     children: [
-      GuidePanel(
-        icon: Icons.person_add_outlined,
-        title: 'Invite someone you trust',
-        message: widget.friend
-            ? 'Friends help us reach your beneficiaries.'
-            : 'Your beneficiary can receive the items you allow after will release.',
-      ),
-      const SizedBox(height: 20),
-      TextField(
-        controller: email,
-        keyboardType: TextInputType.emailAddress,
-        decoration: const InputDecoration(labelText: 'Email address'),
-      ),
-      const SizedBox(height: 16),
-      FilledButton(
-        onPressed: busy
-            ? null
-            : () => run(() async {
-                final result = await ref.read(apiProvider).run(
-                  'SEARCH_PERSON',
-                  {'email': email.text.trim()},
-                );
-                if (mounted) {
-                  setState(() => matches = jsonList(result['searchPerson']));
-                }
-              }),
-        child: Text(busy ? 'Please wait…' : 'Find person'),
-      ),
-      if (matches != null)
-        for (final person in matches!)
-          ListTile(
-            leading: PersonAvatar(personName(person)),
-            trailing: const Icon(Icons.person_add_outlined),
-            title: Text(personName(person)),
-            subtitle: Text(person['email']),
-            onTap: busy ? null : () => run(() => add(person['id'])),
-          ),
-      if (matches != null && matches!.isEmpty) ...[
-        const SizedBox(height: 20),
-        const SectionHeading('Invite someone new'),
-        TextField(
-          controller: name,
-          decoration: const InputDecoration(labelText: 'First name'),
+      if (selectedEmail != null)
+        PersonInvitationForm(
+          email: selectedEmail!,
+          name: name,
+          busy: busy,
+          sendEmail: sendEmail,
+          anonymous: anonymous,
+          attemptedEmail: attemptedEmail,
+          emailChanged: (v) => setState(() {
+            sendEmail = v;
+            if (!v) anonymous = false;
+          }),
+          anonymousChanged: (v) => setState(() => anonymous = v),
+          submit: invite,
+          back: () => setState(() => selectedEmail = null),
+        )
+      else
+        PersonSearchForm(
+          email: email,
+          matches: matches,
+          busy: busy,
+          search: search,
+          changed: () => setState(() => matches = null),
+          add: (id) => run(() => add(id)),
+          invite: chooseInvitation,
         ),
-        SwitchListTile(
-          title: const Text('Send invitation email'),
-          value: sendEmail,
-          onChanged: busy ? null : (v) => setState(() => sendEmail = v),
-        ),
-        SwitchListTile(
-          title: const Text('Anonymous invitation'),
-          value: anonymous,
-          onChanged: busy ? null : (v) => setState(() => anonymous = v),
-        ),
-        FilledButton(
-          onPressed: busy
-              ? null
-              : () => run(() async {
-                  final person = asJson(
-                    (await ref.read(apiProvider).run('INVITE_USER', {
-                      'first_name': name.text,
-                      'email': email.text.trim(),
-                      'send_email': sendEmail,
-                      'anonymous_invite': anonymous,
-                    }))['inviteUser'],
-                  );
-                  await add(person['id']);
-                }),
-          child: const Text('Invite and add'),
-        ),
-      ],
     ],
   );
 }

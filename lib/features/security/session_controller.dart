@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
 import '../../core/crypto/factor_key.dart';
 import '../../core/api/json_values.dart';
-import 'return_authentication.dart';
 
 class VaultLease {
   final FactorKey? key;
@@ -27,13 +26,9 @@ class SessionController extends Notifier<FactorKey?> {
     generation++;
     factorId = factor['id'].toString();
     state = key;
-    ref.read(returnAuthenticationProvider.notifier).require(false);
   }
 
-  void lock({bool requireAuthentication = true}) {
-    ref
-        .read(returnAuthenticationProvider.notifier)
-        .require(requireAuthentication);
+  void lock() {
     generation++;
     factorId = null;
     state = null;
@@ -41,11 +36,9 @@ class SessionController extends Notifier<FactorKey?> {
 
   VaultLease lease() {
     final epoch = generation;
-    final keyless = state == null;
     final uid = ref.read(firebaseProvider).currentUser?.uid;
     return VaultLease(state, () {
-      if (ref.read(returnAuthenticationProvider) && keyless ||
-          generation != epoch ||
+      if (generation != epoch ||
           ref.read(firebaseProvider).currentUser?.uid != uid) {
         throw StateError('Vault locked. Unlock and retry.');
       }

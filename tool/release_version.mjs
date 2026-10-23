@@ -30,8 +30,10 @@ export function releaseVersion(message) {
 
 export function validateRelease({message, pubspec, previousPubspec, previousMessages = []}) {
   const release = releaseVersion(message);
-  if (release.label !== packageVersion(pubspec).label) {
-    throw Error('The release commit version/build must match pubspec.yaml.');
+  const declared = packageVersion(pubspec);
+  if (release.label !== declared.label) {
+    throw Error(`Release ${release.label} does not match pubspec.yaml (${declared.label}). ` +
+      `Set version: ${release.label} in the release commit.`);
   }
   let previousBuild = previousPubspec ? packageVersion(previousPubspec).buildNumber : 0;
   for (const message of previousMessages) {

@@ -2,6 +2,7 @@
 // Owns credential controllers, provider actions and reset requests.
 // Does not unlock factors or save account passwords.
 import 'package:flutter/material.dart';
+import '../../shared/ui/app_notice.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
 import '../../shared/ui/legal_links.dart';
@@ -45,12 +46,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
       'email': email.text.trim(),
     });
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Password reset request accepted. Check your email if your account is eligible.',
-          ),
-        ),
+      showNotice(
+        context,
+        'Password reset request accepted. Check your email if your account is eligible.',
       );
     }
   });

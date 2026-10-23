@@ -4,6 +4,22 @@
 import 'package:flutter/material.dart';
 
 abstract final class AppMotion {
+  static Widget slideTransition(Widget child, Animation<double> animation) =>
+      AnimatedBuilder(
+        animation: animation,
+        child: child,
+        builder: (_, content) => Opacity(
+          opacity: animation.value,
+          child: Transform.translate(
+            offset: Offset(
+              (animation.status == AnimationStatus.reverse ? -70 : 70) *
+                  (1 - Curves.easeOut.transform(animation.value)),
+              0,
+            ),
+            child: content,
+          ),
+        ),
+      );
   static bool reduced(BuildContext context) =>
       MediaQuery.disableAnimationsOf(context) ||
       MediaQuery.accessibleNavigationOf(context);

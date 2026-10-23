@@ -8,7 +8,7 @@ import '../../shared/ui/asset_fields.dart';
 import '../../shared/ui/panel_section.dart';
 import '../../shared/ui/status_pill.dart';
 import '../../app/design_tokens.dart';
-import '../notes/rich_note_editor.dart';
+import '../notes/note_editor.dart';
 import 'asset_category.dart';
 
 class AssetDraftForm extends StatelessWidget {
@@ -56,10 +56,10 @@ class AssetDraftForm extends StatelessWidget {
           title: category.type == 'NOTE' ? 'Your note' : 'Vault contents',
           description: category.type == 'NOTE'
               ? 'Changes save automatically after you pause typing.'
-              : 'Sensitive values stay hidden until you choose to reveal them.',
+              : 'Start with required fields. Add other details when you need them.',
           children: [
             if (category.type == 'NOTE')
-              RichNoteEditor(
+              NoteEditor(
                 content: initial['content']?.toString() ?? '',
                 onChanged: (html) => changed({'content': html}),
               )

@@ -7,11 +7,11 @@ Every row requires an Android and iOS result against the existing backend. All l
 
 | Area | Required live scenario | Automated evidence |
 |---|---|---|
-| Account authentication | Existing/new email account, Google, iOS Apple, explicit provider linking, logout | Account-bound lease tests |
+| Account authentication | Existing/new email account, Google, iOS Apple, logout; no provider-linking settings | Account-bound lease tests |
 | Account actions | Email verification/reset links, onboarding, inactive account reactivation | Generated API validation |
 | Factors | Master password, MetaMask and web/mobile passkey unlock; creation, rename, migration, removal, key counts | Actual-library factor vectors; migration tests |
 | Biometrics | Enable/disable; cancellation, missing hardware, changed enrollment; web factor deletion; account switching | Retrieval/account/factor race tests |
-| Return security | Background, app switcher, system prompts, wallet return, process death and factorless return | Factorless locking and lease invalidation tests |
+| Return security | Background, app switcher, system prompts, wallet return, process death and factorless return | Direct factorless entry/return and lease invalidation tests |
 | Notes | CRUD/autosave, queued edits, legacy versions, headings, marks, lists, links, code and preserved unknown blocks | HTML round trips and category crypto |
 | Passwords | CRUD, username/password, TOTP secret, website arrays and note | Web field snapshot and crypto |
 | Email accounts | CRUD, provider/recovery fields, security answers, backup codes, aliases | Web field snapshot and crypto |
@@ -22,7 +22,7 @@ Every row requires an Android and iOS result against the existing backend. All l
 | DeFi staking | CRUD, platform/amount/asset/lock/wallet/login/note, premium restrictions | Web field snapshot and crypto |
 | Files | Upload/download/preview/share, rename, beneficiary exclusions, folders/delete/usage/quota, large files | Binary streaming, metadata preservation and stable-retry tests |
 | Upload recovery | Interrupted transfer, lost commit response, same-ID retry/reselection, expired URLs, duplicate prevention | Commit/pending-upload tests |
-| People | Search, new guest invite/anonymous choice, beneficiaries, friends and removal | Generated API validation |
+| People | Search first, guest email opt-in/anonymous choice, failed-send retry, beneficiaries, friends and removal | Search/invitation interaction tests |
 | Beneficiary sharing | Custom messages, exclusions, rewrapping and account-factor changes | Exclusion and migration tests |
 | Planning | Check-in interval/days, cumulative reminders, current defaults, next event and account score/details | Backend contracts and score JSON parser tests |
 | Activity recording | Authenticated activity eventually appears; eight-hour deduplication and pending job handling | Backend code reviewed; live pending |
@@ -30,12 +30,12 @@ Every row requires an Android and iOS result against the existing backend. All l
 | Guidance recovery | Failed effects/completion, catalog changes, lost acknowledgements, durable recovery | Guidance session retry tests |
 | Profile/preferences | Profile/birthdate, segments, light/dark/system appearance, marketing choice | Generated API validation |
 | Communication | Add/verify/delete phone, SMS/WhatsApp/phone preferences, feedback | Generated API validation |
-| Reset/deletion | Clear local keys, deliberately request/reset/delete account; repeat/cancel/failure | Cancel/failure feedback tests |
-| Existing subscriptions | Details, invoices, portal, period-end cancellation, eligible immediate refund | Generated API validation |
+| Reset/deletion | Visit cipherwill.com/app on desktop to reset or delete; no destructive mobile action | Desktop handoff tests |
+| Existing subscriptions | Details and invoices; hosted Paddle portal manages billing/cancellation/refunds | Billing action visibility tests |
 | Web upgrade | Free-account /upgrade attribution, Paddle checkout, success/error/close, webhook delay, refresh, retries and payment handoffs | WebView contract, routed callback/recovery and account-switch tests |
 | Executor lists | Granted wills, donor details, allowed categories/items and folder traversal | Generated API validation |
 | Executor protected reads | Unreleased/expired/revoked grants; changed exclusions; E0/E1 decryption | Permission/revocation tests and web crypto |
-| Backups | Web/mobile ZIP v0.0.2, import v0.0.1; text only; plaintext disclosure | ZIP codec and restore tests |
+| Backups | Visit cipherwill.com/app on desktop for backups/restores | Desktop handoff tests; retained ZIP codec tests |
 | Repeated restore | Preserve readable content, exclusions and concurrent saves; fail on unreadable saved data | Restore regression tests |
 | Links | Cold/warm verification/reset/executor links, wallet return, expired/invalid links | Owner/executor URI mapping and action-code/cancellation tests; live pending |
 | Accessibility | Large text, screen readers, keyboards, touch targets, safe areas, both themes, reduced motion | 25-screen phone/theme/large-text renders, all text forms and auth keyboard widget tests |

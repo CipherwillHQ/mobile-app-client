@@ -8,7 +8,6 @@ import '../../shared/ui/legal_links.dart';
 import 'appearance_selector.dart';
 import 'settings_destination.dart';
 import 'settings_tabs.dart';
-import 'signin_settings.dart';
 import 'session_settings.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -23,8 +22,8 @@ class SettingsScreen extends StatelessWidget {
         title: 'Preferences',
         children: [
           SettingsDestination(
-            'Segments & planning',
-            'Enabled categories, check-ins and reminders',
+            'Segments',
+            'Choose your enabled data categories',
             Icons.tune_outlined,
             '/preferences',
           ),
@@ -36,7 +35,6 @@ class SettingsScreen extends StatelessWidget {
           ),
         ],
       ),
-      SigninSettings(),
       SessionSettings(),
       SettingsDestination(
         'Send feedback',

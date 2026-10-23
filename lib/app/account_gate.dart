@@ -12,8 +12,6 @@ import '../features/security/lock_screen.dart';
 import '../features/security/session_controller.dart';
 import 'providers.dart';
 import 'logout.dart';
-import '../features/auth/reauthentication_screen.dart';
-import '../features/security/return_authentication.dart';
 
 final onboardingProvider = FutureProvider<Json>(
   (ref) async => asJson(
@@ -123,9 +121,6 @@ class AccountGate extends ConsumerWidget {
               (factor) => factor['publicKey'] == session.publicKey,
             ))) {
       return LockScreen(factors: factors.value!);
-    }
-    if (factors.value!.isEmpty && ref.watch(returnAuthenticationProvider)) {
-      return const ReauthenticationScreen();
     }
     return child;
   }

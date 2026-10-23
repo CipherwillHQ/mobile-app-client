@@ -48,6 +48,23 @@ test('CLI rejects a release commit that did not update the previous build number
   assert.match(result.stderr, /above 2/);
 });
 
+test('CLI accepts a new build after a release failed because its pubspec was not bumped', context => {
+  const directory = releaseTestRepository(context);
+  commitTestVersion(directory, '1.0.0+1', 'Initial commit');
+  commitTestVersion(directory, '1.0.0+1', 'release 1.0.0+2: First Android release');
+  const failed = spawnSync(process.execPath, [cli], {cwd: directory, encoding: 'utf8'});
+  assert.notEqual(failed.status, 0);
+  assert.match(failed.stderr, /does not match pubspec\.yaml \(1\.0\.0\+1\)/);
+  commitTestVersion(directory, '1.0.0+2', 'release 1.0.0+2: Retry');
+  const reused = spawnSync(process.execPath, [cli], {cwd: directory, encoding: 'utf8'});
+  assert.notEqual(reused.status, 0);
+  assert.match(reused.stderr, /above 2/);
+  commitTestVersion(directory, '1.0.0+3', 'release 1.0.0+3: Fix release version');
+  assert.match(execFileSync(process.execPath, [cli], {
+    cwd: directory, encoding: 'utf8', env: {...process.env, GITHUB_OUTPUT: ''},
+  }), /Validated release 1\.0\.0\+3/);
+});
+
 test('CLI supports a first commit with no parent', context => {
   const directory = releaseTestRepository(context);
   commitTestVersion(directory, '1.0.0+1', 'release 1.0.0+1');

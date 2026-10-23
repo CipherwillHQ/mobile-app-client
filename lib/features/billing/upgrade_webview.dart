@@ -3,6 +3,7 @@
 // Does not inject account tokens, expose vault contents or confirm Premium.
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../../shared/ui/app_notice.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../shared/ui/error_panel.dart';
@@ -88,10 +89,10 @@ class _UpgradeWebViewState extends State<UpgradeWebView> {
       }
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Unable to open this link. Please try again.'),
-          ),
+        showNotice(
+          context,
+          'Unable to open this link. Please try again.',
+          error: true,
         );
       }
     }

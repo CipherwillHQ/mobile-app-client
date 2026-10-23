@@ -1,20 +1,18 @@
-// Presents the backend guidance catalog as native mobile steps.
-// Owns progress, deferral, resume and retry controls.
-// Does not persist plaintext conversations or duplicate eligibility rules.
+// Opens the web-style status overview and full-area guided setup slides.
+// Owns pause/resume, objective introductions, timed displays and error recovery.
+// Does not persist plaintext drafts or replace catalog eligibility rules.
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/security/temp_cleanup.dart';
 import '../../app/providers.dart';
 import '../../core/api/json_values.dart';
-import '../../shared/ui/page_frame.dart';
-import '../../shared/ui/empty_state.dart';
-import '../../shared/ui/error_panel.dart';
-import '../../shared/ui/loading_panel.dart';
-import '../../shared/ui/section_heading.dart';
 import '../security/session_controller.dart';
 import 'guidance_session.dart';
-import 'guidance_step_panel.dart';
+import 'guidance_overview.dart';
+import 'guidance_overview_data.dart';
+import 'guidance_active_slide.dart';
+import 'guidance_slide.dart';
 
 class GuidanceScreen extends ConsumerStatefulWidget {
   const GuidanceScreen({super.key});
@@ -23,11 +21,11 @@ class GuidanceScreen extends ConsumerStatefulWidget {
 }
 
 class _GuidanceScreenState extends ConsumerState<GuidanceScreen> {
-  GuidanceSession? session;
-  bool busy = true;
-  String? error;
+  late final GuidanceSession session;
+  bool busy = true, active = false, introduction = true;
+  String? error, inputId;
   dynamic answer;
-  String? inputId;
+  Timer? timer;
   @override
   void initState() {
     super.initState();
@@ -35,25 +33,34 @@ class _GuidanceScreenState extends ConsumerState<GuidanceScreen> {
       ref.read(apiProvider),
       ref.read(sessionProvider.notifier).lease(),
     );
-    run(() => session!.load());
+    run(session.load);
   }
 
   @override
   void dispose() {
-    session?.clear();
-    unawaited(cleanupPickedFiles());
+    timer?.cancel();
+    session.clear();
     answer = null;
+    unawaited(cleanupPickedFiles());
     super.dispose();
   }
 
   Future<void> run(Future<void> Function() action) async {
+    timer?.cancel();
+    final previous = session.flow?['id'];
     setState(() {
       busy = true;
       error = null;
     });
     try {
       await action();
-      if (mounted) setState(() => busy = false);
+      if (!mounted) return;
+      setState(() {
+        busy = false;
+        if (previous != session.flow?['id']) introduction = true;
+        if (session.flow == null) active = false;
+      });
+      schedule();
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -64,82 +71,106 @@ class _GuidanceScreenState extends ConsumerState<GuidanceScreen> {
     }
   }
 
-  Future<void> advance() => run(
-    () => session!.flow == null
-        ? session!.load()
-        : session!.advance(
-            answer: answer,
-            submitted: session!.step?['input'] != null,
-          ),
-  );
+  int get displayForMs {
+    final spec = session.completion != null
+        ? asJson(session.flow?['completion'])
+        : session.step;
+    return ((spec?['displayForMs']) as num? ?? 0).toInt();
+  }
+
+  void schedule() {
+    timer?.cancel();
+    if (!active || introduction || busy || error != null) return;
+    final delay = displayForMs;
+    if (delay > 0 && session.step?['input'] == null) {
+      timer = Timer(Duration(milliseconds: delay.toInt()), advance);
+    }
+  }
+
+  void pause() {
+    timer?.cancel();
+    setState(() => active = false);
+    ref.invalidate(guidanceOverviewProvider);
+  }
+
+  void start() {
+    setState(() => active = true);
+    if (error != null && session.flow == null) {
+      run(session.load);
+    }
+    schedule();
+  }
+
+  Future<void> advance() async {
+    if (introduction) {
+      setState(() => introduction = false);
+      schedule();
+      return;
+    }
+    await run(
+      () => session.advance(
+        answer: answer,
+        submitted: session.step?['input'] != null,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final s = session!;
-    final flow = s.flow;
-    final step = s.step;
+    final flow = session.flow, step = session.step;
     if (inputId != step?['id']) {
       inputId = step?['id'];
       answer = null;
     }
     final deferred = jsonList(
-      s.account['deferrals'],
+      session.account['deferrals'],
     ).where((choice) => choice['dismissed'] != true).toList();
-    return PageFrame(
-      title: 'Guide',
-      children: [
-        if (busy && flow == null) const LoadingPanel(),
-        if (error != null)
-          ErrorPanel(message: error!, retry: busy ? null : advance),
-        if (flow == null && !busy && error == null)
-          const EmptyState(
-            title: 'You’re up to date',
-            message:
-                'Your available guidance is complete. You can keep editing your vault and planning settings.',
-            icon: Icons.check_circle_outline_rounded,
-          ),
-        if (flow != null) ...[
-          if (busy) const LinearProgressIndicator(),
-          GuidanceStepPanel(
-            flow: flow,
-            step: step,
-            scope: s.scope,
-            complete: s.completion != null,
-            completedSteps: s.visited.length,
-            busy: busy,
-            changed: (value) => answer = value,
-            advance: advance,
-          ),
-          if (s.completion == null && step?['input']?['skippable'] == true)
-            TextButton(
-              onPressed: busy
-                  ? null
-                  : () => run(() => s.advance(answer: null, submitted: true)),
-              child: const Text('Skip this question'),
-            ),
-          if (s.completion == null && flow['skippable'] == true)
-            TextButton(
-              onPressed: busy ? null : () => run(s.defer),
-              child: const Text('Do this later'),
-            ),
-        ],
-        if (deferred.isNotEmpty) const SectionHeading('Saved for later'),
-        for (final choice in deferred)
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.bookmark_border_rounded),
-              title: Text(
-                s.catalog
-                        .where((entry) => entry['id'] == choice['objectiveId'])
-                        .firstOrNull?['title'] ??
-                    choice['objectiveId'],
+    final complete = session.completion != null;
+    return GuidanceSlide(
+      identity: !active
+          ? 'overview'
+          : error != null
+          ? 'error'
+          : introduction
+          ? 'intro-' + (flow?['id'] ?? '')
+          : complete
+          ? 'complete-' + (flow?['id'] ?? '')
+          : step?['id'] ?? 'loading',
+      child: !active
+          ? GuidanceOverview(
+              busy: busy,
+              available: flow != null,
+              failed: error != null,
+              deferred: deferred,
+              catalog: session.catalog,
+              start: start,
+              resume: (id) {
+                setState(() => active = true);
+                run(() => session.resume(id));
+              },
+            )
+          : GuidanceActiveSlide(
+              session: session,
+              answer: answer,
+              busy: busy,
+              introduction: introduction,
+              error: error,
+              displayForMs: displayForMs,
+              changed: (value) => answer = value,
+              advance: advance,
+              retry: () => run(
+                flow == null
+                    ? session.load
+                    : () => session.advance(
+                        answer: answer,
+                        submitted: step?['input'] != null,
+                      ),
               ),
-              trailing: const Icon(Icons.arrow_forward_rounded),
-              onTap: busy
-                  ? null
-                  : () => run(() => s.resume(choice['objectiveId'])),
+              skip: () =>
+                  run(() => session.advance(answer: null, submitted: true)),
+              defer: () => run(session.defer),
+              pause: pause,
             ),
-          ),
-      ],
     );
   }
 }

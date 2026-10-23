@@ -2,6 +2,7 @@
 // Owns billing reload controls and terminal checkout feedback.
 // Does not treat a payment message as confirmed Premium activation.
 import 'package:flutter/material.dart';
+import '../../shared/ui/app_notice.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
 import '../../shared/ui/remote_panel.dart';
@@ -20,16 +21,13 @@ void showUpgradeResult(
   UpgradeResult result,
 ) {
   if (result.success) refreshBilling(ref);
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      duration: const Duration(seconds: 6),
-      content: Text(
-        result.success
-            ? 'Payment received. Premium will appear after processing. Refresh to check your plan.'
-            : result.message ??
-                  'Checkout could not be completed. Please try again.',
-      ),
-    ),
+  showNotice(
+    context,
+    result.success
+        ? 'Payment received. Premium will appear after processing. Refresh to check your plan.'
+        : result.message ??
+              'Checkout could not be completed. Please try again.',
+    error: !result.success,
   );
 }
 

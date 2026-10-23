@@ -68,7 +68,7 @@ Verified on 2026-10-23 using Flutter 3.41.4 and Dart 3.11.1:
 ## Required before acceptance
 
 - [x] Firebase CLI account can access project-cipherwill; registered Android/iOS configurations are installed.
-- [ ] Google/Apple provider linking works with existing accounts.
+- [ ] Google/Apple sign-in works with existing accounts; mobile Settings has no provider-linking actions.
 - [ ] Public Reown project ID is configured and MetaMask signing works.
 - [x] This machine's Android debug SHA-1/SHA-256 fingerprints are registered.
 - [ ] Release/Play signing fingerprints and Apple Team ID are supplied.
@@ -77,7 +77,7 @@ Verified on 2026-10-23 using Flutter 3.41.4 and Dart 3.11.1:
 - [ ] Run every parity-scenarios.md row on Android and iOS; record account/device/build/result.
 - [ ] Test actual biometric enrollment changes, fallback hardware and app-switcher protection.
 - [ ] Exercise real network interruption, storage quotas, large files and server permission changes.
-- [ ] Verify rich-text and backup round trips through the existing web app.
+- [ ] Verify simple note editing preserves existing web HTML; verify desktop handoffs for backup, restore and account reset/deletion.
 - [ ] Inspect outbound release crash telemetry and SDK privacy manifests.
 - [ ] Supply disposable owner/executor/free/premium reviewer accounts outside source control.
 - [ ] Execute the CI workflows after repository publication.

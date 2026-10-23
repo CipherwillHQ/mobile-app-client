@@ -110,6 +110,9 @@ Future<Json> designResponse(String name, Json vars) async => switch (name) {
       {'publicKey': 'preview-key', 'count': 24},
     ],
   },
+  'GET_FACTORS' => {
+    'getFactors': [previewFactor],
+  },
   'GET_USER_PHONE_NUMBERS' => {'getUserPhoneNumbers': []},
   'GET_MY_SUBSCRIPTION' => {
     'getMySubscription': {

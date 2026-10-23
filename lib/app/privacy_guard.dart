@@ -59,7 +59,7 @@ class _PrivacyGuardState extends ConsumerState<PrivacyGuard>
   Widget build(BuildContext context) {
     ref.listen(authStateProvider, (previous, next) {
       if (previous?.value?.uid == next.value?.uid) return;
-      ref.read(sessionProvider.notifier).lock(requireAuthentication: false);
+      ref.read(sessionProvider.notifier).lock();
       ref.invalidate(accountProvider);
       ref.invalidate(preferencesProvider);
       ref.invalidate(factorsProvider);

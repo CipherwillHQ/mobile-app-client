@@ -7,25 +7,25 @@ Every release commit must start with the lowercase string `release`, followed by
 the version and build number in `VERSION+BUILD` format:
 
 ```text
-release 1.0.0+2: Describe this release
+release 1.0.0+3: Describe this release
 ```
 
-`release 1.0.0+2` without a summary is also valid. Use stable three-part versions
+`release 1.0.0+3` without a summary is also valid. Use stable three-part versions
 such as `1.0.0` or `1.1.0`. The release subject must exactly match `pubspec.yaml`.
 
 ## Always update the build number
 
 Update `pubspec.yaml` **in every release commit**, including rebuilds of the same
-version. For example, change the current `version: 1.0.0+1` to:
+version. The next release is prepared as:
 
 ```yaml
-version: 1.0.0+2
+version: 1.0.0+3
 ```
 
 The part before `+` is the user-visible version (`versionName`). The positive
 integer after `+` is the Android build number (`versionCode`). It must increase
-above the parent commit's build number and all earlier valid release commits in
-the commit's Git history. CI fails if it is unchanged, lower, or greater than
+above the parent commit's build number and all earlier correctly named release
+commits in Git history, including failed builds. CI fails if it is unchanged, lower, or greater than
 2,100,000,000. If a higher build was uploaded outside this workflow or from another
 branch, use a number above that too; CI does not query Play Console.
 
@@ -35,7 +35,7 @@ and the release changes in one commit. For example:
 ```sh
 git add pubspec.yaml
 # Stage the reviewed application changes for this release too.
-git commit -m "release 1.0.0+2: Improve mobile navigation"
+git commit -m "release 1.0.0+3: Improve mobile navigation"
 git push origin main
 ```
 
@@ -44,6 +44,13 @@ the pushed HEAD message. A pull request, manual workflow run, or ordinary push
 runs validation/debug builds. A release-prefixed push on any branch runs the
 signed Android release job after analysis and tests, replacing the Android debug
 job. The existing iOS validation job still runs without signing.
+
+If version validation fails, compare the release subject with `version:` in
+`pubspec.yaml`. Commit the corrected package version with a new unused build
+number and a matching release subject. Re-running the failed job uses its original
+commit, so it cannot pick up a later version fix. Build 2 failed because its
+release subject said `1.0.0+2` while the package still declared `1.0.0+1`; use
+`release 1.0.0+3` for the retry.
 
 ## One-time signing setup
 
@@ -113,10 +120,10 @@ artifacts and dependency caches.
 ## Download and upload
 
 Open **GitHub → Actions → Mobile validation → the release run → Artifacts**.
-Download and extract `android-release-1.0.0+2`. It contains:
+Download and extract `android-release-1.0.0+3`. It contains:
 
-- `cipherwill-1.0.0+2.aab`: signed Android App Bundle for manual Play Console upload.
-- `cipherwill-1.0.0+2.apk`: signed release APK for direct device installation/testing.
+- `cipherwill-1.0.0+3.aab`: signed Android App Bundle for manual Play Console upload.
+- `cipherwill-1.0.0+3.apk`: signed release APK for direct device installation/testing.
 
 Artifacts are retained for **90 days**. Save your release files elsewhere if you
 need longer retention. Allow the release run to finish before pushing another

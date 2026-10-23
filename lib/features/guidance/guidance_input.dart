@@ -12,13 +12,26 @@ import '../../core/api/json_values.dart';
 class GuidanceInput extends ConsumerStatefulWidget {
   final Json spec;
   final ValueChanged<dynamic> changed;
-  const GuidanceInput({super.key, required this.spec, required this.changed});
+  final dynamic value;
+  const GuidanceInput({
+    super.key,
+    required this.spec,
+    required this.changed,
+    this.value,
+  });
   @override
   ConsumerState<GuidanceInput> createState() => _GuidanceInputState();
 }
 
 class _GuidanceInputState extends ConsumerState<GuidanceInput> {
   final text = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    text.text = widget.value?.toString() ?? '';
+    selected = widget.value?.toString();
+  }
+
   bool hidden = true;
   String? selected;
   @override
@@ -52,6 +65,7 @@ class _GuidanceInputState extends ConsumerState<GuidanceInput> {
     }
     if (type == 'choices') {
       return DropdownButtonFormField<String>(
+        initialValue: widget.value?.toString(),
         decoration: InputDecoration(
           labelText: spec['placeholder'] ?? 'Choose an option',
         ),

@@ -1,29 +1,25 @@
-// Checks background locking also invalidates factorless-account operations.
-// Owns return-authentication state and account-bound leases.
-// Does not approve native or Firebase authentication prompts.
+// Verifies factorless accounts reopen without treating account passwords as keys.
+// Owns operation invalidation on background locks and account switching.
+// Does not skip online account/factor validation or approve biometric prompts.
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../testing/fake_auth.dart';
 import '../../app/providers.dart';
 import 'session_controller.dart';
-import 'return_authentication.dart';
 
 void main() {
   test(
-    'a factorless session remains locked until account authentication succeeds',
+    'factorless accounts get a fresh lease without password authentication',
     () {
-      final auth = FakeAuth();
       final container = ProviderContainer(
-        overrides: [firebaseProvider.overrideWithValue(auth)],
+        overrides: [firebaseProvider.overrideWithValue(FakeAuth())],
       );
       final session = container.read(sessionProvider.notifier);
       final before = session.lease();
       before.check();
       session.lock();
-      expect(container.read(returnAuthenticationProvider), true);
       expect(before.check, throwsStateError);
-      expect(session.lease().check, throwsStateError);
-      container.read(returnAuthenticationProvider.notifier).require(false);
+      expect(session.lease().key, isNull);
       session.lease().check();
       container.dispose();
     },

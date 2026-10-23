@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../features/settings/appearance.dart';
 import 'privacy_guard.dart';
+import '../shared/ui/app_notice.dart';
 import 'router.dart';
 import 'theme.dart';
 
@@ -41,6 +42,7 @@ class _CipherwillAppState extends ConsumerState<CipherwillApp> {
       FlutterQuillLocalizations.delegate,
     ],
     supportedLocales: const [Locale('en')],
-    builder: (context, child) => PrivacyGuard(child: child!),
+    builder: (context, child) =>
+        PrivacyGuard(child: AppNoticeHost(child: child!)),
   );
 }

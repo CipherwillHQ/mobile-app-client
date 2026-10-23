@@ -1,5 +1,5 @@
 // Manages subscriptions and offers the existing web upgrade entry.
-// Owns cancellation, invoice links and billing refresh controls.
+// Owns subscription details, invoice links and the hosted Paddle portal.
 // Does not implement checkout or activate Premium locally.
 
 import 'package:flutter/material.dart';
@@ -49,14 +49,10 @@ class BillingScreen extends ConsumerWidget {
                   icon: Icons.workspace_premium_outlined,
                 ),
               ),
-              ListTile(
-                title: const Text('Next billing'),
-                subtitle: Text(localTime(s['next_billing_at'])),
-              ),
-              if (s['cancel_at'] != null)
+              if (s['next_billing_at'] != null)
                 ListTile(
-                  title: const Text('Cancellation scheduled'),
-                  subtitle: Text(localTime(s['cancel_at'])),
+                  title: const Text('Next billing'),
+                  subtitle: Text(localTime(s['next_billing_at'])),
                 ),
               ListTile(
                 title: const Text('Payment method'),
@@ -78,28 +74,7 @@ class BillingScreen extends ConsumerWidget {
                       throw StateError('Unable to open subscriber portal.');
                     }
                   }),
-                  child: const Text('Manage existing subscription'),
-                ),
-              for (final entry in {
-                'Cancel at period end': 'CANCEL_SUBSCRIPTION_AT_PERIOD_END',
-                'Cancel now and request eligible refund':
-                    'CANCEL_SUBSCRIPTION_NOW_AND_REFUND',
-              }.entries)
-                TextButton(
-                  onPressed: () => perform(context, () async {
-                    if (!await confirm(
-                      context,
-                      entry.key + '? Eligibility is checked by Cipherwill.',
-                    )) {
-                      throw const ActionCancelled();
-                    }
-                    await ref.read(apiProvider).run(entry.value, {
-                      'subscriptionId': s['id'],
-                    });
-                    ref.invalidate(remoteProvider);
-                    ref.invalidate(accountProvider);
-                  }, success: 'Cancellation request completed.'),
-                  child: Text(entry.key),
+                  child: const Text('Manage billing'),
                 ),
             ],
           );

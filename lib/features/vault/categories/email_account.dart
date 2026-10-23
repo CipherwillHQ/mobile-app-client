@@ -19,6 +19,7 @@ const emailAccountCategory = AssetCategory(
       array: false,
       multiline: false,
       rich: false,
+      inputType: 'email',
     ),
     AssetField(
       'password',
@@ -46,6 +47,7 @@ const emailAccountCategory = AssetCategory(
       array: false,
       multiline: false,
       rich: false,
+      inputType: 'email',
     ),
     AssetField(
       'recoveryPhone',
@@ -64,6 +66,7 @@ const emailAccountCategory = AssetCategory(
       array: false,
       multiline: false,
       rich: false,
+      group: 'security',
     ),
     AssetField(
       'securityAnswer',
@@ -73,6 +76,7 @@ const emailAccountCategory = AssetCategory(
       array: false,
       multiline: false,
       rich: false,
+      group: 'security',
     ),
     AssetField(
       'backupCodes',

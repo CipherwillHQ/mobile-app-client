@@ -24,6 +24,7 @@ for(const filename of readdirSync(directory)){
     key:field.key,label:field.label,required:group==='MANDATORY',
     array:new RegExp(field.key+'\\??:\\s*string\\[\\]').test(source),
     multiline:field.type==='textarea',
+    group:field.group ?? null, inputType:field.type==='email' ? 'email' : null,
   })))};
 }
 const guidance=readFileSync(resolve(backend,'src/objectiveEngine/catalog/contract.ts'),'utf8');

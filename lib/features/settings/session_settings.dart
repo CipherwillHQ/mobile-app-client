@@ -8,6 +8,7 @@ import '../../app/logout.dart';
 import '../../shared/ui/actions.dart';
 import '../../shared/ui/panel_section.dart';
 import '../security/session_controller.dart';
+import '../../app/providers.dart';
 
 class SessionSettings extends ConsumerWidget {
   const SessionSettings({super.key});
@@ -15,11 +16,12 @@ class SessionSettings extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => PanelSection(
     title: 'Session & account',
     children: [
-      OutlinedButton.icon(
-        onPressed: () => ref.read(sessionProvider.notifier).lock(),
-        icon: const Icon(Icons.lock_outline),
-        label: const Text('Lock vault'),
-      ),
+      if ((ref.watch(factorsProvider).value ?? []).isNotEmpty)
+        OutlinedButton.icon(
+          onPressed: () => ref.read(sessionProvider.notifier).lock(),
+          icon: const Icon(Icons.lock_outline),
+          label: const Text('Lock vault'),
+        ),
       const SizedBox(height: 10),
       OutlinedButton.icon(
         onPressed: () => perform(context, () => logout(ref)),

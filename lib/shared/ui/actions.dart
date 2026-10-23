@@ -3,6 +3,7 @@
 // Does not send telemetry or hide failures.
 import 'package:flutter/material.dart';
 import 'text_prompt_dialog.dart';
+import 'app_notice.dart';
 
 class ActionCancelled implements Exception {
   const ActionCancelled();
@@ -13,20 +14,24 @@ Future<void> perform(
   Future<void> Function() action, {
   String? success,
 }) async {
+  final notice = NoticeScope.maybeOf(context);
+  final messenger = ScaffoldMessenger.maybeOf(context);
   try {
     await action();
-    if (context.mounted && success != null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(success)));
+    if (success != null) {
+      if (notice != null) {
+        notice.show(success, false);
+      } else if (messenger?.mounted == true) {
+        messenger!.showSnackBar(SnackBar(content: Text(success)));
+      }
     }
   } on ActionCancelled {
     return;
   } catch (error) {
-    if (context.mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(error.toString())));
+    if (notice != null) {
+      notice.show(error.toString(), true);
+    } else if (messenger?.mounted == true) {
+      messenger!.showSnackBar(SnackBar(content: Text(error.toString())));
     }
   }
 }

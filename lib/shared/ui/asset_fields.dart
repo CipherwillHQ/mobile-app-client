@@ -1,10 +1,11 @@
-// Renders category fields while preserving sensitive whitespace and arrays
-// Owns field editors and explicit secret visibility.
+// Shows mandatory fields first and adds optional fields using the web groups.
+// Owns in-memory controllers, existing-value visibility and grouped removal.
 // Does not serialize metadata or save records.
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../../features/vault/asset_category.dart';
 import '../../core/api/json_values.dart';
+import 'optional_fields.dart';
+import 'asset_input.dart';
 
 class AssetFields extends StatefulWidget {
   final List<AssetField> fields;
@@ -24,7 +25,33 @@ class AssetFields extends StatefulWidget {
 
 class _AssetFieldsState extends State<AssetFields> {
   final controllers = <String, TextEditingController>{};
-  final revealed = <String>{};
+  final added = <String>{};
+  Json get values => {
+    for (final f in widget.fields)
+      f.key: f.array
+          ? (controllers[f.key]!.text.isEmpty
+                ? <String>[]
+                : controllers[f.key]!.text.split('\n'))
+          : controllers[f.key]!.text,
+  };
+  bool visible(AssetField f) => fieldVisible(widget.fields, f, values, added);
+  void add(String key) {
+    final field = widget.fields.firstWhere((f) => f.key == key);
+    setState(
+      () => added.addAll(fieldGroup(widget.fields, field).map((f) => f.key)),
+    );
+  }
+
+  void remove(AssetField field) {
+    setState(() {
+      for (final f in fieldGroup(widget.fields, field)) {
+        controllers[f.key]!.clear();
+        added.remove(f.key);
+      }
+    });
+    change();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -44,88 +71,35 @@ class _AssetFieldsState extends State<AssetFields> {
     super.dispose();
   }
 
-  void change() {
-    widget.onChanged({
-      for (final field in widget.fields)
-        field.key: field.array
-            ? (controllers[field.key]!.text.isEmpty
-                  ? <String>[]
-                  : controllers[field.key]!.text.split('\n'))
-            : controllers[field.key]!.text,
-    });
-  }
-
+  void change() => widget.onChanged({...widget.initial, ...values});
   @override
   Widget build(BuildContext context) => Column(
     children: [
-      for (final field in widget.fields)
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16),
-          child: TextFormField(
-            controller: controllers[field.key],
-            readOnly: widget.readOnly,
-            autocorrect: !field.sensitive,
-            enableSuggestions: !field.sensitive,
-            style: field.sensitive
-                ? const TextStyle(fontFamily: 'monospace')
-                : null,
-            obscureText: field.sensitive && !revealed.contains(field.key),
-            maxLines: field.sensitive && !revealed.contains(field.key)
-                ? 1
-                : field.array || field.multiline
-                ? 4
-                : 1,
-            onChanged: (_) => change(),
-            validator: (value) =>
-                !widget.readOnly &&
-                    field.required &&
-                    (value == null || value.isEmpty)
-                ? 'Enter ' + field.label
-                : null,
-            decoration: InputDecoration(
-              labelText: field.label,
-              helperText: field.array ? 'One value per line' : null,
-              suffixIcon: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (field.sensitive)
-                    IconButton(
-                      tooltip: revealed.contains(field.key)
-                          ? 'Hide value'
-                          : 'Reveal value',
-                      onPressed: () => setState(
-                        () => revealed.contains(field.key)
-                            ? revealed.remove(field.key)
-                            : revealed.add(field.key),
-                      ),
-                      icon: Icon(
-                        revealed.contains(field.key)
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                      ),
-                    ),
-                  IconButton(
-                    tooltip: 'Copy ' + field.label,
-                    onPressed: () async {
-                      final value = controllers[field.key]!.text;
-                      if (value.isEmpty) return;
-                      await Clipboard.setData(
-                        ClipboardData(
-                          text: field.key == 'phrase'
-                              ? value.split('\n').join(' ')
-                              : value,
-                        ),
-                      );
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Copied to clipboard.')),
-                        );
-                      }
-                    },
-                    icon: const Icon(Icons.copy_outlined, size: 19),
-                  ),
-                ],
-              ),
+      for (final field in widget.fields.where(visible))
+        AssetInput(
+          key: ValueKey(field.key),
+          field: field,
+          controller: controllers[field.key]!,
+          readOnly: widget.readOnly,
+          changed: change,
+          remove: () => remove(field),
+        ),
+      if (!widget.readOnly && widget.fields.any((f) => !visible(f)))
+        PopupMenuButton<String>(
+          onSelected: add,
+          itemBuilder: (_) => [
+            for (final f in widget.fields.where((f) => !visible(f)))
+              PopupMenuItem(value: f.key, child: Text(f.label)),
+          ],
+          child: const Padding(
+            padding: EdgeInsets.all(12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.add, size: 18),
+                SizedBox(width: 8),
+                Text('Add field'),
+              ],
             ),
           ),
         ),

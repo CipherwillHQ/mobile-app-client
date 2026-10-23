@@ -3,7 +3,7 @@ Owns development commands and links to verification/release instructions.
 Does not claim device acceptance or public release readiness. -->
 # Cipherwill mobile
 
-Flutter Android/iOS client for the existing Cipherwill backend and Firebase accounts. The implementation includes owner vault categories, encrypted storage, beneficiaries/friends, executor access, guidance, planning, account settings, existing subscriptions, and compatible text backups.
+Flutter Android/iOS client for the existing Cipherwill backend and Firebase accounts. The implementation includes owner vault categories, encrypted storage, beneficiaries/friends, executor access, guidance, planning, account settings, existing subscriptions, and desktop handoffs for account reset/deletion and backups/restores.
 
 **Status:** Android debug builds, analysis and 82 automated tests pass. Firebase Android/iOS registration is configured. Live backend scenarios, physical-device security tests, iOS compilation and store acceptance remain pending. See [release checklist](docs/release-checklist.md).
 
@@ -56,4 +56,4 @@ See [security compatibility](docs/security.md), [platform configuration](docs/pl
 
 Signed Android APK/AAB artifacts are built for `release VERSION+BUILD` push commits. Always increase the build number in that commit; see [release instructions](release.md) for signing setup and downloads.
 
-Existing backend authorization, quotas and release conditions remain authoritative. Account authentication is separate from factor unlocking. Saved biometric keys use native secret retrieval controls. Backups contain decrypted text; files are excluded. Free accounts can upgrade through the existing web /upgrade page embedded with webview_flutter; see [web upgrade integration](docs/web-upgrade.md). There is no native checkout implementation, persistent offline vault cache, push notification setup, chat, wishes, marketing or HQ workspace.
+Existing backend authorization, quotas and release conditions remain authoritative. Account authentication is separate from factor unlocking. Saved biometric keys use native secret retrieval controls. Accounts without security factors open directly after account checks. Reset, deletion, backup and restore actions direct users to cipherwill.com/app on desktop. Existing subscribers manage billing through the hosted Paddle portal. Free accounts can upgrade through the existing web /upgrade page embedded with webview_flutter; see [web upgrade integration](docs/web-upgrade.md). There is no native checkout implementation, persistent offline vault cache, push notification setup, chat, wishes, marketing or HQ workspace.

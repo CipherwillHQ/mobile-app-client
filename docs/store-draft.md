@@ -15,7 +15,7 @@ Cipherwill helps you organize the information your loved ones may need. Save not
 
 Use your existing Cipherwill account and subscriptions. Unlock supported security factors, optionally save a derived factor key behind device biometrics, and review access granted to you in a separate executor workspace.
 
-The app includes profile and communication settings, compatible text backup import/export, and account-deletion access. An internet connection is required. Backups and explicitly exported files contain decrypted data; keep those copies secure.
+The app includes profile and communication settings. Account reset/deletion and backups/restores direct you to cipherwill.com/app on desktop. An internet connection is required. Explicitly exported files contain decrypted data; keep those copies secure.
 
 Privacy policy: https://cipherwill.com/i/privacy-policy
 Terms: https://cipherwill.com/i/terms-of-service
@@ -51,6 +51,6 @@ Supply disposable credentials through App Store Connect/Play Console review fiel
 
 Review flow: sign in, unlock the sample factor, open Home/Vault/People/Settings, edit a synthetic note, inspect beneficiary access, enter the executor workspace, and view existing subscription details. Explain that encrypted file storage/seed phrases/DeFi follow the existing account plan. Free accounts can open the existing Cipherwill web upgrade page from Subscription and invoices; the backend confirms Premium after payment processing.
 
-Account deletion is under Settings → Reset or delete account. Use disposable accounts because deletion/reset affects backend data. Provide a sample archive for backup review and disclose its decrypted contents.
+Settings → Reset or delete account explains how to complete deletion at cipherwill.com/app on desktop. Settings → Backup gives the same desktop handoff for backups and restores.
 
 Capture store screenshots only from accepted Android/iOS builds using synthetic data. Internal distribution, final screenshots, privacy completion and public submission remain pending.
