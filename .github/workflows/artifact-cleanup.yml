@@ -1,0 +1,42 @@
+# Keeps the newest three Android and iOS release artifacts independently.
+# Owns completed-run, daily and manual cleanup with repository artifact permissions.
+# Does not delete debug artifacts, workflow runs or GitHub release assets.
+name: Release artifact cleanup
+on:
+  workflow_run:
+    workflows: ['Mobile validation']
+    types: [completed]
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Preview cleanup without deleting artifacts
+        type: boolean
+        default: false
+permissions:
+  contents: read
+  actions: write
+concurrency:
+  group: release-artifact-cleanup
+  cancel-in-progress: false
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - name: Keep the latest three release artifacts per platform
+        uses: actions/github-script@v7
+        env:
+          DRY_RUN: ${{ inputs.dry_run || false }}
+        with:
+          script: |
+            const {cleanupReleaseArtifacts} = await import(
+              `${process.env.GITHUB_WORKSPACE}/tool/release_artifact_retention.mjs`
+            );
+            await cleanupReleaseArtifacts({
+              github, context, core, dryRun: process.env.DRY_RUN === 'true'
+            });

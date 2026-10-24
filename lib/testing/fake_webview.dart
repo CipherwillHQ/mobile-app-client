@@ -1,6 +1,6 @@
 // Provides a native-WebView substitute for routed Flutter regression tests.
 // Owns request/channel capture and a deterministic platform widget.
-// Does not load public checkout pages or handle real payments.
+// Does not load public pages, contact support or handle real payments.
 import 'package:flutter/material.dart';
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 import 'fake_navigation_delegate.dart';
@@ -29,6 +29,7 @@ class FakeWebViewPlatform extends WebViewPlatform {
 class FakeWebViewController extends PlatformWebViewController {
   final events = <String>[];
   final requests = <LoadRequestParams>[];
+  final htmlLoads = <(String, String?)>[];
   JavaScriptChannelParams? channel;
   JavaScriptMode? mode;
   late FakeNavigationDelegate navigation;
@@ -60,6 +61,15 @@ class FakeWebViewController extends PlatformWebViewController {
     navigation.started?.call(params.uri.toString());
     navigation.progress?.call(100);
   }
+
+  @override
+  Future<void> loadHtmlString(String html, {String? baseUrl}) async {
+    events.add('html');
+    htmlLoads.add((html, baseUrl));
+  }
+
+  @override
+  Future<void> setBackgroundColor(Color color) async {}
 
   void send(String payload) =>
       channel!.onMessageReceived(JavaScriptMessage(message: payload));

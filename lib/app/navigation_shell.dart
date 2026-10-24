@@ -25,7 +25,12 @@ class _NavigationShellState extends State<NavigationShell> {
   void openMenu() => scaffold.currentState?.openDrawer();
   @override
   Widget build(BuildContext context) {
-    if (Uri.parse(widget.location).path == '/upgrade') return widget.child;
+    if ([
+      '/upgrade',
+      '/support-chat',
+    ].contains(Uri.parse(widget.location).path)) {
+      return widget.child;
+    }
     if (isExecutorLocation(widget.location)) {
       return ExecutorShell(location: widget.location, child: widget.child);
     }

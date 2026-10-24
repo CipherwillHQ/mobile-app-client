@@ -73,6 +73,7 @@ abstract final class AppIcons {
   static const edit = TablerIcons.pencil;
   static const desktop = TablerIcons.device_desktop;
   static const feedback = TablerIcons.message;
+  static const chat = TablerIcons.messages;
   static const external = TablerIcons.arrow_up_right;
   static const score = TablerIcons.chart_donut;
   static const apple = TablerIcons.brand_apple;

@@ -113,7 +113,7 @@ jobs:
         run: |
           echo "Download android-release-$LABEL from this run's Artifacts section." >> "$GITHUB_STEP_SUMMARY"
           echo "Upload the signed AAB to Play Console; use the APK for direct installation." >> "$GITHUB_STEP_SUMMARY"
-          echo "Artifacts are retained for 90 days. See release.md for the release procedure." >> "$GITHUB_STEP_SUMMARY"
+          echo "Cleanup keeps the latest three Android releases, subject to the 90-day expiry. See release.md." >> "$GITHUB_STEP_SUMMARY"
       - name: Remove temporary signing and configuration files
         if: ${{ always() }}
         run: rm -f "$RUNNER_TEMP/cipherwill-upload-key.jks" android/key.properties config/production.json

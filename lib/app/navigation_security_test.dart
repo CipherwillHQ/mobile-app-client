@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 import '../features/security/lock_screen.dart';
 import '../features/security/session_controller.dart';
-import '../features/billing/testing/fake_webview.dart';
+import '../testing/fake_webview.dart';
 import '../testing/navigation_harness.dart';
 import 'app_sidebar.dart';
 import 'navigation_shell.dart';

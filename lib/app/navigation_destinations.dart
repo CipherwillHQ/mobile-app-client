@@ -5,6 +5,9 @@ import 'app_icons.dart';
 import 'package:flutter/material.dart';
 
 typedef AppDestination = (String title, String path, IconData icon);
+const supportChatTitle = 'Live Chat with Team';
+const supportChatPath = '/support-chat';
+const supportDestination = (supportChatTitle, supportChatPath, AppIcons.chat);
 const dashboardDestinations = <AppDestination>[
   ('Home', '/home', AppIcons.home),
   ('Guide', '/guide', AppIcons.guide),

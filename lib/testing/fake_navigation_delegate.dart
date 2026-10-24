@@ -1,4 +1,4 @@
-// Captures native navigation events for upgrade contract tests.
+// Captures native navigation events for embedded-web feature tests.
 // Owns deterministic loading, resource failures and navigation callbacks.
 // Does not instantiate an Android or iOS WebView.
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';

@@ -39,6 +39,25 @@ tests, dependency resolution and native builds still execute. Each workflow canc
 its superseded runs for the same Git ref. Changing the corresponding tool version
 or dependency lockfile invalidates the affected cache automatically.
 
+## Artifact cleanup
+
+`artifact-cleanup.yml` runs after Mobile validation completes, daily at 03:17 UTC,
+and through manual dispatch. It keeps the newest **three artifacts per platform**
+whose names start with `android-release-` or `ios-release-`, ordered by upload time.
+Each Android artifact contains both APK and AAB files, so they are retained together.
+The limit applies across repository branches. Debug artifacts and other uploads
+are excluded; GitHub's configured age expiry still applies to the retained artifacts.
+
+The current iOS job validates an unsigned build without uploading an artifact.
+Future iOS release uploads should use the `ios-release-VERSION+BUILD` name prefix
+to participate in the same policy.
+
+Cleanup paginates all artifacts before deleting, runs one cleanup job at a time,
+and uses only the built-in token with `actions: write` and `contents: read`.
+It checks out the default branch, including when triggered by a pull request's
+completed validation run. Manual dispatch's `dry_run` option previews the plan.
+It deletes artifact archives while retaining workflow logs and GitHub release assets.
+
 ## Verification
 
 Validate all YAML workflows with actionlint, then run:

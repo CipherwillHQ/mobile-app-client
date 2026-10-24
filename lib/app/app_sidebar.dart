@@ -83,6 +83,10 @@ class AppSidebar extends ConsumerWidget {
                   for (final item in platformDestinations)
                     SidebarLink(destination: item, location: location),
                   SidebarLink(
+                    destination: supportDestination,
+                    location: location,
+                  ),
+                  SidebarLink(
                     destination: ('Feedback', '/feedback', AppIcons.feedback),
                     location: location,
                   ),

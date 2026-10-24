@@ -47,6 +47,7 @@ String? parentDestination(String location) {
     '/usage',
     '/account-actions',
     '/about',
+    '/support-chat',
   ].contains(path)) {
     return '/settings';
   }

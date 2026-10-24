@@ -125,8 +125,10 @@ Download and extract `android-release-1.0.1+4`. It contains:
 - `cipherwill-1.0.1+4.aab`: signed Android App Bundle for manual Play Console upload.
 - `cipherwill-1.0.1+4.apk`: signed release APK for direct device installation/testing.
 
-Artifacts are retained for **90 days**. Save your release files elsewhere if you
-need longer retention. Allow the release run to finish before pushing another
+Artifact cleanup keeps the **latest three Android release artifacts**, ordered by
+upload time, independently from iOS releases. GitHub's **90-day** expiry still
+applies. Save release files elsewhere if you need older builds or longer retention.
+See [artifact cleanup](docs/ci.md#artifact-cleanup). Allow the release run to finish before pushing another
 commit to the same branch: the workflow cancels superseded runs. Flutter/Pub,
 Gradle and NDK caches speed up subsequent builds.
 

@@ -2,6 +2,7 @@
 // Owns appearance, planning destinations and existing account actions.
 // Does not change provider authentication or encrypted vault contents.
 import '../../app/app_icons.dart';
+import '../../app/navigation_destinations.dart';
 import 'package:flutter/material.dart';
 import '../../shared/ui/page_frame.dart';
 import '../../shared/ui/panel_section.dart';
@@ -36,6 +37,12 @@ class SettingsScreen extends StatelessWidget {
         ],
       ),
       SessionSettings(),
+      SettingsDestination(
+        supportChatTitle,
+        'Talk with Cipherwill support',
+        AppIcons.chat,
+        supportChatPath,
+      ),
       SettingsDestination(
         'Send feedback',
         'Help us improve Cipherwill',

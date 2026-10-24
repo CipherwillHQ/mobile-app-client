@@ -14,7 +14,7 @@ import '../../../testing/fake_api.dart';
 import '../../../testing/fake_auth.dart';
 import '../billing_screen.dart';
 import '../upgrade_screen.dart';
-import 'fake_webview.dart';
+import '../../../testing/fake_webview.dart';
 
 class UpgradeApi extends FakeApi {
   String plan = 'free';

@@ -36,6 +36,7 @@ import '../features/backup/backup_screen.dart';
 import '../features/guidance/guidance_screen.dart';
 import '../features/timeline/timeline_screen.dart';
 import '../features/auth/auth_action_screen.dart';
+import '../features/support/support_chat_screen.dart';
 import 'navigation_shell.dart';
 import 'deep_links.dart';
 import 'account_gate.dart';
@@ -164,6 +165,10 @@ GoRouter createRouter() => GoRouter(
         GoRoute(path: '/feedback', builder: (_, _) => const FeedbackScreen()),
         GoRoute(path: '/billing', builder: (_, _) => const BillingScreen()),
         GoRoute(path: '/upgrade', builder: (_, _) => const UpgradeScreen()),
+        GoRoute(
+          path: '/support-chat',
+          builder: (_, _) => const SupportChatScreen(),
+        ),
         GoRoute(path: '/backup', builder: (_, _) => const BackupScreen()),
         GoRoute(path: '/guide', builder: (_, _) => const GuidanceScreen()),
         GoRoute(path: '/timeline', builder: (_, _) => const TimelineScreen()),
