@@ -1,6 +1,7 @@
 // Manages encrypted files and folders with native file pickers.
 // Owns storage navigation, upload recovery and deletion.
 // Does not persist decrypted downloads or allow executor edits.
+import '../../app/app_icons.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
@@ -11,6 +12,7 @@ import '../../app/providers.dart';
 import '../../app/native_handoff.dart';
 import '../../shared/ui/page_frame.dart';
 import '../../shared/ui/actions.dart';
+import '../../shared/ui/action_sheet.dart';
 import '../../shared/ui/empty_state.dart';
 import '../../shared/ui/status_pill.dart';
 import '../../shared/ui/section_heading.dart';
@@ -18,6 +20,7 @@ import '../security/session_controller.dart';
 import 'file_service.dart';
 import 'pending_upload.dart';
 import 'storage_lists.dart';
+import 'pending_upload_row.dart';
 
 class StorageScreen extends ConsumerStatefulWidget {
   final String? folder;
@@ -75,6 +78,20 @@ class _StorageScreenState extends ConsumerState<StorageScreen> {
     if (mounted) setState(() => revision++);
   });
 
+  Future<void> add() async {
+    final action = await chooseAction(
+      context,
+      title: 'Add to this folder',
+      actions: const [
+        SheetAction('upload', 'Upload file', AppIcons.upload),
+        SheetAction('folder', 'Create folder', AppIcons.addFolder),
+      ],
+    );
+    if (!mounted) return;
+    if (action == 'upload') await upload();
+    if (action == 'folder') await folder();
+  }
+
   @override
   void dispose() {
     unawaited(cleanupPickedFiles());
@@ -91,42 +108,28 @@ class _StorageScreenState extends ConsumerState<StorageScreen> {
           EmptyState(
             title: 'Premium file storage',
             message: 'File storage requires an existing Premium subscription.',
-            icon: Icons.folder_outlined,
+            icon: AppIcons.folder,
           ),
         ],
       );
     }
     return PageFrame(
       title: executor ? 'Granted files' : 'File Storage',
-      subtitle: widget.folder != null ? 'Inside your selected folder' : null,
+      subtitle: widget.folder != null ? 'Folder contents' : null,
       actions: executor
           ? null
           : [
               IconButton(
-                tooltip: 'Create folder',
-                onPressed: busy ? null : folder,
-                icon: const Icon(Icons.create_new_folder_outlined),
-              ),
-              IconButton(
-                tooltip: 'Upload file',
-                onPressed: busy ? null : upload,
-                icon: const Icon(Icons.upload_file_outlined),
+                tooltip: 'Add file or folder',
+                onPressed: busy ? null : add,
+                icon: const Icon(AppIcons.add),
               ),
             ],
       children: [
         if (executor)
-          const StatusPill('Read-only access', icon: Icons.visibility_outlined),
-        if (busy)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
-            child: LinearProgressIndicator(),
-          ),
-        if (pending != null && !busy)
-          OutlinedButton.icon(
-            onPressed: upload,
-            icon: const Icon(Icons.refresh),
-            label: Text('Retry saving ' + pending!.name),
-          ),
+          const StatusPill('Read-only access', icon: AppIcons.reveal),
+        if (pending != null)
+          PendingUploadRow(name: pending!.name, saving: busy, retry: upload),
         const SectionHeading('Folders'),
         StorageFolders(
           key: ValueKey('folders$revision'),

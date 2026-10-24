@@ -1,6 +1,7 @@
 // Manages phone verification and existing communication channels.
 // Owns adding numbers and refreshing their server state.
 // Does not introduce push notifications.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
@@ -37,7 +38,7 @@ class PhoneScreen extends ConsumerWidget {
           });
           ref.invalidate(remoteProvider);
         }, success: 'Phone number added.'),
-        icon: const Icon(Icons.add_rounded),
+        icon: const Icon(AppIcons.add),
         label: const Text('Add phone number'),
       ),
       const SizedBox(height: 16),
@@ -50,7 +51,7 @@ class PhoneScreen extends ConsumerWidget {
               title: 'Add another way to reach you',
               message:
                   'Verify a phone number to enable SMS, WhatsApp and phone channels.',
-              icon: Icons.phone_outlined,
+              icon: AppIcons.phone,
             );
           }
           return Column(

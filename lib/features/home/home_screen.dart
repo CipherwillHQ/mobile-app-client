@@ -1,6 +1,7 @@
 // Mirrors the web Dashboard's greeting, setup, data and planning sections.
 // Owns owner overview navigation using existing online metadata.
 // Does not decrypt vault records or grant beneficiary access.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -26,7 +27,7 @@ class HomeScreen extends ConsumerWidget {
         IconButton(
           tooltip: 'Your profile',
           onPressed: () => context.push('/profile'),
-          icon: const Icon(Icons.person_outline_rounded),
+          icon: const Icon(AppIcons.person),
         ),
       ],
       children: [
@@ -41,8 +42,8 @@ class HomeScreen extends ConsumerWidget {
         const VaultStateLabel(),
         FeatureCard(
           title: 'Security factors',
-          subtitle: 'Manage your keys and biometric access',
-          icon: Icons.shield_outlined,
+          subtitle: '',
+          icon: AppIcons.security,
           onTap: () => context.push('/factors'),
         ),
         const Divider(),
@@ -50,20 +51,20 @@ class HomeScreen extends ConsumerWidget {
         const Divider(),
         FeatureCard(
           title: 'Segments',
-          subtitle: 'Choose the information you want to secure',
-          icon: Icons.category_outlined,
+          subtitle: '',
+          icon: AppIcons.segments,
           onTap: () => context.push('/preferences'),
         ),
         FeatureCard(
           title: 'Granted beneficiary access',
           subtitle: 'Review and revoke access to your will',
-          icon: Icons.vpn_key_outlined,
+          icon: AppIcons.key,
           onTap: () => context.push('/granted-access'),
         ),
         FeatureCard(
           title: 'Executor workspace',
           subtitle: 'View wills released to you',
-          icon: Icons.lock_open_outlined,
+          icon: AppIcons.unlocked,
           onTap: () => context.push('/executor'),
         ),
       ],

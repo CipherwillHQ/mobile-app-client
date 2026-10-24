@@ -11,6 +11,7 @@ import '../../shared/ui/page_frame.dart';
 import '../../testing/fake_api.dart';
 import '../../testing/fake_auth.dart';
 import 'file_details.dart';
+import 'file_options.dart';
 
 void main() {
   testWidgets(
@@ -48,11 +49,14 @@ void main() {
             theme: cipherwillTheme(Brightness.light),
             home: const PageFrame(
               title: 'File',
+              actions: [FileOptions(id: 'file')],
               children: [FileDetails(id: 'file')],
             ),
           ),
         ),
       );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('File options'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Rename file'));
       await tester.pumpAndSettle();

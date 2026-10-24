@@ -44,6 +44,11 @@ void main() {
               brightness: brightness,
               screen: PageFrame(
                 title: category.title,
+                focused: true,
+                footer: FilledButton(
+                  onPressed: () {},
+                  child: const Text('Save changes'),
+                ),
                 children: [
                   AssetDraftForm(
                     form: GlobalKey<FormState>(),
@@ -51,11 +56,8 @@ void main() {
                     category: category,
                     initial: initial,
                     draft: initial,
-                    id: 'item',
                     status: 'Save failed. Retry.',
-                    saving: false,
                     changed: (_) {},
-                    save: () {},
                   ),
                 ],
               ),

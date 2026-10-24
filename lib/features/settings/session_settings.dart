@@ -1,12 +1,14 @@
 // Keeps existing session and account controls in General Settings.
 // Owns lock, logout and account-action navigation.
 // Does not implement key deletion or bypass confirmation for account changes.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../app/logout.dart';
 import '../../shared/ui/actions.dart';
 import '../../shared/ui/panel_section.dart';
+import '../../shared/ui/navigation_row.dart';
 import '../security/session_controller.dart';
 import '../../app/providers.dart';
 
@@ -17,23 +19,22 @@ class SessionSettings extends ConsumerWidget {
     title: 'Session & account',
     children: [
       if ((ref.watch(factorsProvider).value ?? []).isNotEmpty)
-        OutlinedButton.icon(
-          onPressed: () => ref.read(sessionProvider.notifier).lock(),
-          icon: const Icon(Icons.lock_outline),
-          label: const Text('Lock vault'),
+        NavigationRow(
+          onTap: () => ref.read(sessionProvider.notifier).lock(),
+          icon: AppIcons.lock,
+          title: 'Lock vault',
         ),
-      const SizedBox(height: 10),
-      OutlinedButton.icon(
-        onPressed: () => perform(context, () => logout(ref)),
-        icon: const Icon(Icons.logout_outlined),
-        label: const Text('Sign out'),
+      NavigationRow(
+        onTap: () => perform(context, () => logout(ref)),
+        icon: AppIcons.logout,
+        title: 'Sign out',
       ),
-      TextButton(
-        onPressed: () => context.push('/account-actions'),
-        style: TextButton.styleFrom(
-          foregroundColor: Theme.of(context).colorScheme.error,
-        ),
-        child: const Text('Reset or delete account'),
+      NavigationRow(
+        onTap: () => context.push('/account-actions'),
+        icon: AppIcons.desktop,
+        title: 'Reset or delete account',
+        detail: 'On desktop',
+        trailing: const Icon(AppIcons.external, size: 20),
       ),
     ],
   );

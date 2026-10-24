@@ -1,10 +1,9 @@
-// Matches the web mobile shell with a drawer and flat section navigation.
-// Owns protected page framing and explicit menu access.
+// Frames familiar web pages with native mobile sidebar navigation.
+// Owns protected menu access without permanent footer navigation.
 // Does not cache hidden vault screens or bypass account locking.
 
 import 'package:flutter/material.dart';
 import 'app_sidebar.dart';
-import 'mobile_section_bar.dart';
 import 'navigation_scope.dart';
 
 class NavigationShell extends StatefulWidget {
@@ -29,10 +28,12 @@ class _NavigationShellState extends State<NavigationShell> {
       key: scaffold,
       resizeToAvoidBottomInset: false,
       drawer: AppSidebar(location: widget.location),
-      body: NavigationScope(openMenu: openMenu, child: widget.child),
-      bottomNavigationBar: MediaQuery.viewInsetsOf(context).bottom > 0
-          ? null
-          : MobileSectionBar(location: widget.location, openMenu: openMenu),
+      drawerEnableOpenDragGesture: false,
+      body: NavigationScope(
+        openMenu: openMenu,
+        location: widget.location,
+        child: widget.child,
+      ),
     );
   }
 }

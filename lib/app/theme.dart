@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import '../shared/ui/motion.dart';
 import 'design_tokens.dart';
+import 'typography.dart';
 
 ThemeData cipherwillTheme(Brightness brightness) {
   final dark = brightness == Brightness.dark;
@@ -22,64 +23,14 @@ ThemeData cipherwillTheme(Brightness brightness) {
         outlineVariant:
             (dark ? CipherwillColors.cream : CipherwillColors.forest)
                 .withValues(alpha: .1),
-        error: CipherwillColors.error,
+        error: dark ? const Color(0xffffa098) : CipherwillColors.error,
       );
   final card = dark ? CipherwillColors.darkCard : Colors.white;
   final outline = OutlineInputBorder(
     borderRadius: BorderRadius.circular(8),
     borderSide: BorderSide(color: scheme.outlineVariant),
   );
-  final text = ThemeData(brightness: brightness, fontFamily: 'Gilroy').textTheme
-      .apply(bodyColor: scheme.onSurface, displayColor: scheme.onSurface)
-      .copyWith(
-        headlineLarge: TextStyle(
-          fontSize: 36,
-          fontWeight: FontWeight.w600,
-          letterSpacing: -1.5,
-          height: 1.12,
-          color: scheme.onSurface,
-        ),
-        headlineMedium: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.w600,
-          letterSpacing: -1,
-          color: scheme.onSurface,
-        ),
-        headlineSmall: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.w600,
-          letterSpacing: -.7,
-          color: scheme.onSurface,
-        ),
-        titleLarge: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-          letterSpacing: -.4,
-          color: scheme.onSurface,
-        ),
-        titleMedium: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          color: scheme.onSurface,
-        ),
-        bodyLarge: TextStyle(
-          fontSize: 16,
-          height: 1.5,
-          color: scheme.onSurface,
-        ),
-        bodyMedium: TextStyle(
-          fontSize: 14,
-          height: 1.5,
-          color: scheme.onSurface,
-        ),
-        bodySmall: TextStyle(
-          fontSize: 12,
-          height: 1.5,
-          color: scheme.onSurfaceVariant,
-        ),
-        labelLarge: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-      )
-      .apply(fontFamily: 'Gilroy');
+  final text = cipherwillTypography(scheme);
   return ThemeData(
     useMaterial3: true,
     fontFamily: 'Gilroy',
@@ -87,7 +38,7 @@ ThemeData cipherwillTheme(Brightness brightness) {
     textTheme: text,
     scaffoldBackgroundColor: scheme.surface,
     appBarTheme: AppBarTheme(
-      backgroundColor: card,
+      backgroundColor: scheme.surface,
       centerTitle: false,
       elevation: 0,
       scrolledUnderElevation: 0,
@@ -99,10 +50,7 @@ ThemeData cipherwillTheme(Brightness brightness) {
       color: card,
       elevation: 0,
       margin: const EdgeInsets.symmetric(vertical: 6),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: scheme.outlineVariant),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       clipBehavior: Clip.antiAlias,
     ),
     inputDecorationTheme: InputDecorationTheme(
@@ -119,19 +67,19 @@ ThemeData cipherwillTheme(Brightness brightness) {
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        minimumSize: const Size(44, 44),
+        minimumSize: const Size(48, 48),
         backgroundColor: const Color(0xff003ecb),
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         textStyle: text.labelLarge,
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        minimumSize: const Size(44, 44),
+        minimumSize: const Size(48, 48),
         foregroundColor: scheme.onSurface,
         side: BorderSide(color: scheme.outlineVariant),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         textStyle: text.labelLarge,
       ),
     ),
@@ -155,13 +103,13 @@ ThemeData cipherwillTheme(Brightness brightness) {
     ),
     dialogTheme: DialogThemeData(
       backgroundColor: card,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
     bottomSheetTheme: BottomSheetThemeData(
       backgroundColor: card,
       showDragHandle: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
     ),
     snackBarTheme: SnackBarThemeData(
@@ -175,17 +123,9 @@ ThemeData cipherwillTheme(Brightness brightness) {
       selectedColor: scheme.primaryContainer,
       padding: const EdgeInsets.all(8),
     ),
-    navigationBarTheme: NavigationBarThemeData(
-      height: 72,
-      backgroundColor: Colors.transparent,
-      indicatorColor: scheme.primaryContainer,
-      labelTextStyle: WidgetStatePropertyAll(
-        text.bodySmall!.copyWith(fontWeight: FontWeight.w600),
-      ),
-    ),
     pageTransitionsTheme: const PageTransitionsTheme(
       builders: {
-        TargetPlatform.android: CipherwillPageTransitions(),
+        TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         TargetPlatform.windows: CipherwillPageTransitions(),
         TargetPlatform.macOS: CipherwillPageTransitions(),

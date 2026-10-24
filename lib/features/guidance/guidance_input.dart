@@ -2,6 +2,7 @@
 // Owns input widgets and temporary file selection.
 // Does not save answers or encrypt selected files.
 
+import '../../app/app_icons.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -91,7 +92,7 @@ class _GuidanceInputState extends ConsumerState<GuidanceInput> {
             widget.changed(File(result!.files.single.path!));
           }
         },
-        icon: const Icon(Icons.attach_file),
+        icon: const Icon(AppIcons.attachment),
         label: Text(selected ?? 'Select file'),
       );
     }
@@ -116,11 +117,7 @@ class _GuidanceInputState extends ConsumerState<GuidanceInput> {
             ? IconButton(
                 tooltip: hidden ? 'Show answer' : 'Hide answer',
                 onPressed: () => setState(() => hidden = !hidden),
-                icon: Icon(
-                  hidden
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
-                ),
+                icon: Icon(hidden ? AppIcons.reveal : AppIcons.hide),
               )
             : null,
       ),

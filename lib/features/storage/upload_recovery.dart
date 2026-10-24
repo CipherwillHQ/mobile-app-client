@@ -1,6 +1,7 @@
 // Resumes a previously created file item after an interrupted upload.
 // Owns online metadata checks and reselecting the original file.
 // Does not create a second item or overwrite a committed storage pod.
+import '../../app/app_icons.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
@@ -70,7 +71,7 @@ class _UploadRecoveryState extends ConsumerState<UploadRecovery> {
   @override
   Widget build(BuildContext context) => TextButton.icon(
     onPressed: busy ? null : recover,
-    icon: const Icon(Icons.upload_file),
+    icon: const Icon(AppIcons.upload),
     label: Text(busy ? 'Checking upload…' : 'Resume interrupted upload'),
   );
 }

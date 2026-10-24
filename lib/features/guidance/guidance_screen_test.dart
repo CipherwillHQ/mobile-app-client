@@ -25,7 +25,8 @@ void main() {
       await tester.enterText(find.byType(TextField), 'Personal name');
       FocusManager.instance.primaryFocus?.unfocus();
       await tester.pumpAndSettle();
-      await tester.tap(find.text("Let's do this later"));
+      expect(find.byTooltip('Open menu'), findsNothing);
+      await tester.tap(find.byTooltip('Pause setup'));
       await tester.pumpAndSettle();
       expect(find.text('Your Cipherwill Status'), findsOneWidget);
       await tester.tap(find.text('Continue Cipherwill Setup'));

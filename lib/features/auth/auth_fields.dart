@@ -1,6 +1,7 @@
 // Renders account credentials with keyboard and explicit visibility controls.
 // Owns input presentation and empty-field validation.
 // Does not keep passwords beyond the parent-owned controllers.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 
 class AuthFields extends StatefulWidget {
@@ -83,9 +84,7 @@ class _AuthFieldsState extends State<AuthFields> {
                 tooltip: revealed ? 'Hide password' : 'Show password',
                 onPressed: () => setState(() => revealed = !revealed),
                 icon: Icon(
-                  revealed
-                      ? Icons.visibility_off_outlined
-                      : Icons.visibility_outlined,
+                  revealed ? AppIcons.hide : AppIcons.reveal,
                   size: 20,
                 ),
               ),
@@ -102,7 +101,6 @@ class _AuthFieldsState extends State<AuthFields> {
           else
             const SizedBox(height: 20),
           FilledButton(
-            style: FilledButton.styleFrom(shape: const StadiumBorder()),
             onPressed: widget.busy ? null : submit,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

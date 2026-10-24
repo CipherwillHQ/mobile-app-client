@@ -1,6 +1,7 @@
 // Offers free accounts the existing web-managed Premium upgrade.
 // Owns navigation, duplicate-tap prevention and returned checkout feedback.
 // Does not implement native checkout or change the account plan locally.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -32,15 +33,11 @@ class _UpgradeEntryState extends ConsumerState<UpgradeEntry> {
       return const SizedBox.shrink();
     }
     return PanelSection(
-      title: 'More room for your legacy',
+      title: 'Free plan',
       children: [
-        const Text(
-          'Explore Premium and upgrade through Cipherwill’s secure web checkout.',
-        ),
-        const SizedBox(height: 16),
         FilledButton.icon(
           onPressed: opening ? null : open,
-          icon: const Icon(Icons.workspace_premium_outlined),
+          icon: const Icon(AppIcons.premium),
           label: const Text('Upgrade to Premium'),
         ),
       ],

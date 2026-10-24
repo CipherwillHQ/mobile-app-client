@@ -1,6 +1,7 @@
 // Presents online guidance progress and the next scheduled will event.
 // Owns Home summaries and navigation targets.
 // Does not decrypt assets or determine release conditions locally.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/api/json_values.dart';
@@ -21,7 +22,7 @@ class PlanningSummary extends StatelessWidget {
           subtitle:
               '${jsonList(result['getGuidedActionCompletions']).length} completed steps · '
               '${jsonList(result['getGuidedActionDeferrals']).length} saved for later',
-          icon: Icons.auto_awesome_outlined,
+          icon: AppIcons.guide,
           color: CipherwillColors.sage,
           onTap: () => context.push('/guide'),
         ),
@@ -37,7 +38,7 @@ class PlanningSummary extends StatelessWidget {
                 : event['type'].toString().replaceAll('_', ' ') +
                       ' · ' +
                       localTime(event['execution_time']),
-            icon: Icons.schedule_rounded,
+            icon: AppIcons.timeline,
             color: CipherwillColors.clay,
             onTap: () => context.push('/timeline'),
           );

@@ -1,6 +1,7 @@
 // Collects feedback through the existing Cipherwill operation.
 // Owns a multiline draft, submission state and confirmed-success clearing.
 // Does not attach vault contents or send feedback without a user action.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
@@ -46,7 +47,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
         title: 'We’re listening',
         message:
             'Tell us what worked, what felt difficult, or what you’d like to see next.',
-        icon: Icons.chat_bubble_outline_rounded,
+        icon: AppIcons.feedback,
       ),
       const SizedBox(height: 16),
       PanelSection(
@@ -71,7 +72,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
           const SizedBox(height: 20),
           FilledButton.icon(
             onPressed: busy ? null : send,
-            icon: const Icon(Icons.send_outlined),
+            icon: const Icon(AppIcons.send),
             label: Text(busy ? 'Sending…' : 'Send feedback'),
           ),
         ],

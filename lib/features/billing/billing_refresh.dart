@@ -1,6 +1,7 @@
 // Refreshes online billing data after checkout and on user request.
 // Owns billing reload controls and terminal checkout feedback.
 // Does not treat a payment message as confirmed Premium activation.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import '../../shared/ui/app_notice.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,7 +37,7 @@ class BillingRefreshButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => IconButton(
     tooltip: 'Refresh billing',
-    icon: const Icon(Icons.refresh_rounded),
+    icon: const Icon(AppIcons.refresh),
     onPressed: () => refreshBilling(ref),
   );
 }

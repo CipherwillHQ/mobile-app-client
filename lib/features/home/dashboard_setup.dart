@@ -1,6 +1,7 @@
 // Matches the web dashboard's three-step setup checklist.
 // Owns presentation of profile, stored-data and beneficiary completion.
 // Does not change account setup or infer will release readiness.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -66,9 +67,7 @@ class DashboardSetup extends ConsumerWidget {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: Icon(
-                  step.$3
-                      ? Icons.check_circle_outline
-                      : Icons.radio_button_unchecked,
+                  step.$3 ? AppIcons.done : AppIcons.pending,
                   size: 22,
                   color: step.$3 ? Theme.of(context).colorScheme.primary : null,
                 ),
@@ -76,7 +75,7 @@ class DashboardSetup extends ConsumerWidget {
                   step.$1,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
-                trailing: const Icon(Icons.chevron_right, size: 18),
+                trailing: const Icon(AppIcons.next, size: 18),
                 onTap: () => context.push(step.$2),
               ),
             const Divider(),

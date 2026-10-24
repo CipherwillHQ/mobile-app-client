@@ -1,6 +1,7 @@
 // Presents native provider alternatives to email authentication.
 // Owns Google and iOS Apple sign-in buttons.
 // Does not link providers or initialize their SDKs.
+import '../../app/app_icons.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 
@@ -34,7 +35,6 @@ class AuthProviders extends StatelessWidget {
       ),
       const SizedBox(height: 14),
       OutlinedButton.icon(
-        style: OutlinedButton.styleFrom(shape: const StadiumBorder()),
         onPressed: busy ? null : google,
         icon: Image.asset(
           'assets/images/google.png',
@@ -47,9 +47,8 @@ class AuthProviders extends StatelessWidget {
       if (Platform.isIOS) ...[
         const SizedBox(height: 10),
         OutlinedButton.icon(
-          style: OutlinedButton.styleFrom(shape: const StadiumBorder()),
           onPressed: busy ? null : apple,
-          icon: const Icon(Icons.apple, size: 22),
+          icon: const Icon(AppIcons.apple, size: 22),
           label: const Text('Continue with Apple'),
         ),
       ],

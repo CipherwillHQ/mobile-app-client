@@ -1,11 +1,12 @@
 // Matches the web Secured Data breakdown using server category counts.
 // Owns count labels and the total without oversized metric cards.
 // Does not decrypt items or infer account completion.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/api/json_values.dart';
 import '../../shared/ui/remote_panel.dart';
-import '../vault/categories.dart';
+import '../vault/category_counts.dart';
 
 class DashboardMetrics extends StatelessWidget {
   const DashboardMetrics({super.key});
@@ -27,58 +28,28 @@ class DashboardMetrics extends StatelessWidget {
             Row(
               children: [
                 Icon(
-                  Icons.verified_user_outlined,
+                  AppIcons.verified,
                   color: Theme.of(context).colorScheme.primary,
                   size: 24,
                 ),
                 const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'Secured Data',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+                const SizedBox(width: 12),
                 Text(
-                  'Secured Data',
-                  style: Theme.of(context).textTheme.titleMedium,
+                  total.toString(),
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-            Text("You've secured ${counts.length} types of data"),
-            const SizedBox(height: 12),
-            for (final item in counts)
-              InkWell(
-                onTap: () => context.push('/vault/${item['type']}'),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          categories
-                                  .where((c) => c.type == item['type'])
-                                  .firstOrNull
-                                  ?.title ??
-                              item['type'].toString().replaceAll('_', ' '),
-                        ),
-                      ),
-                      Text(
-                        item['count'].toString(),
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            const Divider(),
-            Row(
-              children: [
-                const Expanded(
-                  child: Text(
-                    'Total Secured Data Points',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ),
-                Text(
-                  total.toString(),
-                  style: const TextStyle(fontWeight: FontWeight.w700),
-                ),
-              ],
+            const SizedBox(height: 8),
+            CategoryCounts(
+              counts: counts,
+              onSelected: (type) => context.push('/vault/$type'),
             ),
           ],
         ),

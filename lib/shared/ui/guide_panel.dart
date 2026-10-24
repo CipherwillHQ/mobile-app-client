@@ -1,6 +1,7 @@
 // Presents contextual guidance as a flat web-style page notice.
 // Owns compact icon, title and explanatory text spacing.
 // Does not make security or release decisions.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 
 class GuidePanel extends StatelessWidget {
@@ -11,7 +12,7 @@ class GuidePanel extends StatelessWidget {
     super.key,
     required this.title,
     required this.message,
-    this.icon = Icons.lightbulb_outline_rounded,
+    this.icon = AppIcons.tip,
   });
   @override
   Widget build(BuildContext context) => Padding(

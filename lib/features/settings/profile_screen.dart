@@ -2,6 +2,7 @@
 // Owns profile form serialization and birth-date conversion.
 // Does not change identity providers or account email.
 
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
@@ -89,15 +90,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return PageFrame(
       title: 'Settings',
       tabs: const SettingsTabs(location: '/profile'),
+      footer: FilledButton.icon(
+        onPressed: busy ? null : save,
+        icon: const Icon(AppIcons.check),
+        label: Text(busy ? 'Saving…' : 'Save profile'),
+      ),
       children: [
         PersonIdentity(person: account, caption: 'Your Cipherwill account'),
         ProfileFields(fields: fields),
-        const SizedBox(height: 16),
-        FilledButton.icon(
-          onPressed: busy ? null : save,
-          icon: const Icon(Icons.check_rounded),
-          label: Text(busy ? 'Saving…' : 'Save profile'),
-        ),
       ],
     );
   }

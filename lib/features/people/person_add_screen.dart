@@ -3,8 +3,8 @@
 // Does not send emails before the user's Add person action.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../app/providers.dart';
+import '../../app/navigate_back.dart';
 import '../../core/api/json_values.dart';
 import '../../shared/email_validation.dart';
 import '../../shared/ui/page_frame.dart';
@@ -66,7 +66,10 @@ class _PersonAddScreenState extends ConsumerState<PersonAddScreen> {
         context,
         widget.friend ? 'Friend added.' : 'Beneficiary added.',
       );
-      context.pop();
+      await navigateBack(
+        context,
+        fallback: widget.friend ? '/friends' : '/beneficiaries',
+      );
     }
   }
 
@@ -116,7 +119,7 @@ class _PersonAddScreenState extends ConsumerState<PersonAddScreen> {
   @override
   Widget build(BuildContext context) => PageFrame(
     title: widget.friend ? 'Add friend' : 'Add beneficiary',
-    subtitle: 'Find them by email address.',
+    focused: true,
     children: [
       if (selectedEmail != null)
         PersonInvitationForm(

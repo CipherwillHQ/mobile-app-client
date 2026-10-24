@@ -33,6 +33,8 @@ class DesignHarness extends StatefulWidget {
   final bool reducedMotion;
   final double keyboard;
   final Json? preferences;
+  final Json account;
+  final List<Json> factors;
   const DesignHarness({
     super.key,
     this.screen,
@@ -42,6 +44,8 @@ class DesignHarness extends StatefulWidget {
     this.reducedMotion = false,
     this.keyboard = 0,
     this.preferences,
+    this.account = previewAccount,
+    this.factors = const [previewFactor],
   });
   @override
   State<DesignHarness> createState() => _DesignHarnessState();
@@ -81,11 +85,11 @@ class _DesignHarnessState extends State<DesignHarness> {
     overrides: [
       apiProvider.overrideWithValue(api),
       firebaseProvider.overrideWithValue(FakeAuth()),
-      accountProvider.overrideWith((ref) async => previewAccount),
+      accountProvider.overrideWith((ref) async => widget.account),
       preferencesProvider.overrideWith(
         (ref) async => widget.preferences ?? previewPreferences,
       ),
-      factorsProvider.overrideWith((ref) async => [previewFactor]),
+      factorsProvider.overrideWith((ref) async => widget.factors),
       appearanceProvider.overrideWith(PreviewAppearance.new),
     ],
     child: RepaintBoundary(

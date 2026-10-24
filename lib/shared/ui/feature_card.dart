@@ -1,7 +1,8 @@
-// Presents a flat, labeled web-style row with a clear touch target.
-// Owns compact destination hierarchy and clear navigation feedback.
-// Does not implement navigation or feature authorization.
+// Adapts existing feature destinations to the shared flat mobile row.
+// Owns compatibility with current page labels and contextual details.
+// Does not choose destinations or authorize feature actions.
 import 'package:flutter/material.dart';
+import 'navigation_row.dart';
 
 class FeatureCard extends StatelessWidget {
   final String title;
@@ -20,40 +21,11 @@ class FeatureCard extends StatelessWidget {
     this.onTap,
   });
   @override
-  Widget build(BuildContext context) => Material(
-    color: Colors.transparent,
-    child: InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 4),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              size: 22,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: Theme.of(context).textTheme.titleMedium),
-                  const SizedBox(height: 4),
-                  Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
-                ],
-              ),
-            ),
-            const SizedBox(width: 6),
-            trailing ??
-                Icon(
-                  Icons.arrow_forward_rounded,
-                  size: 18,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-          ],
-        ),
-      ),
-    ),
+  Widget build(BuildContext context) => NavigationRow(
+    title: title,
+    detail: subtitle,
+    icon: icon,
+    trailing: trailing,
+    onTap: onTap,
   );
 }

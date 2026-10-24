@@ -2,6 +2,7 @@
 // Owns lifecycle locking and account-switch cleanup.
 // Does not preserve decrypted screens across a lock.
 
+import 'app_icons.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -79,11 +80,7 @@ class _PrivacyGuardState extends ConsumerState<PrivacyGuard>
               child: Center(
                 child: Semantics(
                   label: 'Cipherwill locked',
-                  child: Icon(
-                    Icons.lock_outline,
-                    color: Colors.white,
-                    size: 56,
-                  ),
+                  child: Icon(AppIcons.lock, color: Colors.white, size: 56),
                 ),
               ),
             ),

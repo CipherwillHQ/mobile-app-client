@@ -1,75 +1,75 @@
-// Matches the web mobile auth page's landscape and centered white form.
-// Owns background, brand placement and keyboard-reachable scrolling.
+// Presents the existing landscape above a flat native authentication form.
+// Owns bounded imagery, branding and keyboard-reachable scrolling.
 // Does not authenticate accounts or control security-factor state.
 import 'package:flutter/material.dart';
-import '../../app/theme.dart';
-import '../../shared/ui/motion.dart';
+import '../../shared/ui/app_brand.dart';
 
 class AuthLayout extends StatelessWidget {
   final List<Widget> children;
   const AuthLayout({super.key, required this.children});
   @override
   Widget build(BuildContext context) => Scaffold(
-    body: Stack(
-      children: [
-        Positioned.fill(
-          child: Image.asset(
-            'assets/images/auth-landscape.webp',
-            fit: BoxFit.cover,
-            alignment: Alignment.bottomCenter,
-            excludeFromSemantics: true,
-          ),
-        ),
-        SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) => SingleChildScrollView(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 32,
-                    ),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 512),
-                      child: Theme(
-                        data: cipherwillTheme(Brightness.light),
-                        child: Reveal(
-                          child: Container(
-                            padding: const EdgeInsets.all(24),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Image.asset(
-                                    'assets/images/mark-black.png',
-                                    width: 35,
-                                    height: 35,
-                                    semanticLabel: 'Cipherwill',
-                                  ),
-                                ),
-                                const SizedBox(height: 28),
-                                ...children,
-                              ],
-                            ),
+    body: SafeArea(
+      top: false,
+      child: LayoutBuilder(
+        builder: (context, constraints) => SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(
+                  height: MediaQuery.viewInsetsOf(context).bottom > 0
+                      ? 104
+                      : (constraints.maxHeight * .28).clamp(160, 240),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.asset(
+                        'assets/images/auth-landscape.webp',
+                        fit: BoxFit.cover,
+                        alignment: Alignment.bottomCenter,
+                        cacheWidth:
+                            (MediaQuery.sizeOf(context).width *
+                                    MediaQuery.devicePixelRatioOf(context))
+                                .round(),
+                        excludeFromSemantics: true,
+                      ),
+                      const DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [Color(0x66000000), Colors.transparent],
                           ),
                         ),
+                      ),
+                      Positioned(
+                        left: 24,
+                        top: MediaQuery.paddingOf(context).top + 16,
+                        child: const AppBrand(light: true),
+                      ),
+                    ],
+                  ),
+                ),
+                Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 512),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: children,
                       ),
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
         ),
-      ],
+      ),
     ),
   );
 }

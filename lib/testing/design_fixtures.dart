@@ -79,6 +79,14 @@ Future<Json> designResponse(String name, Json vars) async => switch (name) {
       'email': 'alex@example.com',
     },
   },
+  'GET_METAMODEL' => {
+    'getMetamodel': {
+      'id': vars['id'],
+      'metadata': '{"title":"Family note","name":"Personal login"}',
+      'ignored_beneficiaries': [],
+      'updated_at': '1792800000000',
+    },
+  },
   'GET_METAMODELS' || 'GET_GRANTED_METAMODELS' => {
     name == 'GET_METAMODELS' ? 'getMetamodels' : 'getGrantedMetamodels': {
       'models': [
@@ -128,6 +136,15 @@ Future<Json> designResponse(String name, Json vars) async => switch (name) {
   'GET_ALL_BENEFICIARY_ACCESS' => {
     'getAllBeneficiaryAccess': [
       {'id': 'grant', 'user': 'person', 'expire_at': '4102444800000'},
+    ],
+  },
+  'GET_ALL_GRANTED_BENEFICIARIES' => {
+    'getAllGrantedBeneficiaries': [
+      {
+        'id': 'released-grant',
+        'beneficiary_id': 'beneficiary',
+        'expire_at': '4102444800000',
+      },
     ],
   },
   'GET_ACCESS_DETAILS' => {

@@ -1,6 +1,7 @@
 // Lists access-scoped items with beneficiary exclusion checks.
 // Owns granted pagination and read-only navigation.
 // Does not load owner-only lists or decrypt list contents.
+import '../../app/app_icons.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,7 +27,7 @@ class GrantedItemsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => PageFrame(
     title: categoryFor(type).title,
     children: [
-      const StatusPill('Read-only access', icon: Icons.visibility_outlined),
+      const StatusPill('Read-only access', icon: AppIcons.reveal),
       const SizedBox(height: 12),
       AsyncPanel(
         value: ref.watch(grantProvider(access)),

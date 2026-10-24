@@ -1,6 +1,7 @@
 // Presents one number and its existing verification/channel actions.
 // Owns OTP entry and server-controlled per-number preferences.
 // Does not enable channels for unverified numbers.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
@@ -30,9 +31,7 @@ class PhoneCard extends ConsumerWidget {
         alignment: Alignment.centerLeft,
         child: StatusPill(
           phone['verified'] == true ? 'Verified' : 'Verification required',
-          icon: phone['verified'] == true
-              ? Icons.verified_outlined
-              : Icons.info_outline,
+          icon: phone['verified'] == true ? AppIcons.verified : AppIcons.info,
         ),
       ),
       if (phone['verified'] != true) ...[

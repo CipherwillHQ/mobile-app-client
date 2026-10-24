@@ -1,6 +1,7 @@
 // Presents person search results before optional guest invitation.
 // Owns the email field, matching people and the explicit Add person choice.
 // Does not search or create people without parent callbacks.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import '../../core/api/json_values.dart';
 import '../../shared/person_name.dart';
@@ -35,7 +36,7 @@ class PersonSearchForm extends StatelessWidget {
         onSubmitted: (_) => search(),
         decoration: const InputDecoration(
           labelText: 'Search by email address',
-          prefixIcon: Icon(Icons.search),
+          prefixIcon: Icon(AppIcons.search),
         ),
       ),
       const SizedBox(height: 16),
@@ -48,7 +49,7 @@ class PersonSearchForm extends StatelessWidget {
           leading: PersonAvatar(personName(person)),
           title: Text(personName(person)),
           subtitle: Text(person['email']),
-          trailing: const Icon(Icons.person_add_outlined),
+          trailing: const Icon(AppIcons.addPerson),
           onTap: busy ? null : () => add(person['id']),
         ),
         if (person['__typename'] == 'Guest')
@@ -64,7 +65,7 @@ class PersonSearchForm extends StatelessWidget {
         const Text('No person found with this email address.'),
         TextButton.icon(
           onPressed: busy ? null : () => invite(email.text.trim(), ''),
-          icon: const Icon(Icons.person_add_outlined),
+          icon: const Icon(AppIcons.addPerson),
           label: const Text('Add person'),
         ),
       ],

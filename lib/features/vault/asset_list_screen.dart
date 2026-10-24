@@ -1,6 +1,7 @@
 // Lists vault assets with explicit plan and category gates.
 // Owns title search, item refresh and creation navigation.
 // Does not decrypt list metadata or bypass server authorization.
+import '../../app/app_icons.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -81,7 +82,7 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
       actions: [
         IconButton(
           tooltip: 'Add item',
-          icon: const Icon(Icons.add_rounded),
+          icon: const Icon(AppIcons.add),
           onPressed: add,
         ),
       ],
@@ -89,7 +90,7 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
         TextField(
           decoration: InputDecoration(
             hintText: type == 'NOTE' ? 'Search notes…' : 'Search item titles',
-            prefixIcon: const Icon(Icons.search_rounded, size: 20),
+            prefixIcon: const Icon(AppIcons.search, size: 20),
           ),
           onChanged: (value) => setState(() => query = value),
         ),
@@ -105,7 +106,7 @@ class _AssetListScreenState extends ConsumerState<AssetListScreen> {
               ? const EmptyState(
                   title: 'No matching items on loaded pages',
                   message: 'Try another title or load more items if available.',
-                  icon: Icons.search_rounded,
+                  icon: AppIcons.search,
                 )
               : EmptyState(
                   title: 'Your first item starts here',

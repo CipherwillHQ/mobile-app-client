@@ -1,6 +1,7 @@
 // Mirrors the web Network hub with compact contact destinations.
 // Owns navigation to contacts and the separate executor workspace.
 // Does not grant access or expose released vault records.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../app/navigation_destinations.dart';
@@ -19,7 +20,7 @@ class PeopleScreen extends StatelessWidget {
       FeatureCard(
         title: 'Executor workspace',
         subtitle: 'Wills released to you',
-        icon: Icons.lock_open_outlined,
+        icon: AppIcons.unlocked,
         onTap: () => context.push('/executor'),
       ),
     ],

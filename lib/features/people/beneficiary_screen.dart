@@ -1,6 +1,7 @@
 // Shows beneficiary details and account-specific access management.
 // Owns custom messages, counts and manual key synchronization.
 // Does not release wills ahead of their server schedule.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
@@ -10,11 +11,9 @@ import '../../shared/ui/remote_panel.dart';
 import '../../shared/ui/actions.dart';
 import '../../shared/ui/panel_section.dart';
 import '../../shared/ui/empty_state.dart';
-import '../../shared/ui/icon_badge.dart';
 import '../security/session_controller.dart';
 import '../security/key_migration.dart';
-import '../vault/categories.dart';
-import '../vault/category_visuals.dart';
+import '../vault/category_counts.dart';
 import 'person_identity.dart';
 
 class BeneficiaryScreen extends ConsumerWidget {
@@ -34,7 +33,7 @@ class BeneficiaryScreen extends ConsumerWidget {
             return const EmptyState(
               title: 'Beneficiary unavailable',
               message: 'This beneficiary is no longer on your will.',
-              icon: Icons.person_off_outlined,
+              icon: AppIcons.excluded,
             );
           }
           return Column(
@@ -72,7 +71,7 @@ class BeneficiaryScreen extends ConsumerWidget {
                       );
                       ref.invalidate(remoteProvider);
                     }),
-                    icon: const Icon(Icons.edit_outlined),
+                    icon: const Icon(AppIcons.edit),
                     label: const Text('Edit message'),
                   ),
                   if (beneficiary['custom_message'] != null)
@@ -102,22 +101,8 @@ class BeneficiaryScreen extends ConsumerWidget {
                   RemotePanel(
                     operation: 'GET_BENEFICIARY_SEGMENT_COUNTS',
                     variables: {'beneficiary_id': id},
-                    builder: (r) => Column(
-                      children: [
-                        for (final count in jsonList(
-                          r['getMetamodelTypeCounts'],
-                        ))
-                          ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: IconBadge(
-                              visualFor(count['type']).icon,
-                              color: visualFor(count['type']).color,
-                              size: 36,
-                            ),
-                            title: Text(categoryFor(count['type']).title),
-                            trailing: Text(count['count'].toString()),
-                          ),
-                      ],
+                    builder: (r) => CategoryCounts(
+                      counts: jsonList(r['getMetamodelTypeCounts']),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -130,7 +115,7 @@ class BeneficiaryScreen extends ConsumerWidget {
                       ).beneficiary(id),
                       success: 'Beneficiary keys synchronized.',
                     ),
-                    icon: const Icon(Icons.sync_rounded),
+                    icon: const Icon(AppIcons.refresh),
                     label: const Text('Synchronize keys'),
                   ),
                 ],

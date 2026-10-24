@@ -1,6 +1,7 @@
 // Shows allowed categories for an active released will.
 // Owns online access checks and category navigation.
 // Does not infer grants from owner subscription preferences.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -40,10 +41,7 @@ class GrantedCategoriesScreen extends ConsumerWidget {
           children: [
             const Align(
               alignment: Alignment.centerLeft,
-              child: StatusPill(
-                'Read-only access',
-                icon: Icons.visibility_outlined,
-              ),
+              child: StatusPill('Read-only access', icon: AppIcons.reveal),
             ),
             const SizedBox(height: 12),
             RemotePanel(
@@ -66,7 +64,7 @@ class GrantedCategoriesScreen extends ConsumerWidget {
                   return const EmptyState(
                     title: 'No available items',
                     message: 'This will has no items available to you.',
-                    icon: Icons.inventory_2_outlined,
+                    icon: AppIcons.folder,
                   );
                 }
                 return Column(

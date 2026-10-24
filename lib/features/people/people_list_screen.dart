@@ -1,6 +1,7 @@
 // Loads beneficiary and friend relationships
 // Owns person details, add and remove actions.
 // Does not decrypt asset contents.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import '../../shared/person_name.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +13,7 @@ import '../../shared/ui/remote_panel.dart';
 import '../../shared/ui/actions.dart';
 import '../../shared/ui/person_avatar.dart';
 import '../../shared/ui/empty_state.dart';
+import '../../shared/ui/navigation_row.dart';
 
 class PeopleListScreen extends ConsumerWidget {
   final bool friends;
@@ -22,7 +24,7 @@ class PeopleListScreen extends ConsumerWidget {
     actions: [
       IconButton(
         tooltip: 'Add person',
-        icon: const Icon(Icons.person_add_outlined),
+        icon: const Icon(AppIcons.addPerson),
         onPressed: () => context.push('/people/add?friend=$friends'),
       ),
     ],
@@ -49,7 +51,7 @@ class PeopleListScreen extends ConsumerWidget {
               message: friends
                   ? 'Friends help us contact beneficiaries when needed.'
                   : 'Add a beneficiary to prepare their access after your will is released.',
-              icon: Icons.people_outline_rounded,
+              icon: AppIcons.people,
               action: 'Add person',
               onAction: () => context.push('/people/add?friend=$friends'),
             );
@@ -60,36 +62,31 @@ class PeopleListScreen extends ConsumerWidget {
                 RemotePanel(
                   operation: 'GET_PERSON',
                   variables: {'id': person['person_id']},
-                  builder: (result) => Card(
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.all(16),
-                      leading: PersonAvatar(
-                        personName(asJson(result['getPerson'])),
-                      ),
-                      title: Text(personName(asJson(result['getPerson']))),
-                      subtitle: Text(
+                  builder: (result) => NavigationRow(
+                    leading: PersonAvatar(
+                      personName(asJson(result['getPerson'])),
+                    ),
+                    title: personName(asJson(result['getPerson'])),
+                    detail:
                         asJson(result['getPerson'])['email']?.toString() ?? '',
-                      ),
-                      onTap: friends
-                          ? null
-                          : () =>
-                                context.push('/beneficiaries/' + person['id']),
-                      trailing: IconButton(
-                        tooltip: 'Remove person',
-                        icon: const Icon(Icons.person_remove_outlined),
-                        onPressed: () => perform(context, () async {
-                          if (!await confirm(context, 'Remove this person?')) {
-                            return;
-                          }
-                          await ref.read(apiProvider).run(
-                            friends
-                                ? 'DELETE_SMARTWILL_FRIEND'
-                                : 'DELETE_SMARTWILL_BENEFICIARY',
-                            {'id': person['person_id']},
-                          );
-                          ref.invalidate(remoteProvider);
-                        }),
-                      ),
+                    onTap: friends
+                        ? null
+                        : () => context.push('/beneficiaries/' + person['id']),
+                    trailing: IconButton(
+                      tooltip: 'Remove person',
+                      icon: const Icon(AppIcons.removePerson),
+                      onPressed: () => perform(context, () async {
+                        if (!await confirm(context, 'Remove this person?')) {
+                          return;
+                        }
+                        await ref.read(apiProvider).run(
+                          friends
+                              ? 'DELETE_SMARTWILL_FRIEND'
+                              : 'DELETE_SMARTWILL_BENEFICIARY',
+                          {'id': person['person_id']},
+                        );
+                        ref.invalidate(remoteProvider);
+                      }),
                     ),
                   ),
                 ),

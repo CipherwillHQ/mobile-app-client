@@ -1,6 +1,7 @@
 // Checks notifications survive navigation and remain dismissible.
 // Owns success/failure feedback across disappearing route contexts.
 // Does not call backend APIs or display private account data.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'app_notice.dart';
@@ -43,7 +44,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Person added.'), findsOneWidget);
     expect(find.text('Open'), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.close));
+    await tester.tap(find.byIcon(AppIcons.close));
     await tester.pumpAndSettle();
     expect(find.text('Person added.'), findsNothing);
     await tester.pumpWidget(const SizedBox());
@@ -70,7 +71,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.textContaining('Retry saving'), findsOneWidget);
     expect(find.text('Saved'), findsNothing);
-    expect(find.byIcon(Icons.error_outline), findsOneWidget);
+    expect(find.byIcon(AppIcons.error), findsOneWidget);
     await tester.pumpWidget(const SizedBox());
   });
 }

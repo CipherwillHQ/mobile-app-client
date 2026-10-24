@@ -17,6 +17,12 @@ Future<void> loadDesignFonts() async {
   await (FontLoader(
     'MaterialIcons',
   )..addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf'))).load();
+  await (FontLoader('packages/flutter_tabler_icons/tabler-icons')..addFont(
+        rootBundle.load(
+          'packages/flutter_tabler_icons/assets/fonts/tabler-icons.ttf',
+        ),
+      ))
+      .load();
 }
 
 Future<void> captureDesign(WidgetTester tester, String name) async {

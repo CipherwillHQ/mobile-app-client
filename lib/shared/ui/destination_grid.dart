@@ -28,7 +28,7 @@ class DestinationGrid extends StatelessWidget {
               child: Material(
                 color: Theme.of(context).cardTheme.color,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(12),
                   side: BorderSide(
                     color: Theme.of(context).colorScheme.outlineVariant,
                   ),
@@ -37,13 +37,16 @@ class DestinationGrid extends StatelessWidget {
                 child: InkWell(
                   onTap: () => context.push(destination.$2),
                   child: Container(
-                    constraints: const BoxConstraints(minHeight: 128),
-                    padding: const EdgeInsets.all(16),
+                    constraints: const BoxConstraints(minHeight: 96),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 16,
+                    ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(destination.$3, size: 26),
+                        Icon(destination.$3, size: 24),
                         const SizedBox(height: 8),
                         Text(
                           destination.$1,

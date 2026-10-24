@@ -7,11 +7,13 @@ class TimelineEntry extends StatelessWidget {
   final String title;
   final String date;
   final bool last;
+  final Widget? action;
   const TimelineEntry({
     super.key,
     required this.title,
     required this.date,
     required this.last,
+    this.action,
   });
   @override
   Widget build(BuildContext context) => IntrinsicHeight(
@@ -21,8 +23,9 @@ class TimelineEntry extends StatelessWidget {
         Column(
           children: [
             Container(
-              width: 14,
-              height: 14,
+              width: 8,
+              height: 8,
+              margin: const EdgeInsets.only(top: 6),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Theme.of(context).colorScheme.primary,
@@ -40,13 +43,14 @@ class TimelineEntry extends StatelessWidget {
         const SizedBox(width: 18),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 28),
+            padding: const EdgeInsets.only(bottom: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title, style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 5),
                 Text(date, style: Theme.of(context).textTheme.bodySmall),
+                ?action,
               ],
             ),
           ),

@@ -9,7 +9,7 @@ import '../../app/providers.dart';
 import '../security/session_controller.dart';
 import '../../shared/ui/page_frame.dart';
 import '../../shared/ui/actions.dart';
-import '../../shared/ui/vault_emblem.dart';
+import '../../app/app_icons.dart';
 
 class AuthActionScreen extends ConsumerStatefulWidget {
   final Map<String, String> parameters;
@@ -62,7 +62,10 @@ class _AuthActionScreenState extends ConsumerState<AuthActionScreen> {
   Widget build(BuildContext context) => PageFrame(
     title: 'Account action',
     children: [
-      const VaultEmblem(),
+      const Align(
+        alignment: Alignment.centerLeft,
+        child: Icon(AppIcons.security, size: 32),
+      ),
       const SizedBox(height: 24),
       Text(
         completed ? 'All done.' : 'One more step.',

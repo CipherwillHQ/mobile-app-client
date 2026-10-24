@@ -2,6 +2,7 @@
 // Owns native preview-controller lifetimes.
 // Does not fetch remote resources or retain files.
 
+import '../../app/app_icons.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -88,7 +89,7 @@ class _FilePreviewState extends State<FilePreview> {
                     });
                   },
                   icon: Icon(
-                    video!.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                    video!.value.isPlaying ? AppIcons.pause : AppIcons.play,
                   ),
                 ),
               ],

@@ -7,15 +7,16 @@ The native layout follows the existing web mobile pages in the sibling Cipherwil
 
 ## Layout
 
-- A hamburger opens a 280px sidebar, capped at 85% of the viewport. It follows the web's Home, Guide, Segments, Notifications, Data, Web3 Finance, Finance, Storage, Network and Platform groups. Disabled data categories are hidden. System, Light and Dark appearance choices stay below the scrollable links; lock and logout are absent from the sidebar.
-- Protected pages share the sidebar and flat Home / Data / Network / Platform section bar. Keyboard input hides the bar and resizes the page once. Authentication, onboarding and the lock gate remain outside this shell. Web checkout retains its separate screen.
+- A hamburger opens a sidebar capped at 320px and 88% of the viewport. It follows the web's Home, Guide, Segments, Notifications, Data, Web3 Finance, Finance, Storage, Network and Platform groups. Disabled data categories are hidden. System, Light and Dark appearance choices stay below the scrollable links; lock and logout are absent from the sidebar.
+- Protected pages share the sidebar with no permanent bottom navigation. Nested pages have Back and menu access; editors, adding people and active guidance show focused controls. Drawer edge swipes are disabled so they cannot bypass draft guards. Authentication, onboarding and the lock gate remain outside this shell. Web checkout retains its separate screen.
 - Dashboard uses a compact score link, greeting, the web's profile/data/beneficiary checklist, secured-data breakdown, planning and security/access destinations. Checklist completion comes from existing profile, storage and beneficiary responses.
-- Manage Data, Network and Platform use the web's 128px icon/title tiles. The data hub groups enabled categories without extra descriptions and metrics.
+- Manage Data, Network and Platform retain the web's groups with compact 96px icon/title tiles that grow or reflow with text size. The data hub groups enabled categories without extra descriptions and metrics.
 - Settings uses General Settings / Profile / Backup / Usage tabs. Communication preferences and feedback remain available. Segments only configures categories; check-in and reminder controls live on Timeline. Account reset/deletion and Backup actions direct users to the desktop app. Existing web settings links open the corresponding native tab.
-- Notes use flat title/date rows. Other records use compact metadata cards. Text-asset forms retain grouped fields, sensitive-value visibility/copying and confirmed-save feedback. The HTML adapter and queued note autosave remain in place.
+- Notes use a flat title/body, compact save state and a labeled options sheet. Other records and people use flat metadata rows. Forms show required fields first and use an Add field sheet for optional groups, with one pinned Save action. The HTML adapter, stable editor focus and queued note autosave remain in place.
 - Security factors use compact type/key/count rows and an options menu for rename, migration, biometrics and removal. The header's add menu exposes all three factor types.
-- Storage places folder/upload actions in the header and retains retry controls for interrupted saves. Readable text/file usage is available in Settings → Usage.
-- Shared headings, notices and form sections use smaller spacing and flat surfaces. Existing fade/slide and iOS transitions respect reduced motion.
+- Storage has one Add menu for upload/folder creation and a visible incomplete-upload row with same-ID retry. File options handle rename, beneficiary access and confirmed deletion; decrypted export remains an explicit task action. Readable text/file usage is available in Settings → Usage.
+- Gilroy typography, one semantic Tabler outline icon map, shared flat rows and short state messages replace oversized cards. Top-level navigation uses a 150ms crossfade; detail pages retain native Android predictive Back and iOS transitions. Structural changes and guidance respect reduced motion.
+- PageFrame owns keyboard resizing and task footers. Notices appear below the header, and save errors retain reachable retry controls. Pull to refresh replaces repeated list controls and includes an accessible refresh action.
 
 Encryption, server authorization, beneficiary exclusions, temporary-file cleanup, background protection and committed-save behavior retain their existing services.
 
@@ -38,13 +39,13 @@ Encryption, server authorization, beneficiary exclusions, temporary-file cleanup
     flutter test --no-pub lib test --dart-define=DESIGN_REVIEW=true
     node tool/check_source_rules.mjs --format
 
-The full regression run passed 127 tests, and the two new factor-menu tests passed separately (129 total). Subsequent final theme/drawer render checks passed. Source caps, introductory comments, formatting, analysis and diff whitespace checks passed.
+The current redesign's complete verification results are recorded in `mobile-redesign.md`.
 
-The visual suite renders 27 screen layouts in both themes, 320px phones at 2× text size and all eight text-asset forms. PNGs use synthetic account data under the ignored .dart_tool/design-review/ directory. overview.png shows the current auth, dashboard, sidebar, data, network and settings layouts.
+The visual suite renders 34 screen layouts in both themes; checks 320 / 360 / 430px phones and landscape at 2× text; and covers all eight text-asset forms. PNGs use synthetic account data under the ignored .dart_tool/design-review/ directory. Individual screen captures are the current evidence; older contact sheets may predate the redesign.
 
 Drawer navigation/category visibility, Settings tabs, keyboard reachability, factor-menu dispatch, checkout isolation and locked/background route behavior have automated coverage. Existing tests cover codecs, permission changes, backups, rich HTML, save failures and retry behavior.
 
-The Android development debug APK built successfully, was installed with adb install -r on the paired I2011 phone, and cold-launched successfully. Android reported the app as resumed and lastUpdateTime=2026-10-24 03:12:54. This verifies installation/startup; account scenarios still require live acceptance.
+Build/install verification confirms startup only; account scenarios still require live acceptance. See `mobile-redesign.md` for the current build's results.
 
 ## Release acceptance
 

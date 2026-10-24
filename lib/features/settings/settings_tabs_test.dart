@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import '../../testing/design_harness.dart';
-import '../../app/mobile_section_bar.dart';
 import 'profile_screen.dart';
 
 void main() {
@@ -23,29 +22,31 @@ void main() {
     expect(find.text('First name'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
-  testWidgets(
-    'profile remains scrollable with keyboard and hides section bar',
-    (tester) async {
-      tester.view.physicalSize = const Size(393, 852);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-      await tester.pumpWidget(
-        const DesignHarness(
-          location: '/profile',
-          screen: ProfileScreen(),
-          keyboard: 300,
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(find.byType(MobileSectionBar), findsNothing);
-      final list = find.byType(ListView).first;
-      expect(tester.getSize(list).height, greaterThan(300));
-      final input = find.byType(TextField).first;
-      await tester.ensureVisible(input);
-      await tester.enterText(input, 'Taylor');
-      expect(tester.widget<TextField>(input).controller!.text, 'Taylor');
-      expect(tester.takeException(), isNull);
-    },
-  );
+  testWidgets('profile stays keyboard-reachable with a single save footer', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(393, 852);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      const DesignHarness(
+        location: '/profile',
+        screen: ProfileScreen(),
+        keyboard: 300,
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byType(NavigationBar), findsNothing);
+    expect(find.byType(BottomNavigationBar), findsNothing);
+    expect(find.text('Save profile'), findsOneWidget);
+    expect(tester.getBottomRight(find.text('Save profile')).dy, lessThan(552));
+    final list = find.byType(ListView).first;
+    expect(tester.getSize(list).height, greaterThan(300));
+    final input = find.byType(TextField).first;
+    await tester.ensureVisible(input);
+    await tester.enterText(input, 'Taylor');
+    expect(tester.widget<TextField>(input).controller!.text, 'Taylor');
+    expect(tester.takeException(), isNull);
+  });
 }

@@ -9,7 +9,7 @@ import '../features/security/session_controller.dart';
 import '../features/billing/testing/fake_webview.dart';
 import '../testing/navigation_harness.dart';
 import 'app_sidebar.dart';
-import 'mobile_section_bar.dart';
+import 'navigation_shell.dart';
 
 void main() {
   late NavigationHarness harness;
@@ -25,7 +25,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(harness.container.read(sessionProvider), isNull);
     expect(find.byType(AppSidebar), findsNothing);
-    expect(find.byType(MobileSectionBar), findsNothing);
+    expect(find.byType(NavigationShell), findsNothing);
     expect(find.byType(LockScreen), findsOneWidget);
     await tester.pumpWidget(const SizedBox());
   });
@@ -42,7 +42,7 @@ void main() {
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     await tester.pumpAndSettle();
     expect(find.byType(LockScreen), findsOneWidget);
-    expect(find.byType(MobileSectionBar), findsNothing);
+    expect(find.byType(NavigationShell), findsNothing);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
   });
@@ -57,12 +57,12 @@ void main() {
       await harness.mount(tester);
       harness.router.go('/upgrade');
       await tester.pumpAndSettle();
-      expect(find.byType(MobileSectionBar), findsNothing);
+      expect(find.byType(Drawer), findsNothing);
       expect(find.byTooltip('Open menu'), findsNothing);
       await tester.tap(find.byTooltip('Close checkout'));
       await tester.pumpAndSettle();
       expect(harness.router.state.uri.path, '/billing');
-      expect(find.byType(MobileSectionBar), findsOneWidget);
+      expect(find.byType(NavigationShell), findsOneWidget);
       expect(find.byTooltip('Open menu'), findsOneWidget);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());

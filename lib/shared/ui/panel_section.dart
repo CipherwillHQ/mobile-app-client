@@ -15,11 +15,16 @@ class PanelSection extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(top: 12, bottom: 16),
+    padding: const EdgeInsets.only(top: 8, bottom: 20),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(title, style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          title,
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w600),
+        ),
         if (description != null) ...[
           const SizedBox(height: 6),
           Text(description!, style: Theme.of(context).textTheme.bodySmall),

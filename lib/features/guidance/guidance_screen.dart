@@ -127,6 +127,8 @@ class _GuidanceScreenState extends ConsumerState<GuidanceScreen> {
     ).where((choice) => choice['dismissed'] != true).toList();
     final complete = session.completion != null;
     return GuidanceSlide(
+      active: active,
+      pause: busy ? null : pause,
       identity: !active
           ? 'overview'
           : error != null
@@ -169,7 +171,6 @@ class _GuidanceScreenState extends ConsumerState<GuidanceScreen> {
               skip: () =>
                   run(() => session.advance(answer: null, submitted: true)),
               defer: () => run(session.defer),
-              pause: pause,
             ),
     );
   }

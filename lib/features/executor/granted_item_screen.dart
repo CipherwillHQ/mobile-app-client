@@ -1,6 +1,7 @@
 // Displays freshly authorized decrypted items in a read-only screen
 // Owns masked fields and native rich notes.
 // Does not edit or restore donor assets.
+import '../../app/app_icons.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -64,7 +65,7 @@ class _GrantedItemScreenState extends ConsumerState<GrantedItemScreen> {
   Widget build(BuildContext context) => PageFrame(
     title: 'Granted item',
     children: [
-      const StatusPill('Read-only access', icon: Icons.visibility_outlined),
+      const StatusPill('Read-only access', icon: AppIcons.reveal),
       const SizedBox(height: 16),
       if (error != null) ...[
         ErrorPanel(message: error!, retry: load),

@@ -1,6 +1,7 @@
 // Presents the existing account score and its server-provided components.
 // Owns score details and useful planning destinations.
 // Does not award points locally or offer an upgrade flow.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../shared/ui/page_frame.dart';
@@ -36,7 +37,7 @@ class ScoreScreen extends StatelessWidget {
               children: [
                 const Align(
                   alignment: Alignment.centerLeft,
-                  child: IconBadge(Icons.auto_awesome_outlined, size: 56),
+                  child: IconBadge(AppIcons.guide, size: 56),
                 ),
                 const SizedBox(height: 20),
                 Text(
@@ -57,9 +58,7 @@ class ScoreScreen extends StatelessWidget {
                   ListTile(
                     contentPadding: EdgeInsets.zero,
                     leading: Icon(
-                      entry.value > 0
-                          ? Icons.check_circle_outline
-                          : Icons.circle_outlined,
+                      entry.value > 0 ? AppIcons.done : AppIcons.pending,
                     ),
                     title: Text(scoreLabels[entry.key] ?? entry.key),
                     trailing: Text(entry.value.toString()),
@@ -72,7 +71,7 @@ class ScoreScreen extends StatelessWidget {
       const SizedBox(height: 16),
       FilledButton.icon(
         onPressed: () => context.push('/guide'),
-        icon: const Icon(Icons.arrow_forward_rounded),
+        icon: const Icon(AppIcons.next),
         label: const Text('Continue your guide'),
       ),
     ],

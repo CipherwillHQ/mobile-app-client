@@ -1,53 +1,54 @@
 // Assigns recognizable icons and descriptions to existing vault categories.
 // Owns presentation metadata shared by owner and executor screens.
 // Does not duplicate field schemas, data versions or plan restrictions.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import '../../app/design_tokens.dart';
 
 typedef CategoryVisual = ({IconData icon, Color color, String description});
 const categoryVisuals = <String, CategoryVisual>{
   'NOTE': (
-    icon: Icons.notes_rounded,
+    icon: AppIcons.notes,
     color: CipherwillColors.clay,
     description: 'Words worth keeping',
   ),
   'PASSWORD': (
-    icon: Icons.key_rounded,
+    icon: AppIcons.key,
     color: CipherwillColors.blue,
     description: 'Access to your digital life',
   ),
   'EMAIL_ACCOUNT': (
-    icon: Icons.alternate_email_rounded,
+    icon: AppIcons.email,
     color: CipherwillColors.sage,
     description: 'Your inboxes and recovery details',
   ),
   'DEVICE_LOCK': (
-    icon: Icons.devices_rounded,
+    icon: AppIcons.devices,
     color: CipherwillColors.violet,
     description: 'Keys to your everyday devices',
   ),
   'BANK_ACCOUNT': (
-    icon: Icons.account_balance_outlined,
+    icon: AppIcons.bank,
     color: CipherwillColors.sage,
     description: 'Your financial foundations',
   ),
   'PAYMENT_CARD': (
-    icon: Icons.credit_card_rounded,
+    icon: AppIcons.card,
     color: CipherwillColors.blue,
     description: 'Important card details',
   ),
   'SEED_PHRASE': (
-    icon: Icons.grain_rounded,
+    icon: AppIcons.seed,
     color: CipherwillColors.violet,
     description: 'The words that protect your wallets',
   ),
   'DEFI_STAKING': (
-    icon: Icons.insights_rounded,
+    icon: AppIcons.staking,
     color: CipherwillColors.amber,
     description: 'Your assets and staking positions',
   ),
   'FILE': (
-    icon: Icons.folder_outlined,
+    icon: AppIcons.folder,
     color: CipherwillColors.amber,
     description: 'Documents, memories and more',
   ),

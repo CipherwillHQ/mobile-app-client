@@ -1,14 +1,17 @@
 // Paginates metadata lists with retry and duplicate-safe page merging
 // Owns cursor state and item rendering.
 // Does not load decrypted item contents.
+import '../../app/app_icons.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
 import '../../core/api/json_values.dart';
 import 'empty_state.dart';
 import 'loading_panel.dart';
 import 'error_panel.dart';
+import 'page_refresh.dart';
 
 class PagedList extends ConsumerStatefulWidget {
   final String operation;
@@ -37,6 +40,24 @@ class _PagedListState extends ConsumerState<PagedList> {
   bool more = true;
   bool loading = false;
   String? error;
+  PageRefreshScope? refreshScope;
+  Future<void> refresh() => load(reset: true);
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final scope = PageRefreshScope.maybeOf(context);
+    if (scope == refreshScope) return;
+    refreshScope?.callbacks.remove(refresh);
+    refreshScope = scope;
+    refreshScope?.callbacks.add(refresh);
+  }
+
+  @override
+  void dispose() {
+    refreshScope?.callbacks.remove(refresh);
+    super.dispose();
+  }
+
   Iterable<Json> get visibleItems =>
       widget.filter == null ? items : items.where(widget.filter!);
   @override
@@ -90,29 +111,26 @@ class _PagedListState extends ConsumerState<PagedList> {
   }
 
   @override
-  Widget build(BuildContext context) => Column(
-    children: [
-      Align(
-        alignment: Alignment.centerRight,
-        child: TextButton.icon(
-          onPressed: loading ? null : () => load(reset: true),
-          icon: const Icon(Icons.refresh),
-          label: const Text('Refresh'),
-        ),
-      ),
-      for (final item in visibleItems) widget.itemBuilder(item),
-      if (visibleItems.isEmpty && !loading && error == null)
-        widget.empty ??
-            const EmptyState(
-              title: 'Nothing here yet',
-              message: 'Items will appear here when added.',
-              icon: Icons.inventory_2_outlined,
-            ),
-      if (error != null) ErrorPanel(message: error!, retry: load),
-      if (loading)
-        const LoadingPanel()
-      else if (more && error == null)
-        TextButton(onPressed: load, child: const Text('Load more')),
-    ],
+  Widget build(BuildContext context) => Semantics(
+    customSemanticsActions: {
+      const CustomSemanticsAction(label: 'Refresh items'): refresh,
+    },
+    child: Column(
+      children: [
+        for (final item in visibleItems) widget.itemBuilder(item),
+        if (visibleItems.isEmpty && !loading && error == null)
+          widget.empty ??
+              const EmptyState(
+                title: 'Nothing here yet',
+                message: 'Items will appear here when added.',
+                icon: AppIcons.folder,
+              ),
+        if (error != null) ErrorPanel(message: error!, retry: load),
+        if (loading)
+          const LoadingPanel()
+        else if (more && error == null)
+          TextButton(onPressed: load, child: const Text('Load more')),
+      ],
+    ),
   );
 }

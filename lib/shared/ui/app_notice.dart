@@ -1,6 +1,7 @@
 // Displays action feedback above navigation and keeps it through route changes.
 // Owns the app notification scope, dismissal timer and accessible toast.
 // Does not log errors, persist messages or alter account state.
+import '../../app/app_icons.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 
@@ -64,9 +65,9 @@ class _AppNoticeHostState extends State<AppNoticeHost> {
         widget.child,
         if (message != null)
           Positioned(
-            top: 0,
-            left: 12,
-            right: 12,
+            top: 56,
+            left: 16,
+            right: 16,
             child: SafeArea(
               child: Center(
                 child: ConstrainedBox(
@@ -74,9 +75,9 @@ class _AppNoticeHostState extends State<AppNoticeHost> {
                   child: Semantics(
                     liveRegion: true,
                     child: Material(
-                      elevation: 8,
+                      elevation: 4,
                       borderRadius: BorderRadius.circular(12),
-                      color: Theme.of(context).colorScheme.surface,
+                      color: Theme.of(context).cardTheme.color,
                       child: Padding(
                         padding: const EdgeInsets.only(
                           left: 16,
@@ -86,9 +87,8 @@ class _AppNoticeHostState extends State<AppNoticeHost> {
                         child: Row(
                           children: [
                             Icon(
-                              error
-                                  ? Icons.error_outline
-                                  : Icons.check_circle_outline,
+                              error ? AppIcons.error : AppIcons.done,
+                              size: 22,
                               color: error
                                   ? Theme.of(context).colorScheme.error
                                   : Theme.of(context).colorScheme.primary,
@@ -105,7 +105,7 @@ class _AppNoticeHostState extends State<AppNoticeHost> {
                               button: true,
                               child: IconButton(
                                 onPressed: dismiss,
-                                icon: const Icon(Icons.close, size: 18),
+                                icon: const Icon(AppIcons.close, size: 18),
                               ),
                             ),
                           ],

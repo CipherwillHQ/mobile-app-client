@@ -1,6 +1,7 @@
 // Offers existing security factors and optional biometric unlocking
 // Owns unlock choices and user feedback.
 // Does not change factor encryption formats.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
@@ -12,8 +13,7 @@ import '../../shared/ui/actions.dart';
 import 'session_controller.dart';
 import 'factor_authenticator.dart';
 import 'wallet_factor.dart';
-import '../../shared/ui/vault_emblem.dart';
-import '../../shared/ui/icon_badge.dart';
+import '../../shared/ui/navigation_row.dart';
 import 'factor_visuals.dart';
 
 class LockScreen extends ConsumerStatefulWidget {
@@ -61,34 +61,28 @@ class _LockScreenState extends ConsumerState<LockScreen> {
   Widget build(BuildContext context) => PageFrame(
     title: 'Unlock Cipherwill',
     children: [
-      const VaultEmblem(),
-      const SizedBox(height: 20),
+      const Align(
+        alignment: Alignment.centerLeft,
+        child: Icon(AppIcons.security, size: 32),
+      ),
+      const SizedBox(height: 24),
       Text(
-        'Your vault.\nYour keys.',
-        style: Theme.of(context).textTheme.headlineLarge,
+        'Unlock your vault',
+        style: Theme.of(context).textTheme.headlineMedium,
       ),
       const SizedBox(height: 12),
-      const Text(
-        'You’re signed in. Choose a security factor to open your private vault.',
-      ),
+      const Text('You’re signed in. Choose a security factor.'),
       const SizedBox(height: 20),
       for (final factor in widget.factors)
-        Card(
-          child: Column(
-            children: [
-              ListTile(
-                leading: IconBadge(factorIcon(factor['type'])),
-                title: Text(factor['name']),
-                subtitle: Text(factorTitle(factor['type'])),
-                trailing: const Icon(Icons.arrow_forward_rounded, size: 20),
-                onTap: busy ? null : () => unlock(factor),
-              ),
-              TextButton.icon(
-                onPressed: busy ? null : () => unlock(factor, biometric: true),
-                icon: const Icon(Icons.fingerprint),
-                label: const Text('Unlock with biometrics'),
-              ),
-            ],
+        NavigationRow(
+          icon: factorIcon(factor['type']),
+          title: factor['name'],
+          detail: factorTitle(factor['type']),
+          onTap: busy ? null : () => unlock(factor),
+          trailing: IconButton(
+            tooltip: 'Unlock with biometrics',
+            onPressed: busy ? null : () => unlock(factor, biometric: true),
+            icon: const Icon(AppIcons.fingerprint),
           ),
         ),
       if (busy) const Center(child: CircularProgressIndicator()),

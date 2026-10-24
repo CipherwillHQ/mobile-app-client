@@ -1,11 +1,13 @@
 // Composes the active Guide slide and its web-style progress footer.
 // Owns retry, skip, pause and progress presentation.
 // Does not execute guidance operations or own draft answers.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import '../../core/api/json_values.dart';
 import 'guidance_session.dart';
 import 'guidance_step_panel.dart';
 import 'rules.dart';
+import '../../shared/ui/action_sheet.dart';
 
 class GuidanceActiveSlide extends StatelessWidget {
   final GuidanceSession session;
@@ -14,7 +16,7 @@ class GuidanceActiveSlide extends StatelessWidget {
   final int displayForMs;
   final ValueChanged<dynamic> changed;
   final dynamic answer;
-  final VoidCallback advance, retry, skip, defer, pause;
+  final VoidCallback advance, retry, skip, defer;
   const GuidanceActiveSlide({
     super.key,
     required this.session,
@@ -28,8 +30,27 @@ class GuidanceActiveSlide extends StatelessWidget {
     required this.retry,
     required this.skip,
     required this.defer,
-    required this.pause,
   });
+  Future<void> options(BuildContext context) async {
+    final step = session.step, flow = session.flow;
+    final choice = await chooseAction(
+      context,
+      actions: [
+        if (!introduction && step?['input']?['skippable'] == true)
+          const SheetAction('skip', 'Skip this question', AppIcons.next),
+        if (flow?['skippable'] == true)
+          SheetAction(
+            'defer',
+            introduction ? 'Skip' : 'Do this later',
+            AppIcons.timeline,
+          ),
+      ],
+    );
+    if (!context.mounted) return;
+    if (choice == 'skip') skip();
+    if (choice == 'defer') defer();
+  }
+
   @override
   Widget build(BuildContext context) {
     final flow = session.flow, step = session.step;
@@ -59,24 +80,16 @@ class GuidanceActiveSlide extends StatelessWidget {
           ),
           if (!busy &&
               !complete &&
-              !introduction &&
-              step?['input']?['skippable'] == true)
-            TextButton(
-              onPressed: skip,
-              child: const Text('Skip this question'),
-            ),
-          if (!busy && !complete && flow['skippable'] == true)
-            TextButton(
-              onPressed: defer,
-              child: Text(introduction ? 'Skip' : 'Do this later'),
+              (flow['skippable'] == true ||
+                  (!introduction && step?['input']?['skippable'] == true)))
+            TextButton.icon(
+              onPressed: () => options(context),
+              icon: const Icon(AppIcons.more, size: 18),
+              label: const Text('Options'),
             ),
         ] else
           const Text('Preparing your setup…'),
-        const SizedBox(height: 36),
-        TextButton(
-          onPressed: busy ? null : pause,
-          child: const Text("Let's do this later"),
-        ),
+        const SizedBox(height: 24),
         if (flow != null && error == null && !introduction)
           Wrap(
             alignment: WrapAlignment.center,
@@ -92,11 +105,11 @@ class GuidanceActiveSlide extends StatelessWidget {
                       : 'Remaining step',
                   child: Icon(
                     session.visited.contains(question['id'])
-                        ? Icons.circle
-                        : Icons.circle_outlined,
+                        ? AppIcons.dot
+                        : AppIcons.pending,
                     size: 10,
                     color: session.visited.contains(question['id'])
-                        ? Colors.green
+                        ? Theme.of(context).colorScheme.primary
                         : Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),

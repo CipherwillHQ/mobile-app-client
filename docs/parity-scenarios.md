@@ -38,7 +38,7 @@ Every row requires an Android and iOS result against the existing backend. All l
 | Backups | Visit cipherwill.com/app on desktop for backups/restores | Desktop handoff tests; retained ZIP codec tests |
 | Repeated restore | Preserve readable content, exclusions and concurrent saves; fail on unreadable saved data | Restore regression tests |
 | Links | Cold/warm verification/reset/executor links, wallet return, expired/invalid links | Owner/executor URI mapping and action-code/cancellation tests; live pending |
-| Accessibility | Large text, screen readers, keyboards, touch targets, safe areas, both themes, reduced motion | 25-screen phone/theme/large-text renders, all text forms and auth keyboard widget tests |
+| Accessibility | Large text, screen readers, keyboards, touch targets, safe areas, both themes, reduced motion | 34-screen phone/theme/large-text/landscape renders, all text forms, keyboard/footer and accessible sheet tests |
 
 Free/premium authorization and quota rejection must be exercised on real test accounts. All save failures must preserve a retry route and avoid reporting success. Temporary exported copies must be removed after sharing and on the next launch after an interruption.
 

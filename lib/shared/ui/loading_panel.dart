@@ -9,28 +9,24 @@ class LoadingPanel extends StatelessWidget {
   Widget build(BuildContext context) => Semantics(
     label: 'Loading',
     child: ExcludeSemantics(
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const LinearProgressIndicator(minHeight: 2),
-              const SizedBox(height: 24),
-              for (final width in [140.0, 220.0, 180.0])
-                Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  width: width,
-                  height: 12,
-                  decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const LinearProgressIndicator(minHeight: 2),
+            const SizedBox(height: 20),
+            for (final width in [140.0, 220.0, 180.0])
+              Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                width: width,
+                height: 12,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(6),
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
       ),
     ),

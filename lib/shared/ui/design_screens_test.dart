@@ -5,71 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../testing/design_harness.dart';
 import '../../testing/design_capture.dart';
-import '../../testing/design_fixtures.dart';
-import '../../features/auth/auth_screen.dart';
-import '../../features/auth/onboarding_screen.dart';
-import '../../features/security/lock_screen.dart';
-import '../../features/security/factors_screen.dart';
-import '../../features/people/people_list_screen.dart';
-import '../../features/people/beneficiary_screen.dart';
-import '../../features/settings/profile_screen.dart';
-import '../../features/settings/usage_screen.dart';
-import '../../features/settings/preferences_screen.dart';
-import '../../features/settings/phone_screen.dart';
-import '../../features/settings/account_actions_screen.dart';
-import '../../features/billing/billing_screen.dart';
-import '../../features/storage/storage_screen.dart';
-import '../../features/backup/backup_screen.dart';
-import '../../features/guidance/guidance_screen.dart';
-import '../../features/timeline/timeline_screen.dart';
-import '../../features/executor/executor_screen.dart';
-import '../../features/executor/granted_categories_screen.dart';
-import '../../features/vault/asset_list_screen.dart';
-import '../../features/home/score_screen.dart';
+import '../../testing/design_screens.dart';
 import 'error_panel.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(loadDesignFonts);
-  final screens = <String, Widget?>{
-    '/home': null,
-    '/vault': null,
-    '/people': null,
-    '/settings': null,
-    '/platform': null,
-    '/auth': const AuthScreen(),
-    '/lock': const LockScreen(factors: [previewFactor]),
-    '/factors': const FactorsScreen(),
-    '/beneficiaries': const PeopleListScreen(),
-    '/beneficiaries/beneficiary': const BeneficiaryScreen(id: 'beneficiary'),
-    '/profile': const ProfileScreen(),
-    '/usage': const UsageScreen(),
-    '/preferences': const PreferencesScreen(),
-    '/phones': const PhoneScreen(),
-    '/billing': const BillingScreen(),
-    '/storage': const StorageScreen(),
-    '/backup': const BackupScreen(),
-    '/guide': const GuidanceScreen(),
-    '/timeline': const TimelineScreen(),
-    '/executor': const ExecutorScreen(),
-    '/executor/grant': const GrantedCategoriesScreen(id: 'grant'),
-    '/vault/NOTE': const AssetListScreen(type: 'NOTE'),
-    '/vault/PASSWORD': const AssetListScreen(type: 'PASSWORD'),
-    '/score': const ScoreScreen(),
-    '/account-actions': const AccountActionsScreen(),
-    '/feedback': const FeedbackScreen(),
-    '/onboarding': OnboardingScreen(
-      onboarding: const {
-        'heard_from_options_catalog': [
-          {'id': 'friend', 'label': 'A friend'},
-        ],
-        'expectation_options_catalog': [
-          {'id': 'legacy', 'label': 'Plan my digital legacy'},
-        ],
-      },
-      completed: () {},
-    ),
-  };
   for (final brightness in Brightness.values) {
     testWidgets('all screens render on a phone in ${brightness.name}', (
       tester,
@@ -78,7 +19,7 @@ void main() {
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
-      for (final entry in screens.entries) {
+      for (final entry in designScreens.entries) {
         await tester.pumpWidget(
           DesignHarness(
             key: ValueKey(entry.key),
@@ -112,26 +53,49 @@ void main() {
       }
     });
   }
-  testWidgets('primary screens and auth fit narrow phones with large text', (
+  for (final size in [
+    const Size(320, 740),
+    const Size(360, 800),
+    const Size(430, 932),
+    const Size(852, 393),
+  ]) {
+    testWidgets('all screens fit $size with 2× text and reduced motion', (
+      tester,
+    ) async {
+      tester.view.physicalSize = size;
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      for (final entry in designScreens.entries) {
+        await tester.pumpWidget(
+          DesignHarness(
+            key: ValueKey(entry.key),
+            location: entry.key,
+            screen: entry.value,
+            textScale: 2,
+            reducedMotion: true,
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull, reason: entry.key);
+        expect(find.byType(ErrorPanel), findsNothing, reason: entry.key);
+        await tester.pumpWidget(const SizedBox());
+      }
+    });
+  }
+  testWidgets('factorless dashboard does not claim a factor was unlocked', (
     tester,
   ) async {
-    tester.view.physicalSize = const Size(320, 740);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
-    for (final entry in screens.entries) {
-      await tester.pumpWidget(
-        DesignHarness(
-          key: ValueKey(entry.key),
-          location: entry.key,
-          screen: entry.value,
-          textScale: 2,
-          reducedMotion: true,
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(tester.takeException(), isNull, reason: entry.key);
-      await tester.pumpWidget(const SizedBox());
-    }
+    await tester.pumpWidget(const DesignHarness(factors: []));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('No security factors'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('No security factors'), findsOneWidget);
+    expect(find.text('Vault unlocked'), findsNothing);
+    expect(find.text('Vault locked'), findsNothing);
+    expect(tester.takeException(), isNull);
   });
 }

@@ -1,6 +1,7 @@
 // Shows the backend's separate text and file storage counters.
 // Owns readable byte labels without fabricated quotas.
 // Does not enforce plan limits or expose storage response objects.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import '../../core/api/json_values.dart';
 import '../../shared/ui/remote_panel.dart';
@@ -24,9 +25,7 @@ class StorageUsage extends StatelessWidget {
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: Icon(
-                entry.$2 == 'text_pods'
-                    ? Icons.notes_rounded
-                    : Icons.folder_outlined,
+                entry.$2 == 'text_pods' ? AppIcons.notes : AppIcons.folder,
               ),
               title: Text(entry.$1),
               subtitle: Text(byteLabel(usage[entry.$2])),

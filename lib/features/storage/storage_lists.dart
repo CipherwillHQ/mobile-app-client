@@ -1,6 +1,7 @@
 // Presents owner and access-scoped folder and file lists.
 // Owns metadata navigation and deliberate owner folder deletion.
 // Does not decrypt files or change executor permissions.
+import '../../app/app_icons.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,15 +30,14 @@ class StorageFolders extends ConsumerWidget {
     field: access != null ? 'getGrantedStorageFolders' : 'getFolders',
     itemsField: 'folders',
     variables: {'folder_id': folder, if (access != null) 'access_id': access},
-    empty: const EmptyState(
-      title: 'No folders',
-      message: 'Folders in this location appear here.',
-      icon: Icons.folder_open_outlined,
+    empty: const Padding(
+      padding: EdgeInsets.symmetric(vertical: 12),
+      child: Text('No folders'),
     ),
     itemBuilder: (item) => FeatureCard(
       title: item['name'],
-      subtitle: 'Open folder',
-      icon: Icons.folder_outlined,
+      subtitle: '',
+      icon: AppIcons.folder,
       onTap: () => context.push(
         '/storage?folder=' +
             item['id'] +
@@ -47,7 +47,7 @@ class StorageFolders extends ConsumerWidget {
           ? null
           : IconButton(
               tooltip: 'Delete folder',
-              icon: const Icon(Icons.delete_outline),
+              icon: const Icon(AppIcons.delete),
               onPressed: () => perform(context, () async {
                 if (!await confirm(context, 'Delete this folder?')) return;
                 await ref.read(apiProvider).run('DELETE_FOLDER', {
@@ -77,7 +77,7 @@ class StorageFiles extends StatelessWidget {
     empty: const EmptyState(
       title: 'No files here yet',
       message: 'Your files will appear here when uploaded.',
-      icon: Icons.upload_file_outlined,
+      icon: AppIcons.upload,
     ),
     itemBuilder: (item) => VaultItemTile(
       title: label(asJson(jsonDecode(item['metadata']))),

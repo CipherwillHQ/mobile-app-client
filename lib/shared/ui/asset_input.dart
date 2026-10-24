@@ -1,6 +1,7 @@
 // Renders one web-contract asset field with masking and copy controls.
 // Owns keyboard hints, required validation and optional removal action.
 // Does not save values or own category/group visibility.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../features/vault/asset_category.dart';
@@ -65,19 +66,17 @@ class _AssetInputState extends State<AssetInput> {
                 IconButton(
                   tooltip: revealed ? 'Hide value' : 'Reveal value',
                   onPressed: () => setState(() => revealed = !revealed),
-                  icon: Icon(
-                    revealed ? Icons.visibility_off : Icons.visibility,
-                  ),
+                  icon: Icon(revealed ? AppIcons.hide : AppIcons.reveal),
                 ),
               if (!field.required && !widget.readOnly)
                 IconButton(
                   tooltip: 'Remove ' + field.label,
                   onPressed: widget.remove,
-                  icon: const Icon(Icons.close, size: 18),
+                  icon: const Icon(AppIcons.close, size: 18),
                 ),
               IconButton(
                 tooltip: 'Copy ' + field.label,
-                icon: const Icon(Icons.copy_outlined, size: 19),
+                icon: const Icon(AppIcons.copy, size: 19),
                 onPressed: () async {
                   final value = widget.controller.text;
                   if (value.isEmpty) return;

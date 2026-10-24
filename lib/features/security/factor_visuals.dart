@@ -1,6 +1,7 @@
 // Maps the supported factor identifiers to native labels and icons.
 // Owns presentation shared by unlocking and security settings.
 // Does not derive keys or choose factor fallbacks.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 
 String factorTitle(String type) => switch (type) {
@@ -10,8 +11,8 @@ String factorTitle(String type) => switch (type) {
   _ => type,
 };
 IconData factorIcon(String type) => switch (type) {
-  'master-password' => Icons.password_rounded,
-  'metamask' => Icons.account_balance_wallet_outlined,
-  'passkey' => Icons.fingerprint_rounded,
-  _ => Icons.key_rounded,
+  'master-password' => AppIcons.password,
+  'metamask' => AppIcons.wallet,
+  'passkey' => AppIcons.fingerprint,
+  _ => AppIcons.key,
 };

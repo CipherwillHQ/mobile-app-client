@@ -1,6 +1,7 @@
 // Manages current factors, migrations and biometric protection.
 // Owns security-factor actions and authentic save feedback.
 // Does not change the legacy derivation protocol.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
@@ -20,6 +21,7 @@ import 'wallet_factor.dart';
 import 'key_migration.dart';
 import 'factor_card.dart';
 import 'factor_visuals.dart';
+import 'factor_creation_sheet.dart';
 
 class FactorsScreen extends ConsumerStatefulWidget {
   const FactorsScreen({super.key});
@@ -74,19 +76,19 @@ class _FactorsScreenState extends ConsumerState<FactorsScreen> {
     );
   }
 
+  Future<void> chooseFactor() async {
+    final type = await chooseFactorType(context);
+    if (mounted && type != null) await add(type);
+  }
+
   @override
   Widget build(BuildContext context) => PageFrame(
     title: 'Security Factors',
     actions: [
-      PopupMenuButton<String>(
+      IconButton(
         tooltip: 'Add a factor',
-        enabled: !busy,
-        icon: const Icon(Icons.add),
-        onSelected: add,
-        itemBuilder: (_) => [
-          for (final type in ['master-password', 'metamask', 'passkey'])
-            PopupMenuItem(value: type, child: Text('Add ' + factorTitle(type))),
-        ],
+        onPressed: busy ? null : chooseFactor,
+        icon: const Icon(AppIcons.add),
       ),
     ],
     children: [
@@ -94,7 +96,7 @@ class _FactorsScreenState extends ConsumerState<FactorsScreen> {
         title: 'Keep a way back in',
         message:
             'Account sign-in and vault encryption are separate. Keep a security factor you can recover.',
-        icon: Icons.shield_outlined,
+        icon: AppIcons.security,
       ),
       const SectionHeading('Your factors'),
       AsyncPanel(
@@ -107,7 +109,7 @@ class _FactorsScreenState extends ConsumerState<FactorsScreen> {
                 title: 'Add your first security factor',
                 message:
                     'Choose a master password, wallet or passkey for your vault.',
-                icon: Icons.key_rounded,
+                icon: AppIcons.key,
               ),
             for (final factor in factors)
               RemotePanel(

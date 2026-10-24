@@ -10,11 +10,10 @@ import '../testing/design_capture.dart';
 import '../features/vault/asset_list_screen.dart';
 import '../features/vault/categories.dart';
 import 'app_sidebar.dart';
-import 'mobile_section_bar.dart';
 
 void main() {
   setUpAll(loadDesignFonts);
-  testWidgets('drawer closes and navigates; section bar returns to data hub', (
+  testWidgets('drawer closes and group links open the familiar data hub', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -33,14 +32,19 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(AppSidebar), findsNothing);
     expect(find.text('Dashboard'), findsOneWidget);
+    await tester.tap(find.byTooltip('Open menu'));
+    await tester.pumpAndSettle();
     await tester.tap(
-      find.descendant(
-        of: find.byType(MobileSectionBar),
-        matching: find.text('Data'),
-      ),
+      find.descendant(of: find.byType(AppSidebar), matching: find.text('Data')),
     );
     await tester.pumpAndSettle();
     expect(find.text('Manage Data'), findsOneWidget);
+    expect(
+      tester
+          .widgetList<Scaffold>(find.byType(Scaffold))
+          .every((scaffold) => scaffold.bottomNavigationBar == null),
+      isTrue,
+    );
     await tester.tap(find.text(categoryFor('NOTE').title));
     await tester.pumpAndSettle();
     expect(

@@ -14,7 +14,12 @@ class SectionHeading extends StatelessWidget {
     child: Row(
       children: [
         Expanded(
-          child: Text(title, style: Theme.of(context).textTheme.titleMedium),
+          child: Text(
+            title,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w600),
+          ),
         ),
         if (action != null)
           TextButton(onPressed: onAction, child: Text(action!)),

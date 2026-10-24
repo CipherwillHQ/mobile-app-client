@@ -2,20 +2,21 @@
 // Owns subscription details, invoice links and the hosted Paddle portal.
 // Does not implement checkout or activate Premium locally.
 
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../app/providers.dart';
 import '../../core/api/json_values.dart';
-import '../../shared/time.dart';
+import '../../shared/date_label.dart';
 import '../../shared/ui/page_frame.dart';
 import '../../shared/ui/remote_panel.dart';
 import '../../shared/ui/actions.dart';
-import '../../shared/ui/panel_section.dart';
 import '../../shared/ui/status_pill.dart';
 import '../../shared/ui/empty_state.dart';
 import '../../shared/ui/section_heading.dart';
 import '../../shared/ui/feature_card.dart';
+import '../../shared/ui/navigation_row.dart';
 import 'billing_refresh.dart';
 import 'upgrade_entry.dart';
 
@@ -32,36 +33,41 @@ class BillingScreen extends ConsumerWidget {
         builder: (r) {
           final raw = r['getMySubscription'];
           if (raw == null) {
+            if (ref.read(accountProvider).value?['plan'] == 'free') {
+              return const SizedBox.shrink();
+            }
             return const EmptyState(
               title: 'No active subscription',
               message: 'Your existing subscription details will appear here.',
-              icon: Icons.workspace_premium_outlined,
+              icon: AppIcons.premium,
             );
           }
           final s = asJson(raw);
-          return PanelSection(
-            title: s['plan_name'],
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Text(
+                s['plan_name'],
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 12),
               Align(
                 alignment: Alignment.centerLeft,
-                child: StatusPill(
-                  s['status'],
-                  icon: Icons.workspace_premium_outlined,
-                ),
+                child: StatusPill(s['status'], icon: AppIcons.premium),
               ),
               if (s['next_billing_at'] != null)
-                ListTile(
-                  title: const Text('Next billing'),
-                  subtitle: Text(localTime(s['next_billing_at'])),
+                NavigationRow(
+                  icon: AppIcons.timeline,
+                  title: 'Next billing',
+                  detail: dateLabel(s['next_billing_at']),
                 ),
-              ListTile(
-                title: const Text('Payment method'),
-                subtitle: Text(
-                  s['last_payment_method']?.toString() ?? 'Unavailable',
-                ),
+              NavigationRow(
+                icon: AppIcons.card,
+                title: 'Payment method',
+                detail: s['last_payment_method']?.toString() ?? 'Unavailable',
               ),
               if (s['payment_gateway'] == 'paddle')
-                TextButton(
+                FilledButton.icon(
                   onPressed: () => perform(context, () async {
                     final url = (await ref.read(apiProvider).run(
                       'GET_PADDLE_PORTAL_SESSION_URL',
@@ -74,7 +80,8 @@ class BillingScreen extends ConsumerWidget {
                       throw StateError('Unable to open subscriber portal.');
                     }
                   }),
-                  child: const Text('Manage billing'),
+                  icon: const Icon(AppIcons.external, size: 20),
+                  label: const Text('Manage billing'),
                 ),
             ],
           );
@@ -87,12 +94,12 @@ class BillingScreen extends ConsumerWidget {
           children: [
             for (final invoice in jsonList(r['getMyInvoices']))
               FeatureCard(
-                icon: Icons.receipt_long_outlined,
+                icon: AppIcons.billing,
                 title: invoice['plan_name'],
                 subtitle:
                     invoice['status'] +
                     ' · ' +
-                    localTime(invoice['created_at']) +
+                    dateLabel(invoice['created_at']) +
                     '\n' +
                     invoice['amount'].toString() +
                     ' ' +
@@ -111,10 +118,12 @@ class BillingScreen extends ConsumerWidget {
                 }),
               ),
             if (jsonList(r['getMyInvoices']).isEmpty)
-              const EmptyState(
-                title: 'No invoices yet',
-                message: 'Invoices for your subscription appear here.',
-                icon: Icons.receipt_long_outlined,
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Text(
+                  'No invoices yet',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
               ),
           ],
         ),

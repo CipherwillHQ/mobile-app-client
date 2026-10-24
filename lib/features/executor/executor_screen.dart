@@ -1,6 +1,7 @@
 // Lists released wills and donor information for the beneficiary.
 // Owns executor entry points and read-only presentation.
 // Does not read protected asset contents.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import '../../shared/person_name.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +12,7 @@ import '../../shared/ui/remote_panel.dart';
 import '../../shared/ui/guide_panel.dart';
 import '../../shared/ui/empty_state.dart';
 import '../../shared/ui/person_avatar.dart';
+import '../../shared/ui/navigation_row.dart';
 
 class ExecutorScreen extends StatelessWidget {
   const ExecutorScreen({super.key});
@@ -19,10 +21,10 @@ class ExecutorScreen extends StatelessWidget {
     title: 'Executor workspace',
     children: [
       const GuidePanel(
-        title: 'A responsibility, thoughtfully shared',
+        title: 'Released wills',
         message:
             'Read-only access becomes available when a will is released to you. Each donor controls what you receive.',
-        icon: Icons.volunteer_activism_outlined,
+        icon: AppIcons.beneficiary,
       ),
       const SizedBox(height: 20),
       RemotePanel(
@@ -33,7 +35,7 @@ class ExecutorScreen extends StatelessWidget {
             return const EmptyState(
               title: 'No released wills yet',
               message: 'Wills entrusted to you will appear here after release.',
-              icon: Icons.lock_clock_outlined,
+              icon: AppIcons.timeline,
             );
           }
           return Column(
@@ -42,17 +44,13 @@ class ExecutorScreen extends StatelessWidget {
                 RemotePanel(
                   operation: 'GET_PERSON',
                   variables: {'id': access['user']},
-                  builder: (p) => Card(
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.all(18),
-                      leading: PersonAvatar(personName(asJson(p['getPerson']))),
-                      title: Text(personName(asJson(p['getPerson']))),
-                      subtitle: Text(
+                  builder: (p) => NavigationRow(
+                    leading: PersonAvatar(personName(asJson(p['getPerson']))),
+                    title: personName(asJson(p['getPerson'])),
+                    detail:
                         'Read-only · Expires ' + dateLabel(access['expire_at']),
-                      ),
-                      trailing: const Icon(Icons.chevron_right_rounded),
-                      onTap: () => context.push('/executor/' + access['id']),
-                    ),
+                    trailing: const Icon(AppIcons.next),
+                    onTap: () => context.push('/executor/' + access['id']),
                   ),
                 ),
             ],

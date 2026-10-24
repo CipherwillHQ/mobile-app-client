@@ -41,6 +41,7 @@ dependencies:
   pdfrx: ^2.4.7
   intl: ^0.20.2
   webview_flutter: ^4.14.1
+  flutter_tabler_icons: 1.43.0
 dev_dependencies:
   webview_flutter_platform_interface: ^2.15.1
   flutter_test:

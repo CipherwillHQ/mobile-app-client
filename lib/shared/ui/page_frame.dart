@@ -1,9 +1,12 @@
-// Provides consistent mobile page spacing and navigation
-// Owns scaffold and scrollable content.
+// Gives mobile pages compact headers and keyboard-aware content.
+// Owns safe-area spacing, native Back and an optional task action area.
 // Does not fetch account data.
 import 'package:flutter/material.dart';
-import 'motion.dart';
 import '../../app/navigation_scope.dart';
+import '../../app/parent_destination.dart';
+import 'page_back_scope.dart';
+import 'page_header.dart';
+import 'page_refresh.dart';
 
 class PageFrame extends StatelessWidget {
   final String title;
@@ -11,6 +14,10 @@ class PageFrame extends StatelessWidget {
   final List<Widget>? actions;
   final String? subtitle;
   final Widget? tabs;
+  final Widget? footer;
+  final bool focused;
+  final bool canLeave;
+  final VoidCallback? onBlockedBack;
   const PageFrame({
     super.key,
     required this.title,
@@ -18,52 +25,80 @@ class PageFrame extends StatelessWidget {
     this.actions,
     this.subtitle,
     this.tabs,
+    this.footer,
+    this.focused = false,
+    this.canLeave = true,
+    this.onBlockedBack,
   });
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
-      actions: actions,
-      leading: NavigationScope.maybeOf(context) == null
-          ? null
-          : IconButton(
-              tooltip: 'Open menu',
-              icon: const Icon(Icons.menu_rounded),
-              onPressed: NavigationScope.maybeOf(context)!.openMenu,
-            ),
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(1),
-        child: Divider(
-          height: 1,
-          color: Theme.of(context).colorScheme.outlineVariant,
+  Widget build(BuildContext context) {
+    final location = NavigationScope.maybeOf(context)?.location;
+    final parent = location == null ? null : parentDestination(location);
+    return PageBackScope(
+      parent: parent,
+      canLeave: canLeave,
+      onBlockedBack: onBlockedBack,
+      child: Scaffold(
+        appBar: PageHeader(
+          title: title,
+          parent: parent,
+          focused: focused,
+          actions: actions,
         ),
-      ),
-    ),
-    body: SafeArea(
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 760),
-          child: ListView(
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-            children: [
-              ?tabs,
-              if (subtitle != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: Text(
-                    subtitle!,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+        bottomNavigationBar: footer == null
+            ? null
+            : Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.viewInsetsOf(context).bottom,
+                ),
+                child: SafeArea(
+                  top: false,
+                  child: Center(
+                    heightFactor: 1,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 760),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                        child: SizedBox(width: double.infinity, child: footer),
+                      ),
                     ),
                   ),
                 ),
-              for (var index = 0; index < children.length; index++)
-                Reveal(order: index, child: children[index]),
-            ],
+              ),
+        body: SafeArea(
+          top: false,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 760),
+              child: PageRefresh(
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                  children: [
+                    ?tabs,
+                    if (subtitle != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: Text(
+                          subtitle!,
+                          style: Theme.of(context).textTheme.bodyMedium!
+                              .copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
+                        ),
+                      ),
+                    ...children,
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

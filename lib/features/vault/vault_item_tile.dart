@@ -1,9 +1,11 @@
-// Matches flat web notes rows and compact cards for other data types.
-// Owns owner/executor metadata labels and accessible navigation.
+// Presents owner and executor items as compact metadata rows.
+// Owns category icons, update dates and a visible read-only indicator.
 // Does not read decrypted asset contents.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'category_visuals.dart';
 import '../../shared/date_label.dart';
+import '../../shared/ui/navigation_row.dart';
 
 class VaultItemTile extends StatelessWidget {
   final String title;
@@ -20,58 +22,16 @@ class VaultItemTile extends StatelessWidget {
     required this.onTap,
   });
   @override
-  Widget build(BuildContext context) {
-    final note = type == 'NOTE';
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: note ? 2 : 6),
-      child: Material(
-        color: note ? Colors.transparent : Theme.of(context).cardTheme.color,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(note ? 8 : 16),
-          side: note
-              ? BorderSide.none
-              : BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    if (!note) ...[
-                      Icon(visualFor(type).icon, size: 18),
-                      const SizedBox(width: 8),
-                    ],
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    if (readOnly) const Icon(Icons.lock_outline, size: 16),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  (readOnly
-                          ? 'Read-only · '
-                          : note
-                          ? ''
-                          : 'Updated ') +
-                      dateLabel(updated),
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => NavigationRow(
+    title: title,
+    icon: visualFor(type).icon,
+    detail: dateLabel(updated),
+    trailing: readOnly
+        ? const Tooltip(
+            message: 'Read-only access',
+            child: Icon(AppIcons.lock, size: 18),
+          )
+        : null,
+    onTap: onTap,
+  );
 }

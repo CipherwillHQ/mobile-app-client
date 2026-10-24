@@ -1,11 +1,14 @@
 // Shows mandatory fields first and adds optional fields using the web groups.
 // Owns in-memory controllers, existing-value visibility and grouped removal.
 // Does not serialize metadata or save records.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import '../../features/vault/asset_category.dart';
 import '../../core/api/json_values.dart';
 import 'optional_fields.dart';
 import 'asset_input.dart';
+import 'action_sheet.dart';
+import 'motion.dart';
 
 class AssetFields extends StatefulWidget {
   final List<AssetField> fields;
@@ -42,6 +45,18 @@ class _AssetFieldsState extends State<AssetFields> {
     );
   }
 
+  Future<void> chooseField() async {
+    final key = await chooseAction(
+      context,
+      title: 'Add field',
+      actions: [
+        for (final field in widget.fields.where((field) => !visible(field)))
+          SheetAction(field.key, field.label, AppIcons.add),
+      ],
+    );
+    if (mounted && key != null) add(key);
+  }
+
   void remove(AssetField field) {
     setState(() {
       for (final f in fieldGroup(widget.fields, field)) {
@@ -73,36 +88,31 @@ class _AssetFieldsState extends State<AssetFields> {
 
   void change() => widget.onChanged({...widget.initial, ...values});
   @override
-  Widget build(BuildContext context) => Column(
-    children: [
-      for (final field in widget.fields.where(visible))
-        AssetInput(
-          key: ValueKey(field.key),
-          field: field,
-          controller: controllers[field.key]!,
-          readOnly: widget.readOnly,
-          changed: change,
-          remove: () => remove(field),
-        ),
-      if (!widget.readOnly && widget.fields.any((f) => !visible(f)))
-        PopupMenuButton<String>(
-          onSelected: add,
-          itemBuilder: (_) => [
-            for (final f in widget.fields.where((f) => !visible(f)))
-              PopupMenuItem(value: f.key, child: Text(f.label)),
-          ],
-          child: const Padding(
-            padding: EdgeInsets.all(12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.add, size: 18),
-                SizedBox(width: 8),
-                Text('Add field'),
-              ],
-            ),
+  Widget build(BuildContext context) => AnimatedSize(
+    duration: AppMotion.reduced(context)
+        ? Duration.zero
+        : const Duration(milliseconds: 180),
+    curve: Curves.easeOutCubic,
+    alignment: Alignment.topCenter,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final field in widget.fields.where(visible))
+          AssetInput(
+            key: ValueKey(field.key),
+            field: field,
+            controller: controllers[field.key]!,
+            readOnly: widget.readOnly,
+            changed: change,
+            remove: () => remove(field),
           ),
-        ),
-    ],
+        if (!widget.readOnly && widget.fields.any((f) => !visible(f)))
+          TextButton.icon(
+            onPressed: chooseField,
+            icon: const Icon(AppIcons.add, size: 18),
+            label: const Text('Add field'),
+          ),
+      ],
+    ),
   );
 }

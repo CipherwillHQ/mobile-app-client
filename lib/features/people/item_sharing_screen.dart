@@ -1,6 +1,7 @@
 // Controls beneficiary exclusions for a single vault item
 // Owns explicit sharing changes and recipient rewrapping.
 // Does not change executor release conditions.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import '../../shared/person_name.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,9 +22,10 @@ class ItemSharingScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => PageFrame(
     title: 'Beneficiary access',
+    focused: true,
     children: [
       const GuidePanel(
-        icon: Icons.people_outline_rounded,
+        icon: AppIcons.people,
         title: 'Choose who receives this item',
         message:
             'Access applies after will release. Turning it off excludes this beneficiary.',
@@ -45,35 +47,31 @@ class ItemSharingScreen extends ConsumerWidget {
                   RemotePanel(
                     operation: 'GET_PERSON',
                     variables: {'id': beneficiary['person_id']},
-                    builder: (person) => Card(
-                      child: SwitchListTile(
-                        secondary: PersonAvatar(
-                          personName(asJson(person['getPerson'])),
-                        ),
-                        title: Text(personName(asJson(person['getPerson']))),
-                        subtitle: const Text(
-                          'Receive this item after will release',
-                        ),
-                        value: !ignored.contains(beneficiary['id']),
-                        onChanged: (enabled) => perform(context, () async {
-                          await ref.read(apiProvider).run(
-                            enabled
-                                ? 'REMOVE_IGNORED_BENEFICIARY'
-                                : 'ADD_IGNORED_BENEFICIARY',
-                            {
-                              'metamodel_id': id,
-                              'beneficiary_id': beneficiary['id'],
-                            },
-                          );
-                          if (enabled) {
-                            await KeyMigration(
-                              ref.read(apiProvider),
-                              ref.read(sessionProvider.notifier).lease(),
-                            ).beneficiary(beneficiary['id']);
-                          }
-                          ref.invalidate(remoteProvider);
-                        }),
+                    builder: (person) => SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      secondary: PersonAvatar(
+                        personName(asJson(person['getPerson'])),
                       ),
+                      title: Text(personName(asJson(person['getPerson']))),
+                      value: !ignored.contains(beneficiary['id']),
+                      onChanged: (enabled) => perform(context, () async {
+                        await ref.read(apiProvider).run(
+                          enabled
+                              ? 'REMOVE_IGNORED_BENEFICIARY'
+                              : 'ADD_IGNORED_BENEFICIARY',
+                          {
+                            'metamodel_id': id,
+                            'beneficiary_id': beneficiary['id'],
+                          },
+                        );
+                        if (enabled) {
+                          await KeyMigration(
+                            ref.read(apiProvider),
+                            ref.read(sessionProvider.notifier).lease(),
+                          ).beneficiary(beneficiary['id']);
+                        }
+                        ref.invalidate(remoteProvider);
+                      }),
                     ),
                   ),
                 if (jsonList(result['getSmartWillBeneficiaries']).isEmpty)
@@ -81,7 +79,7 @@ class ItemSharingScreen extends ConsumerWidget {
                     title: 'No beneficiaries yet',
                     message:
                         'Add beneficiaries in People to manage their access here.',
-                    icon: Icons.people_outline_rounded,
+                    icon: AppIcons.people,
                   ),
               ],
             ),

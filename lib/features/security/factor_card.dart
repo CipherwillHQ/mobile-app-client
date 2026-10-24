@@ -3,7 +3,9 @@
 // Does not infer saved device-key state or run migrations.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../app/design_tokens.dart';
+import '../../app/app_icons.dart';
+import '../../shared/ui/action_sheet.dart';
+import '../../shared/ui/navigation_row.dart';
 import '../../core/api/json_values.dart';
 import 'factor_visuals.dart';
 import 'session_controller.dart';
@@ -24,6 +26,26 @@ class FactorCard extends ConsumerWidget {
     required this.disable,
     required this.remove,
   });
+  Future<void> options(BuildContext context) async {
+    final action = await chooseAction<VoidCallback>(
+      context,
+      title: factor['name'],
+      actions: [
+        SheetAction(rename, 'Rename', AppIcons.edit),
+        SheetAction(migrate, 'Migrate keys', AppIcons.refresh),
+        SheetAction(enable, 'Enable biometrics', AppIcons.fingerprint),
+        SheetAction(disable, 'Disable biometrics', AppIcons.fingerprint),
+        SheetAction(
+          remove,
+          'Remove factor',
+          AppIcons.delete,
+          destructive: true,
+        ),
+      ],
+    );
+    if (context.mounted) action?.call();
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final publicKey = factor['publicKey'].toString();
@@ -31,76 +53,19 @@ class FactorCard extends ConsumerWidget {
         ? '${publicKey.substring(0, 8)}…${publicKey.substring(publicKey.length - 8)}'
         : publicKey;
     final current = ref.watch(sessionProvider)?.publicKey == publicKey;
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardTheme.color,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: current
-              ? CipherwillColors.sage
-              : Theme.of(context).colorScheme.outlineVariant,
-        ),
+    return NavigationRow(
+      title: factor['name'],
+      detail:
+          '${factorTitle(factor['type'])} · $count keys\n$shortKey${current ? ' · Current factor' : ''}',
+      leading: Icon(
+        factorIcon(factor['type']),
+        size: 22,
+        color: current ? Theme.of(context).colorScheme.primary : null,
       ),
-      padding: const EdgeInsets.fromLTRB(12, 8, 4, 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  factor['name'],
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'Type: ${factorTitle(factor['type'])}',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                Text(
-                  'Key: $shortKey',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                Text(
-                  'Data count: $count',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                if (current)
-                  Text(
-                    'Current factor',
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      color: CipherwillColors.sage,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          PopupMenuButton<VoidCallback>(
-            tooltip: 'Factor options',
-            enabled: !busy,
-            onSelected: (action) => action(),
-            itemBuilder: (_) => [
-              for (final action in [
-                ('Rename', rename),
-                ('Migrate keys', migrate),
-                ('Enable biometrics', enable),
-                ('Disable biometrics', disable),
-                ('Remove factor', remove),
-              ])
-                PopupMenuItem(
-                  value: action.$2,
-                  child: Text(
-                    action.$1,
-                    style: action.$1 == 'Remove factor'
-                        ? TextStyle(color: Theme.of(context).colorScheme.error)
-                        : null,
-                  ),
-                ),
-            ],
-          ),
-        ],
+      trailing: IconButton(
+        tooltip: 'Factor options',
+        onPressed: busy ? null : () => options(context),
+        icon: const Icon(AppIcons.more),
       ),
     );
   }

@@ -6,12 +6,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../../shared/ui/app_notice.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../app/providers.dart';
+import '../../app/navigate_back.dart';
 import '../../core/api/json_values.dart';
-import '../../shared/ui/page_frame.dart';
 import '../../shared/ui/actions.dart';
-import 'asset_draft_form.dart';
+import 'asset_editor_view.dart';
+import 'asset_item_actions.dart';
 import '../security/session_controller.dart';
 import 'categories.dart';
 import 'vault_repository.dart';
@@ -47,6 +47,38 @@ class _AssetEditScreenState extends ConsumerState<AssetEditScreen> {
     super.initState();
     load();
   }
+
+  Future<void> leave() async {
+    if (!await confirm(
+          context,
+          'This item has unsaved changes. Leave without saving?',
+        ) ||
+        !mounted) {
+      return;
+    }
+    close();
+  }
+
+  Future<void> options() async {
+    if (await assetItemOptions(context, ref, widget.id, widget.type) &&
+        mounted) {
+      close();
+    }
+  }
+
+  void close() {
+    setState(() => discard = true);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) navigateBack(context, fallback: '/vault/${widget.type}');
+    });
+  }
+
+  Future<void> checkPending() => perform(context, () async {
+    await UploadService(
+      ref.read(apiProvider),
+    ).resume(widget.id, ref.read(sessionProvider.notifier).lease());
+    await load();
+  });
 
   @override
   void dispose() {
@@ -124,73 +156,21 @@ class _AssetEditScreenState extends ConsumerState<AssetEditScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final category = categoryFor(widget.type);
-    return PopScope(
-      canPop: discard || status == 'Saved' || initial == null,
-      onPopInvokedWithResult: (didPop, result) async {
-        if (didPop) return;
-        final leave = await confirm(
-          context,
-          'This item has unsaved changes. Leave without saving?',
-        );
-        if (leave && context.mounted) {
-          setState(() => discard = true);
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (context.mounted) context.pop();
-          });
-        }
-      },
-      child: PageFrame(
-        title: category.title,
-        actions: [
-          IconButton(
-            tooltip: 'Delete item',
-            onPressed: () => perform(context, () async {
-              if (!await confirm(context, 'Delete this item?')) return;
-              await ref.read(apiProvider).run('DELETE_METAMODEL', {
-                'id': widget.id,
-              });
-              if (context.mounted) {
-                setState(() => discard = true);
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (context.mounted) context.pop();
-                });
-              }
-            }),
-            icon: const Icon(Icons.delete_outline),
-          ),
-        ],
-        children: [
-          if (error != null) ...[
-            Text(error!),
-            TextButton(onPressed: load, child: const Text('Retry')),
-            TextButton(
-              onPressed: () => perform(context, () async {
-                await UploadService(
-                  ref.read(apiProvider),
-                ).resume(widget.id, ref.read(sessionProvider.notifier).lease());
-                await load();
-              }),
-              child: const Text('Check pending save'),
-            ),
-          ] else if (initial == null)
-            const Center(child: CircularProgressIndicator())
-          else
-            AssetDraftForm(
-              form: form,
-              title: title,
-              category: category,
-              initial: initial!,
-              draft: draft,
-              id: widget.id,
-              status: status,
-              saving: saving,
-              changed: changed,
-              save: save,
-            ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => AssetEditorView(
+    category: categoryFor(widget.type),
+    form: form,
+    title: title,
+    initial: initial,
+    draft: draft,
+    error: error,
+    status: status,
+    saving: saving,
+    canLeave: discard || status == 'Saved' || initial == null,
+    leave: leave,
+    save: save,
+    options: options,
+    retry: load,
+    checkPending: checkPending,
+    changed: changed,
+  );
 }

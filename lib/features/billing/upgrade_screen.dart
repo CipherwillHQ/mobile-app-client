@@ -1,6 +1,7 @@
 // Opens checkout for the current, freshly verified backend account.
 // Owns account attribution, route closing and terminal result delivery.
 // Does not accept account IDs from links or implement payment processing.
+import '../../app/app_icons.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -76,7 +77,7 @@ class _UpgradeScreenState extends ConsumerState<UpgradeScreen> {
       leading: IconButton(
         tooltip: 'Close checkout',
         onPressed: close,
-        icon: const Icon(Icons.close_rounded),
+        icon: const Icon(AppIcons.close),
       ),
     ),
     body: SafeArea(

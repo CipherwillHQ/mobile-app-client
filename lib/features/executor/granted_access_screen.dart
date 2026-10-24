@@ -1,6 +1,7 @@
 // Lists released access to the owner's will and supports revocation.
 // Owns beneficiary identity and explicit revoke actions.
 // Does not change the server release schedule.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import '../../shared/person_name.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,18 +14,18 @@ import '../../shared/ui/actions.dart';
 import '../../shared/ui/empty_state.dart';
 import '../../shared/ui/guide_panel.dart';
 import '../../shared/ui/person_avatar.dart';
+import '../../shared/ui/navigation_row.dart';
 
 class GrantedAccessScreen extends ConsumerWidget {
   const GrantedAccessScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) => PageFrame(
     title: 'Released access',
-    subtitle: 'Review who currently has access to your will.',
     children: [
       const GuidePanel(
         title: 'You remain in control',
         message: 'Revoke a released grant to stop future protected reads.',
-        icon: Icons.shield_outlined,
+        icon: AppIcons.security,
       ),
       const SizedBox(height: 16),
       RemotePanel(
@@ -35,7 +36,7 @@ class GrantedAccessScreen extends ConsumerWidget {
             return const EmptyState(
               title: 'No released access',
               message: 'Your active beneficiary grants will appear here.',
-              icon: Icons.lock_outline_rounded,
+              icon: AppIcons.lock,
             );
           }
           return RemotePanel(
@@ -66,7 +67,9 @@ class ReleasedGrantCard extends ConsumerWidget {
   const ReleasedGrantCard({super.key, required this.grant, this.personId});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final revoke = OutlinedButton(
+    final revoke = IconButton(
+      tooltip: 'Revoke access',
+      color: Theme.of(context).colorScheme.error,
       onPressed: () => perform(context, () async {
         if (!await confirm(
           context,
@@ -79,37 +82,23 @@ class ReleasedGrantCard extends ConsumerWidget {
         });
         ref.invalidate(remoteProvider);
       }),
-      child: const Text('Revoke access'),
+      icon: const Icon(AppIcons.excluded),
     );
     if (personId == null) {
-      return Card(
-        child: ListTile(
-          title: const Text('Former beneficiary'),
-          subtitle: Text('Expires ' + dateLabel(grant['expire_at'])),
-          trailing: revoke,
-        ),
+      return NavigationRow(
+        title: 'Former beneficiary',
+        detail: 'Expires ' + dateLabel(grant['expire_at']),
+        trailing: revoke,
       );
     }
     return RemotePanel(
       operation: 'GET_PERSON',
       variables: {'id': personId},
-      builder: (r) => Card(
-        child: Padding(
-          padding: const EdgeInsets.all(18),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: PersonAvatar(personName(asJson(r['getPerson']))),
-                title: Text(personName(asJson(r['getPerson']))),
-                subtitle: Text('Expires ' + dateLabel(grant['expire_at'])),
-              ),
-              const SizedBox(height: 12),
-              revoke,
-            ],
-          ),
-        ),
+      builder: (r) => NavigationRow(
+        leading: PersonAvatar(personName(asJson(r['getPerson']))),
+        title: personName(asJson(r['getPerson'])),
+        detail: 'Expires ' + dateLabel(grant['expire_at']),
+        trailing: revoke,
       ),
     );
   }

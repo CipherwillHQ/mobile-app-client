@@ -1,6 +1,7 @@
 // Displays a concise state alongside an explicit icon and label.
 // Owns compact status presentation in headers and forms.
 // Does not determine whether content is encrypted or saved.
+import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import '../../app/design_tokens.dart';
 
@@ -11,7 +12,7 @@ class StatusPill extends StatelessWidget {
   const StatusPill(
     this.label, {
     super.key,
-    this.icon = Icons.shield_outlined,
+    this.icon = AppIcons.security,
     this.color = CipherwillColors.sage,
   });
   @override

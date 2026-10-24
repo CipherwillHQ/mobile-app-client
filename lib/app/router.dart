@@ -38,6 +38,7 @@ import '../features/auth/auth_action_screen.dart';
 import 'navigation_shell.dart';
 import 'deep_links.dart';
 import 'account_gate.dart';
+import 'section_page.dart';
 
 GoRouter createRouter() => GoRouter(
   initialLocation: '/home',
@@ -55,10 +56,22 @@ GoRouter createRouter() => GoRouter(
         child: NavigationShell(location: state.uri.toString(), child: child),
       ),
       routes: [
-        GoRoute(path: '/home', builder: (_, _) => const HomeScreen()),
-        GoRoute(path: '/vault', builder: (_, _) => const VaultScreen()),
-        GoRoute(path: '/people', builder: (_, _) => const PeopleScreen()),
-        GoRoute(path: '/platform', builder: (_, _) => const PlatformScreen()),
+        GoRoute(
+          path: '/home',
+          pageBuilder: (_, state) => sectionPage(state, const HomeScreen()),
+        ),
+        GoRoute(
+          path: '/vault',
+          pageBuilder: (_, state) => sectionPage(state, const VaultScreen()),
+        ),
+        GoRoute(
+          path: '/people',
+          pageBuilder: (_, state) => sectionPage(state, const PeopleScreen()),
+        ),
+        GoRoute(
+          path: '/platform',
+          pageBuilder: (_, state) => sectionPage(state, const PlatformScreen()),
+        ),
         GoRoute(path: '/settings', builder: (_, _) => const SettingsScreen()),
         GoRoute(path: '/usage', builder: (_, _) => const UsageScreen()),
         GoRoute(
