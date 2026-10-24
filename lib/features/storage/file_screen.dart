@@ -13,7 +13,8 @@ import '../security/session_controller.dart';
 import 'file_service.dart';
 import 'file_preview.dart';
 import 'upload_recovery.dart';
-import '../../shared/ui/status_pill.dart';
+import '../executor/unavailable_access.dart';
+import '../executor/executor_access_scope.dart';
 import '../../shared/ui/guide_panel.dart';
 import '../../shared/ui/loading_panel.dart';
 import '../../shared/ui/error_panel.dart';
@@ -81,6 +82,9 @@ class _FileScreenState extends ConsumerState<FileScreen> {
       setState(() => file = value);
     } catch (e) {
       await cleanup(directory);
+      if (widget.access != null && mounted && returnToSharedWills(context, e)) {
+        return;
+      }
       if (mounted) setState(() => error = e.toString());
     } finally {
       loading = false;
@@ -94,52 +98,56 @@ class _FileScreenState extends ConsumerState<FileScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => PageFrame(
-    title: 'File',
-    actions: widget.access == null ? [FileOptions(id: widget.id)] : null,
-    footer: file == null
-        ? null
-        : FilledButton.icon(
-            onPressed: () => exportDecryptedFile(
-              context,
-              ref,
-              file!,
-              widget.id,
-              widget.access,
+  Widget build(BuildContext context) {
+    if (widget.access != null &&
+        !ExecutorAccessScope.permits(context, widget.access!)) {
+      return const PageFrame(title: 'File', children: [LoadingPanel()]);
+    }
+    return PageFrame(
+      title: 'File',
+      actions: widget.access == null ? [FileOptions(id: widget.id)] : null,
+      footer: file == null
+          ? null
+          : FilledButton.icon(
+              onPressed: () => exportDecryptedFile(
+                context,
+                ref,
+                file!,
+                widget.id,
+                widget.access,
+              ),
+              icon: const Icon(AppIcons.share),
+              label: const Text('Export file'),
             ),
-            icon: const Icon(AppIcons.share),
-            label: const Text('Export file'),
+      children: [
+        if (error != null) ...[
+          ErrorPanel(
+            message:
+                'The file could not be opened. Retry or check a pending upload.',
+            retry: load,
           ),
-    children: [
-      if (widget.access != null)
-        const StatusPill('Read-only access', icon: AppIcons.reveal),
-      if (error != null) ...[
-        ErrorPanel(
-          message:
-              'The file could not be opened. Retry or check a pending upload.',
-          retry: load,
-        ),
-        if (widget.access == null) UploadRecovery(id: widget.id, saved: load),
-      ] else if (file == null)
-        const LoadingPanel()
-      else ...[
-        if (widget.access == null)
-          FileDetails(id: widget.id)
-        else
-          Text(
-            file!.path.split(Platform.pathSeparator).last,
-            style: Theme.of(context).textTheme.headlineSmall,
+          if (widget.access == null) UploadRecovery(id: widget.id, saved: load),
+        ] else if (file == null)
+          const LoadingPanel()
+        else ...[
+          if (widget.access == null)
+            FileDetails(id: widget.id)
+          else
+            Text(
+              file!.path.split(Platform.pathSeparator).last,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+          const SizedBox(height: 20),
+          const GuidePanel(
+            title: 'Exporting creates a decrypted copy',
+            message:
+                'Choose a trusted destination when saving or sharing this file.',
+            icon: AppIcons.share,
           ),
-        const SizedBox(height: 20),
-        const GuidePanel(
-          title: 'Exporting creates a decrypted copy',
-          message:
-              'Choose a trusted destination when saving or sharing this file.',
-          icon: AppIcons.share,
-        ),
-        const SizedBox(height: 16),
-        FilePreview(file: file!),
+          const SizedBox(height: 16),
+          FilePreview(file: file!),
+        ],
       ],
-    ],
-  );
+    );
+  }
 }

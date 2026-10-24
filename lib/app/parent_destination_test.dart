@@ -33,6 +33,7 @@ void main() {
         '/upgrade': '/billing',
         '/preferences': '/home',
         '/phones': '/home',
+        '/granted-access': '/home',
       }.entries) {
         expect(parentDestination(entry.key), entry.value, reason: entry.key);
       }
@@ -40,10 +41,11 @@ void main() {
   );
   test('released items and folders retain executor context', () {
     for (final entry in {
-      '/executor': '/people',
+      '/executor': '/home',
       '/executor/grant': '/executor',
       '/executor/grant/category/NOTE': '/executor/grant',
       '/executor/grant/item/record': '/executor/grant',
+      '/executor/grant%2Fone/item/record': '/executor/grant%2Fone',
       '/storage?access=grant': '/executor/grant',
       '/storage?folder=folder&access=grant': '/storage?access=grant',
       '/file/file?access=grant': '/storage?access=grant',

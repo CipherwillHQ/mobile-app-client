@@ -5,6 +5,8 @@
 import 'package:flutter/material.dart';
 import 'app_sidebar.dart';
 import 'navigation_scope.dart';
+import '../features/executor/executor_location.dart';
+import '../features/executor/executor_shell.dart';
 
 class NavigationShell extends StatefulWidget {
   final Widget child;
@@ -24,6 +26,9 @@ class _NavigationShellState extends State<NavigationShell> {
   @override
   Widget build(BuildContext context) {
     if (Uri.parse(widget.location).path == '/upgrade') return widget.child;
+    if (isExecutorLocation(widget.location)) {
+      return ExecutorShell(location: widget.location, child: widget.child);
+    }
     return Scaffold(
       key: scaffold,
       resizeToAvoidBottomInset: false,

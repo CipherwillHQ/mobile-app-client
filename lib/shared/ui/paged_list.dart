@@ -21,6 +21,7 @@ class PagedList extends ConsumerStatefulWidget {
   final Widget Function(Json) itemBuilder;
   final Widget? empty;
   final bool Function(Json)? filter;
+  final bool Function(Object)? onFailure;
   const PagedList({
     super.key,
     required this.operation,
@@ -30,6 +31,7 @@ class PagedList extends ConsumerStatefulWidget {
     required this.itemBuilder,
     this.empty,
     this.filter,
+    this.onFailure,
   });
   @override
   ConsumerState<PagedList> createState() => _PagedListState();
@@ -98,8 +100,9 @@ class _PagedListState extends ConsumerState<PagedList> {
         more = response['has_more'] == true;
         error = null;
       });
-    } catch (_) {
+    } catch (failure) {
       if (mounted) {
+        if (widget.onFailure?.call(failure) == true) return;
         setState(
           () =>
               error = 'Unable to load items. Check your connection and retry.',

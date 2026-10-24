@@ -142,6 +142,7 @@ Future<Json> designResponse(String name, Json vars) async => switch (name) {
     'getAllGrantedBeneficiaries': [
       {
         'id': 'released-grant',
+        'user': 'person',
         'beneficiary_id': 'beneficiary',
         'expire_at': '4102444800000',
       },
@@ -149,6 +150,7 @@ Future<Json> designResponse(String name, Json vars) async => switch (name) {
   },
   'GET_ACCESS_DETAILS' => {
     'getAccessDetails': {
+      'id': vars['access_id'],
       'user': 'person',
       'beneficiary_id': 'beneficiary',
       'expire_at': '4102444800000',

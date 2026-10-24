@@ -8,6 +8,7 @@ import '../../core/crypto/ecies.dart';
 import '../security/session_controller.dart';
 import '../vault/categories.dart';
 import '../vault/pod_codec.dart';
+import 'access_status.dart';
 
 class ExecutorRepository {
   final ApiClient api;
@@ -21,10 +22,7 @@ class ExecutorRepository {
       }))['getAccessDetails'],
     );
     lease.check();
-    if (int.parse(value['expire_at']) <=
-        DateTime.now().millisecondsSinceEpoch) {
-      throw StateError('This access has expired.');
-    }
+    if (!isActiveAccess(value)) throw ExpiredWillAccess();
     return value;
   }
 

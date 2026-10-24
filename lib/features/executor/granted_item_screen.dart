@@ -1,7 +1,6 @@
 // Displays freshly authorized decrypted items in a read-only screen
 // Owns masked fields and native rich notes.
 // Does not edit or restore donor assets.
-import '../../app/app_icons.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,10 +12,11 @@ import '../security/session_controller.dart';
 import '../vault/categories.dart';
 import '../notes/note_editor.dart';
 import 'executor_repository.dart';
-import '../../shared/ui/status_pill.dart';
 import '../../shared/ui/loading_panel.dart';
 import '../../shared/ui/error_panel.dart';
 import '../../shared/ui/panel_section.dart';
+import 'unavailable_access.dart';
+import 'executor_access_scope.dart';
 
 class GrantedItemScreen extends ConsumerStatefulWidget {
   final String access;
@@ -46,7 +46,8 @@ class _GrantedItemScreenState extends ConsumerState<GrantedItemScreen> {
         ref.read(sessionProvider.notifier).lease(),
       ).read(widget.access, widget.id);
       if (mounted) setState(() => item = result);
-    } catch (_) {
+    } catch (failure) {
+      if (mounted && returnToSharedWills(context, failure)) return;
       if (mounted) {
         setState(
           () => error = 'This item cannot be opened. Access may have changed.',
@@ -62,40 +63,43 @@ class _GrantedItemScreenState extends ConsumerState<GrantedItemScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => PageFrame(
-    title: 'Granted item',
-    children: [
-      const StatusPill('Read-only access', icon: AppIcons.reveal),
-      const SizedBox(height: 16),
-      if (error != null) ...[
-        ErrorPanel(message: error!, retry: load),
-      ] else if (item == null)
-        const LoadingPanel()
-      else ...[
-        Text(
-          label(asJson(jsonDecode(item!.$1['metadata']))),
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        const SizedBox(height: 20),
-        if (item!.$1['type'] == 'NOTE')
-          NoteEditor(
-            content: item!.$2['content'] ?? '',
-            onChanged: (_) {},
-            readOnly: true,
-          )
-        else
-          PanelSection(
-            title: 'Vault contents',
-            children: [
-              AssetFields(
-                fields: categoryFor(item!.$1['type']).fields,
-                initial: item!.$2,
-                onChanged: (_) {},
-                readOnly: true,
-              ),
-            ],
+  Widget build(BuildContext context) {
+    if (!ExecutorAccessScope.permits(context, widget.access)) {
+      return const PageFrame(title: 'Shared item', children: [LoadingPanel()]);
+    }
+    return PageFrame(
+      title: 'Shared item',
+      children: [
+        if (error != null) ...[
+          ErrorPanel(message: error!, retry: load),
+        ] else if (item == null)
+          const LoadingPanel()
+        else ...[
+          Text(
+            label(asJson(jsonDecode(item!.$1['metadata']))),
+            style: Theme.of(context).textTheme.headlineSmall,
           ),
+          const SizedBox(height: 20),
+          if (item!.$1['type'] == 'NOTE')
+            NoteEditor(
+              content: item!.$2['content'] ?? '',
+              onChanged: (_) {},
+              readOnly: true,
+            )
+          else
+            PanelSection(
+              title: 'Vault contents',
+              children: [
+                AssetFields(
+                  fields: categoryFor(item!.$1['type']).fields,
+                  initial: item!.$2,
+                  onChanged: (_) {},
+                  readOnly: true,
+                ),
+              ],
+            ),
+        ],
       ],
-    ],
-  );
+    );
+  }
 }

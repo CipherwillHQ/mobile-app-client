@@ -3,60 +3,73 @@
 // Does not read protected asset contents.
 import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
-import '../../shared/person_name.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/api/json_values.dart';
-import '../../shared/date_label.dart';
+import '../../app/navigation_scope.dart';
 import '../../shared/ui/page_frame.dart';
-import '../../shared/ui/remote_panel.dart';
+import '../../shared/ui/async_panel.dart';
 import '../../shared/ui/guide_panel.dart';
 import '../../shared/ui/empty_state.dart';
-import '../../shared/ui/person_avatar.dart';
-import '../../shared/ui/navigation_row.dart';
+import 'access_status.dart';
+import 'executor_providers.dart';
+import 'received_will_row.dart';
+import 'will_access_refresh.dart';
 
-class ExecutorScreen extends StatelessWidget {
+class ExecutorScreen extends ConsumerWidget {
   const ExecutorScreen({super.key});
   @override
-  Widget build(BuildContext context) => PageFrame(
-    title: 'Executor workspace',
-    children: [
-      const GuidePanel(
-        title: 'Released wills',
-        message:
-            'Read-only access becomes available when a will is released to you. Each donor controls what you receive.',
-        icon: AppIcons.beneficiary,
-      ),
-      const SizedBox(height: 20),
-      RemotePanel(
-        operation: 'GET_ALL_BENEFICIARY_ACCESS',
-        builder: (r) {
-          final grants = jsonList(r['getAllBeneficiaryAccess']);
-          if (grants.isEmpty) {
-            return const EmptyState(
-              title: 'No released wills yet',
-              message: 'Wills entrusted to you will appear here after release.',
-              icon: AppIcons.timeline,
-            );
-          }
-          return Column(
-            children: [
-              for (final access in grants)
-                RemotePanel(
-                  operation: 'GET_PERSON',
-                  variables: {'id': access['user']},
-                  builder: (p) => NavigationRow(
-                    leading: PersonAvatar(personName(asJson(p['getPerson']))),
-                    title: personName(asJson(p['getPerson'])),
-                    detail:
-                        'Read-only · Expires ' + dateLabel(access['expire_at']),
-                    trailing: const Icon(AppIcons.next),
-                    onTap: () => context.push('/executor/' + access['id']),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notice = Uri.parse(
+      NavigationScope.maybeOf(context)?.location ?? '',
+    ).queryParameters['notice'];
+    return PageFrame(
+      title: 'Execution dashboard',
+      children: [
+        if (notice != null)
+          GuidePanel(
+            title: notice == 'expired'
+                ? 'Access ended'
+                : 'This will is unavailable',
+            message: 'Choose another shared will or return to your dashboard.',
+            icon: AppIcons.lock,
+          ),
+        WillAccessRefresh(
+          child: AsyncPanel(
+            value: ref.watch(receivedWillsProvider),
+            retry: () => ref.invalidate(receivedWillsProvider),
+            builder: (grants) {
+              if (grants.isEmpty) {
+                return Column(
+                  children: [
+                    const EmptyState(
+                      title: 'No wills shared with you',
+                      message:
+                          'Received wills appear here when access is released.',
+                      icon: AppIcons.beneficiary,
+                    ),
+                    TextButton(
+                      onPressed: () => context.go('/home'),
+                      child: const Text('My dashboard'),
+                    ),
+                  ],
+                );
+              }
+              final active = grants.where(isActiveAccess).length;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    '$active available ${active == 1 ? 'will' : 'wills'} · Read-only',
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
-                ),
-            ],
-          );
-        },
-      ),
-    ],
-  );
+                  const SizedBox(height: 12),
+                  for (final grant in grants) ReceivedWillRow(grant: grant),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
 }

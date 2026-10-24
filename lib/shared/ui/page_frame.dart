@@ -32,7 +32,8 @@ class PageFrame extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    final location = NavigationScope.maybeOf(context)?.location;
+    final navigation = NavigationScope.maybeOf(context);
+    final location = navigation?.location;
     final parent = location == null ? null : parentDestination(location);
     return PageBackScope(
       parent: parent,
@@ -77,6 +78,7 @@ class PageFrame extends StatelessWidget {
                       ScrollViewKeyboardDismissBehavior.onDrag,
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
                   children: [
+                    ?navigation?.header,
                     ?tabs,
                     if (subtitle != null)
                       Padding(

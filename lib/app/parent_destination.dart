@@ -1,6 +1,7 @@
 // Resolves a familiar parent when a mobile page opens without history.
 // Owns owner, executor and Settings hierarchy for native Back navigation.
 // Does not authorize destinations or skip unsaved-change guards.
+import '../features/executor/executor_location.dart';
 
 String? parentDestination(String location) {
   final uri = Uri.parse(location);
@@ -15,9 +16,9 @@ String? parentDestination(String location) {
     return '/vault/${uri.queryParameters['type'] ?? 'NOTE'}';
   }
   if (parts.firstOrNull == 'executor') {
-    if (parts.length == 1) return '/people';
+    if (parts.length == 1) return '/home';
     if (parts.length == 2) return '/executor';
-    return '/executor/${parts[1]}';
+    return executorWillLocation(parts[1]);
   }
   if (parts.firstOrNull == 'file' || path == '/storage') {
     final access = uri.queryParameters['access'];
@@ -27,7 +28,7 @@ String? parentDestination(String location) {
         queryParameters: access == null ? null : {'access': access},
       ).toString();
     }
-    return access == null ? '/vault' : '/executor/$access';
+    return access == null ? '/vault' : executorWillLocation(access);
   }
   if (path.startsWith('/vault/')) return '/vault';
   if (path.startsWith('/beneficiaries/')) return '/beneficiaries';
@@ -36,7 +37,8 @@ String? parentDestination(String location) {
         ? '/friends'
         : '/beneficiaries';
   }
-  if (['/beneficiaries', '/friends', '/granted-access'].contains(path)) {
+  if (path == '/granted-access') return '/home';
+  if (['/beneficiaries', '/friends'].contains(path)) {
     return '/people';
   }
   if (['/profile', '/backup', '/usage', '/account-actions'].contains(path)) {

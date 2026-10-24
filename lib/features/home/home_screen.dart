@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../app/providers.dart';
+import '../executor/dashboard_access.dart';
 import '../../shared/ui/page_frame.dart';
 import '../../shared/ui/feature_card.dart';
 import 'planning_summary.dart';
@@ -36,6 +37,7 @@ class HomeScreen extends ConsumerWidget {
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         const SizedBox(height: 16),
+        const DashboardAccess(),
         const DashboardSetup(),
         const DashboardMetrics(),
         const SizedBox(height: 16),
@@ -54,18 +56,6 @@ class HomeScreen extends ConsumerWidget {
           subtitle: '',
           icon: AppIcons.segments,
           onTap: () => context.push('/preferences'),
-        ),
-        FeatureCard(
-          title: 'Granted beneficiary access',
-          subtitle: 'Review and revoke access to your will',
-          icon: AppIcons.key,
-          onTap: () => context.push('/granted-access'),
-        ),
-        FeatureCard(
-          title: 'Executor workspace',
-          subtitle: 'View wills released to you',
-          icon: AppIcons.unlocked,
-          onTap: () => context.push('/executor'),
         ),
       ],
     );

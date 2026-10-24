@@ -8,14 +8,16 @@ import 'navigation_destinations.dart';
 class SidebarLink extends StatelessWidget {
   final AppDestination destination;
   final String location;
+  final bool? selected;
   const SidebarLink({
     super.key,
     required this.destination,
     required this.location,
+    this.selected,
   });
   @override
   Widget build(BuildContext context) {
-    final active = sidebarSelected(destination.$2, location);
+    final active = selected ?? sidebarSelected(destination.$2, location);
     return Semantics(
       selected: active,
       child: Material(

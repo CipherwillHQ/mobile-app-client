@@ -9,6 +9,7 @@ import '../../testing/navigation_harness.dart';
 import 'account_actions_screen.dart';
 import '../backup/backup_screen.dart';
 import 'preferences_screen.dart';
+import 'appearance.dart';
 
 void main() {
   testWidgets('segments contain category toggles without timeline controls', (
@@ -52,26 +53,23 @@ void main() {
     await tester.tap(find.byTooltip('Open menu'));
     await tester.pumpAndSettle();
     for (final label in ['System', 'Light', 'Dark']) {
-      expect(find.text(label), findsOneWidget);
+      expect(find.byTooltip(label), findsOneWidget);
     }
     expect(find.text('Lock'), findsNothing);
     expect(find.text('Logout'), findsNothing);
-    await tester.tap(find.text('Dark'));
-    await tester.pumpAndSettle();
-    expect(
-      tester
-          .widget<ChoiceChip>(find.widgetWithText(ChoiceChip, 'Dark'))
-          .selected,
-      true,
-    );
-    await tester.tap(find.text('System'));
-    await tester.pumpAndSettle();
-    expect(
-      tester
-          .widget<ChoiceChip>(find.widgetWithText(ChoiceChip, 'System'))
-          .selected,
-      true,
-    );
+    for (final entry in const [
+      ('Dark', ThemeMode.dark),
+      ('Light', ThemeMode.light),
+      ('System', ThemeMode.system),
+    ]) {
+      await tester.tap(find.byTooltip(entry.$1));
+      await tester.pumpAndSettle();
+      expect(harness.container.read(appearanceProvider), entry.$2);
+      expect(
+        (await SharedPreferences.getInstance()).getString('appearance'),
+        entry.$2.name,
+      );
+    }
     harness.router.go('/settings');
     await tester.pumpAndSettle();
     expect(find.text('Link Google'), findsNothing);

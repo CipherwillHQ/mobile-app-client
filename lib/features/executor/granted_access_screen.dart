@@ -1,105 +1,17 @@
-// Lists released access to the owner's will and supports revocation.
-// Owns beneficiary identity and explicit revoke actions.
-// Does not change the server release schedule.
-import '../../app/app_icons.dart';
+// Preserves direct links to the owner's contextual access review.
+// Owns the focused page fallback for the dashboard review sheet.
+// Does not expose a permanent owner navigation destination.
 import 'package:flutter/material.dart';
-import '../../shared/person_name.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../app/providers.dart';
-import '../../core/api/json_values.dart';
-import '../../shared/date_label.dart';
 import '../../shared/ui/page_frame.dart';
-import '../../shared/ui/remote_panel.dart';
-import '../../shared/ui/actions.dart';
-import '../../shared/ui/empty_state.dart';
-import '../../shared/ui/guide_panel.dart';
-import '../../shared/ui/person_avatar.dart';
-import '../../shared/ui/navigation_row.dart';
+import 'released_access_list.dart';
+import 'will_access_refresh.dart';
 
-class GrantedAccessScreen extends ConsumerWidget {
+class GrantedAccessScreen extends StatelessWidget {
   const GrantedAccessScreen({super.key});
   @override
-  Widget build(BuildContext context, WidgetRef ref) => PageFrame(
-    title: 'Released access',
-    children: [
-      const GuidePanel(
-        title: 'You remain in control',
-        message: 'Revoke a released grant to stop future protected reads.',
-        icon: AppIcons.security,
-      ),
-      const SizedBox(height: 16),
-      RemotePanel(
-        operation: 'GET_ALL_GRANTED_BENEFICIARIES',
-        builder: (r) {
-          final grants = jsonList(r['getAllGrantedBeneficiaries']);
-          if (grants.isEmpty) {
-            return const EmptyState(
-              title: 'No released access',
-              message: 'Your active beneficiary grants will appear here.',
-              icon: AppIcons.lock,
-            );
-          }
-          return RemotePanel(
-            operation: 'GET_SMARTWILL_BENEFICIARY',
-            builder: (b) => Column(
-              children: [
-                for (final grant in grants)
-                  ReleasedGrantCard(
-                    grant: grant,
-                    personId: jsonList(b['getSmartWillBeneficiaries'])
-                        .where(
-                          (person) => person['id'] == grant['beneficiary_id'],
-                        )
-                        .firstOrNull?['person_id'],
-                  ),
-              ],
-            ),
-          );
-        },
-      ),
-    ],
+  Widget build(BuildContext context) => const PageFrame(
+    title: 'Review access',
+    focused: true,
+    children: [WillAccessRefresh(child: ReleasedAccessList())],
   );
-}
-
-class ReleasedGrantCard extends ConsumerWidget {
-  final Json grant;
-  final String? personId;
-  const ReleasedGrantCard({super.key, required this.grant, this.personId});
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final revoke = IconButton(
-      tooltip: 'Revoke access',
-      color: Theme.of(context).colorScheme.error,
-      onPressed: () => perform(context, () async {
-        if (!await confirm(
-          context,
-          'Revoke this beneficiary’s released access?',
-        )) {
-          return;
-        }
-        await ref.read(apiProvider).run('REVOKE_ACCESS_TO_MY_WILL', {
-          'id': grant['id'],
-        });
-        ref.invalidate(remoteProvider);
-      }),
-      icon: const Icon(AppIcons.excluded),
-    );
-    if (personId == null) {
-      return NavigationRow(
-        title: 'Former beneficiary',
-        detail: 'Expires ' + dateLabel(grant['expire_at']),
-        trailing: revoke,
-      );
-    }
-    return RemotePanel(
-      operation: 'GET_PERSON',
-      variables: {'id': personId},
-      builder: (r) => NavigationRow(
-        leading: PersonAvatar(personName(asJson(r['getPerson']))),
-        title: personName(asJson(r['getPerson'])),
-        detail: 'Expires ' + dateLabel(grant['expire_at']),
-        trailing: revoke,
-      ),
-    );
-  }
 }

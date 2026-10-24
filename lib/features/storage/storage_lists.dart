@@ -13,6 +13,8 @@ import '../../shared/ui/empty_state.dart';
 import '../../shared/ui/feature_card.dart';
 import '../../shared/ui/actions.dart';
 import '../vault/vault_item_tile.dart';
+import '../executor/executor_access_scope.dart';
+import '../executor/unavailable_access.dart';
 
 class StorageFolders extends ConsumerWidget {
   final String? folder;
@@ -30,6 +32,9 @@ class StorageFolders extends ConsumerWidget {
     field: access != null ? 'getGrantedStorageFolders' : 'getFolders',
     itemsField: 'folders',
     variables: {'folder_id': folder, if (access != null) 'access_id': access},
+    onFailure: access == null
+        ? null
+        : (error) => returnToSharedWills(context, error),
     empty: const Padding(
       padding: EdgeInsets.symmetric(vertical: 12),
       child: Text('No folders'),
@@ -39,9 +44,10 @@ class StorageFolders extends ConsumerWidget {
       subtitle: '',
       icon: AppIcons.folder,
       onTap: () => context.push(
-        '/storage?folder=' +
-            item['id'] +
-            (access != null ? '&access=' + access! : ''),
+        Uri(
+          path: '/storage',
+          queryParameters: {'folder': item['id'], 'access': ?access},
+        ).toString(),
       ),
       trailing: access != null
           ? null
@@ -65,28 +71,42 @@ class StorageFiles extends StatelessWidget {
   final String? access;
   const StorageFiles({super.key, this.folder, this.access});
   @override
-  Widget build(BuildContext context) => PagedList(
-    operation: access != null ? 'GET_GRANTED_METAMODELS' : 'GET_METAMODELS',
-    field: access != null ? 'getGrantedMetamodels' : 'getMetamodels',
-    itemsField: 'models',
-    variables: {
-      'folder_id': folder,
-      'type': 'FILE',
-      if (access != null) 'access_id': access,
-    },
-    empty: const EmptyState(
-      title: 'No files here yet',
-      message: 'Your files will appear here when uploaded.',
-      icon: AppIcons.upload,
-    ),
-    itemBuilder: (item) => VaultItemTile(
-      title: label(asJson(jsonDecode(item['metadata']))),
-      type: 'FILE',
-      updated: item['updated_at'],
-      readOnly: access != null,
-      onTap: () => context.push(
-        '/file/' + item['id'] + (access != null ? '?access=' + access! : ''),
+  Widget build(BuildContext context) {
+    final grant = access == null ? null : ExecutorAccessScope.maybeOf(context);
+    return PagedList(
+      operation: access != null ? 'GET_GRANTED_METAMODELS' : 'GET_METAMODELS',
+      field: access != null ? 'getGrantedMetamodels' : 'getMetamodels',
+      itemsField: 'models',
+      variables: {
+        'folder_id': folder,
+        'type': 'FILE',
+        if (access != null) 'access_id': access,
+      },
+      filter: grant == null
+          ? null
+          : (item) => !(item['ignored_beneficiaries'] as List? ?? []).contains(
+              grant['beneficiary_id'],
+            ),
+      onFailure: access == null
+          ? null
+          : (error) => returnToSharedWills(context, error),
+      empty: const EmptyState(
+        title: 'No files here yet',
+        message: 'Your files will appear here when uploaded.',
+        icon: AppIcons.upload,
       ),
-    ),
-  );
+      itemBuilder: (item) => VaultItemTile(
+        title: label(asJson(jsonDecode(item['metadata']))),
+        type: 'FILE',
+        updated: item['updated_at'],
+        readOnly: access != null,
+        onTap: () => context.push(
+          Uri(
+            pathSegments: ['', 'file', item['id']],
+            queryParameters: access == null ? null : {'access': access!},
+          ).toString(),
+        ),
+      ),
+    );
+  }
 }

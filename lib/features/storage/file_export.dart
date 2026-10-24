@@ -11,6 +11,7 @@ import '../../core/security/temp_cleanup.dart';
 import '../../shared/ui/actions.dart';
 import '../security/session_controller.dart';
 import '../executor/executor_repository.dart';
+import '../executor/unavailable_access.dart';
 
 Future<void> exportDecryptedFile(
   BuildContext context,
@@ -35,6 +36,12 @@ Future<void> exportDecryptedFile(
       lease.check();
       return SharePlus.instance.share(ShareParams(files: [XFile(file.path)]));
     });
+  } catch (error) {
+    if (access == null ||
+        !context.mounted ||
+        !returnToSharedWills(context, error)) {
+      rethrow;
+    }
   } finally {
     await cleanupShareCopies();
   }

@@ -14,8 +14,9 @@ import '../../shared/ui/page_frame.dart';
 import '../../shared/ui/actions.dart';
 import '../../shared/ui/action_sheet.dart';
 import '../../shared/ui/empty_state.dart';
-import '../../shared/ui/status_pill.dart';
 import '../../shared/ui/section_heading.dart';
+import '../../shared/ui/loading_panel.dart';
+import '../executor/executor_access_scope.dart';
 import '../security/session_controller.dart';
 import 'file_service.dart';
 import 'pending_upload.dart';
@@ -101,6 +102,9 @@ class _StorageScreenState extends ConsumerState<StorageScreen> {
   @override
   Widget build(BuildContext context) {
     final executor = widget.access != null;
+    if (executor && !ExecutorAccessScope.permits(context, widget.access!)) {
+      return const PageFrame(title: 'Shared files', children: [LoadingPanel()]);
+    }
     if (!executor && ref.watch(accountProvider).value?['plan'] == 'free') {
       return const PageFrame(
         title: 'File Storage',
@@ -126,8 +130,6 @@ class _StorageScreenState extends ConsumerState<StorageScreen> {
               ),
             ],
       children: [
-        if (executor)
-          const StatusPill('Read-only access', icon: AppIcons.reveal),
         if (pending != null)
           PendingUploadRow(name: pending!.name, saving: busy, retry: upload),
         const SectionHeading('Folders'),
