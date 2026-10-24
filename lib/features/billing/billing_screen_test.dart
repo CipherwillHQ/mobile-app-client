@@ -51,7 +51,10 @@ void main() {
         find.text('Manage billing'),
         plan == 'premium' ? findsOneWidget : findsNothing,
       );
-      expect(find.textContaining('Cancel'), findsNothing);
+      expect(
+        find.text('Cancellation scheduled'),
+        plan == 'premium' ? findsOneWidget : findsNothing,
+      );
       expect(find.text('Next billing'), findsNothing);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());

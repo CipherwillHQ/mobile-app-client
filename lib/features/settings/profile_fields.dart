@@ -1,7 +1,8 @@
 // Groups existing profile fields into native mobile form sections.
-// Owns readable labels and keyboard hints.
+// Owns readable labels, keyboard hints and the birth-date Clear control.
 // Does not serialize profile data or change account identity.
 import 'package:flutter/material.dart';
+import '../../app/app_icons.dart';
 import '../../shared/ui/panel_section.dart';
 
 const profileLabels = {
@@ -52,6 +53,15 @@ class ProfileFields extends StatelessWidget {
                   decoration: InputDecoration(
                     labelText: profileLabels[key],
                     hintText: key == 'birth_date' ? 'YYYY-MM-DD' : null,
+                    suffixIcon: key == 'birth_date'
+                        ? IconButton(
+                            tooltip: 'Clear date of birth',
+                            onPressed: fields[key]!.text.isEmpty
+                                ? null
+                                : fields[key]!.clear,
+                            icon: const Icon(AppIcons.close),
+                          )
+                        : null,
                   ),
                   keyboardType: key == 'birth_date'
                       ? TextInputType.datetime

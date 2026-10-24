@@ -39,9 +39,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       final snapshot = {
         for (final entry in fields.entries) entry.key: entry.value.text,
       };
-      final data = {...snapshot};
+      final data = <String, String?>{...snapshot};
       if (data['birth_date']!.isEmpty) {
-        data.remove('birth_date');
+        data['birth_date'] = null;
       } else {
         final date = DateTime.parse(data['birth_date']!);
         data['birth_date'] = DateTime.utc(

@@ -28,10 +28,10 @@ Every row requires an Android and iOS result against the existing backend. All l
 | Activity recording | Authenticated activity eventually appears; eight-hour deduplication and pending job handling | Backend code reviewed; live pending |
 | Guidance | Every active catalog definition; input validation, eligibility/dependencies, skip/resume, encrypted effects | Rules, input effects and schema tests |
 | Guidance recovery | Failed effects/completion, catalog changes, lost acknowledgements, durable recovery | Guidance session retry tests |
-| Profile/preferences | Profile/birthdate, segments, light/dark/system appearance, marketing choice | Generated API validation |
+| Profile/preferences | Edit or clear a saved birthdate, profile, segments, light/dark/system appearance, marketing choice | Birthdate null-update/persistence/retry tests; generated API validation |
 | Communication | Add/verify/delete phone, SMS/WhatsApp/phone preferences, feedback | Generated API validation |
 | Reset/deletion | Visit cipherwill.com/app on desktop to reset or delete; no destructive mobile action | Desktop handoff tests |
-| Existing subscriptions | Details and invoices; hosted Paddle portal manages billing/cancellation/refunds | Billing action visibility tests |
+| Existing subscriptions | Details, scheduled cancellation date/time and invoices; hosted Paddle portal manages billing/cancellation/refunds | Billing action visibility, nullable cancellation and refresh tests |
 | Web upgrade | Free-account /upgrade attribution, Paddle checkout, success/error/close, webhook delay, refresh, retries and payment handoffs | WebView contract, routed callback/recovery and account-switch tests |
 | Executor lists | Granted wills, donor details, allowed categories/items and folder traversal | Generated API validation |
 | Executor protected reads | Unreleased/expired/revoked grants; changed exclusions; E0/E1 decryption | Permission/revocation tests and web crypto |

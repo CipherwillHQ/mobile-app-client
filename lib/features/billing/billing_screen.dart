@@ -61,6 +61,12 @@ class BillingScreen extends ConsumerWidget {
                   title: 'Next billing',
                   detail: dateLabel(s['next_billing_at']),
                 ),
+              if (s['cancel_at'] != null)
+                NavigationRow(
+                  icon: AppIcons.timeline,
+                  title: 'Cancellation scheduled',
+                  detail: dateLabel(s['cancel_at'], includeTime: true),
+                ),
               NavigationRow(
                 icon: AppIcons.card,
                 title: 'Payment method',
