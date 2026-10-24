@@ -6,7 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../app/providers.dart';
 import '../../core/api/json_values.dart';
+import '../../shared/planning_intervals.dart';
 import '../../shared/ui/actions.dart';
+import '../../shared/ui/choice_sheet.dart';
 import 'check_in_schedule.dart';
 import 'timeline_event_list.dart';
 import '../../shared/ui/remote_panel.dart';
@@ -41,7 +43,31 @@ class _TimelineSettingsState extends ConsumerState<TimelineSettings> {
     if (mounted) setState(() => busy = false);
   }
 
+  Future<void> editCheckIn() async {
+    if (busy) return;
+    final interval =
+        (int.tryParse(
+                  widget.preferences['check_in_interval']?.toString() ?? '',
+                ) ??
+                365)
+            .toString();
+    final value = await chooseValue(
+      context,
+      title: 'Check-in interval',
+      description: 'Start reminders after this much inactivity.',
+      selected: interval,
+      options: {
+        ...checkInOptions,
+        if (!checkInOptions.containsKey(interval)) interval: '$interval days',
+      },
+    );
+    if (value != null && value != interval && mounted) {
+      await update('check_in_interval', value);
+    }
+  }
+
   Future<void> editReminder(String key) async {
+    if (busy) return;
     if (widget.account['plan'] != 'premium') {
       await showDialog<void>(
         context: context,
@@ -67,20 +93,20 @@ class _TimelineSettingsState extends ConsumerState<TimelineSettings> {
       );
       return;
     }
-    final value = await showDialog<String>(
-      context: context,
-      builder: (dialog) => SimpleDialog(
-        title: Text('Change ' + timelineTitles[key]!),
-        children: [
-          for (final entry in reminderOptions.entries)
-            SimpleDialogOption(
-              onPressed: () => Navigator.pop(dialog, entry.key),
-              child: Text(entry.value),
-            ),
-        ],
-      ),
+    final selected = (widget.preferences[key] ?? timelineDefaults[key])
+        .toString();
+    final value = await chooseValue(
+      context,
+      title: planningLabels[key]!,
+      description: timelineDescriptions[key]!,
+      selected: selected,
+      options: {
+        ...reminderOptions,
+        if (!reminderOptions.containsKey(selected))
+          selected: '${intervalDays(key, selected).floor()} days',
+      },
     );
-    if (value != null && mounted) await update(key, value);
+    if (value != null && value != selected && mounted) await update(key, value);
   }
 
   Future<void> reset() async {
@@ -106,22 +132,27 @@ class _TimelineSettingsState extends ConsumerState<TimelineSettings> {
   }
 
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      CheckInSchedule(
-        account: widget.account,
-        preferences: widget.preferences,
-        busy: busy,
-        update: update,
-      ),
-      TimelineEventList(
-        account: widget.account,
-        preferences: widget.preferences,
-        busy: busy,
-        edit: editReminder,
-        reset: reset,
-      ),
-    ],
-  );
+  Widget build(BuildContext context) {
+    final now = DateTime.now();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        CheckInSchedule(
+          account: widget.account,
+          preferences: widget.preferences,
+          now: now,
+          busy: busy,
+          edit: editCheckIn,
+        ),
+        TimelineEventList(
+          account: widget.account,
+          preferences: widget.preferences,
+          now: now,
+          busy: busy,
+          edit: editReminder,
+          reset: reset,
+        ),
+      ],
+    );
+  }
 }

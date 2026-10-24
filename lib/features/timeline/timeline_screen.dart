@@ -1,5 +1,5 @@
-// Matches the web Timeline page's birthday, check-in and reminder sections.
-// Owns online account/preference rendering and schedule controls.
+// Presents check-in planning before the web's personal milestone summary.
+// Owns online account/preference rendering and native page hierarchy.
 // Does not edit segments or invoke development-only event APIs.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,7 +13,7 @@ class TimelineScreen extends ConsumerWidget {
   const TimelineScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) => PageFrame(
-    title: 'Cipherwill Timeline',
+    title: 'Timeline',
     children: [
       AsyncPanel(
         value: ref.watch(accountProvider),
@@ -24,8 +24,8 @@ class TimelineScreen extends ConsumerWidget {
           builder: (preferences) => Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              BirthdaySummary(stamp: account['birth_date']),
               TimelineSettings(account: account, preferences: preferences),
+              BirthdaySummary(stamp: account['birth_date']),
             ],
           ),
         ),

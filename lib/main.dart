@@ -8,6 +8,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'app/cipherwill_app.dart';
 import 'app/providers.dart';
+import 'features/updates/app_update_host.dart';
+import 'shared/ui/app_notice.dart';
 import 'core/config/app_config.dart';
 import 'core/config/crash_reporting.dart';
 import 'core/security/temp_cleanup.dart';
@@ -21,14 +23,18 @@ Future<void> main() async {
     await cleanupTemporaryFiles();
   } catch (_) {
     runApp(
-      const MaterialApp(
-        home: Scaffold(
-          body: SafeArea(
-            child: Center(
-              child: Padding(
-                padding: EdgeInsets.all(24),
-                child: Text(
-                  'Cipherwill could not start. Check this build’s Firebase and API configuration, then restart.',
+      ProviderScope(
+        child: MaterialApp(
+          builder: (context, child) =>
+              AppNoticeHost(child: AppUpdateHost(child: child!)),
+          home: const Scaffold(
+            body: SafeArea(
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Text(
+                    'Cipherwill could not start. Check this build’s Firebase and API configuration, then restart.',
+                  ),
                 ),
               ),
             ),

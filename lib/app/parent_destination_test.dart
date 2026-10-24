@@ -25,6 +25,7 @@ void main() {
         '/profile': '/settings',
         '/backup': '/settings',
         '/usage': '/settings',
+        '/about': '/settings',
         '/account-actions': '/settings',
         '/settings': '/platform',
         '/timeline': '/platform',

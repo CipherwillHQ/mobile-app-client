@@ -29,6 +29,8 @@ abstract final class AppIcons {
   static const addPerson = TablerIcons.user_plus;
   static const removePerson = TablerIcons.user_minus;
   static const timeline = TablerIcons.timeline;
+  static const calendar = TablerIcons.calendar;
+  static const birthday = TablerIcons.cake;
   static const billing = TablerIcons.credit_card;
   static const security = TablerIcons.shield_lock;
   static const settings = TablerIcons.settings;

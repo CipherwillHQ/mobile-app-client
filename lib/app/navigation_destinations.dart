@@ -31,7 +31,7 @@ bool sidebarSelected(String destination, String location) {
     return true;
   }
   if (destination == '/settings' &&
-      ['/profile', '/backup', '/usage'].contains(uri.path)) {
+      ['/profile', '/backup', '/usage', '/about'].contains(uri.path)) {
     return true;
   }
   return destination == '/home'

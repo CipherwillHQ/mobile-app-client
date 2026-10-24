@@ -4,7 +4,7 @@
 name: cipherwill
 description: Cipherwill encrypted legacy planning for Android and iOS.
 publish_to: none
-version: 1.0.0+3
+version: 1.0.1+4
 environment:
   sdk: '>=3.11.0 <4.0.0'
 dependencies:
@@ -26,6 +26,7 @@ dependencies:
   path_provider: ^2.1.6
   share_plus: ^12.0.2
   url_launcher: ^6.3.3
+  package_info_plus: ^9.0.1
   shared_preferences: ^2.5.6
   sentry_flutter: 9.30.1
   reown_core: ^1.5.1
@@ -42,6 +43,8 @@ dependencies:
   intl: ^0.20.2
   webview_flutter: ^4.14.1
   flutter_tabler_icons: 1.43.0
+  in_app_update: ^4.2.5
+  pub_semver: ^2.2.1
 dev_dependencies:
   webview_flutter_platform_interface: ^2.15.1
   flutter_test:

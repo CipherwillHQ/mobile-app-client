@@ -56,4 +56,6 @@ See [security compatibility](docs/security.md), [platform configuration](docs/pl
 
 Signed Android APK/AAB artifacts are built for `release VERSION+BUILD` push commits. Always increase the build number in that commit; see [release instructions](release.md) for signing setup and downloads.
 
+Published store updates show a persistent bottom bar with an Update action across all screens. See [app updates](docs/app-updates.md) for Play/App Store eligibility and device testing.
+
 Existing backend authorization, quotas and release conditions remain authoritative. Account authentication is separate from factor unlocking. Saved biometric keys use native secret retrieval controls. Accounts without security factors open directly after account checks. Reset, deletion, backup and restore actions direct users to cipherwill.com/app on desktop. Existing subscribers manage billing through the hosted Paddle portal. Free accounts can upgrade through the existing web /upgrade page embedded with webview_flutter; see [web upgrade integration](docs/web-upgrade.md). There is no native checkout implementation, persistent offline vault cache, push notification setup, chat, wishes, marketing or HQ workspace.

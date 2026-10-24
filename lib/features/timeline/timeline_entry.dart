@@ -1,61 +1,110 @@
-// Draws one accessible chronological planning entry.
-// Owns timeline markers, connecting rules and date hierarchy.
-// Does not calculate dates or alter reminder intervals.
+// Draws one editable stage on a continuous, flat planning rail.
+// Owns stage icons, date transitions and an accessible whole-row action.
+// Does not calculate dates or change reminder preferences.
 import 'package:flutter/material.dart';
+import '../../app/app_icons.dart';
+import '../../shared/ui/motion.dart';
 
 class TimelineEntry extends StatelessWidget {
-  final String title;
-  final String date;
-  final bool last;
-  final Widget? action;
+  final String title, date, interval;
+  final IconData icon;
+  final Color accent;
+  final bool first, last;
+  final VoidCallback? onTap;
   const TimelineEntry({
     super.key,
     required this.title,
     required this.date,
+    required this.interval,
+    required this.icon,
+    required this.accent,
+    required this.first,
     required this.last,
-    this.action,
+    required this.onTap,
   });
   @override
-  Widget build(BuildContext context) => IntrinsicHeight(
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Column(
-          children: [
-            Container(
-              width: 8,
-              height: 8,
-              margin: const EdgeInsets.only(top: 6),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            if (!last)
-              Expanded(
-                child: Container(
-                  width: 1,
-                  color: Theme.of(context).colorScheme.outlineVariant,
-                ),
-              ),
-          ],
-        ),
-        const SizedBox(width: 18),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Tooltip(
+      message: 'Edit ${title.toLowerCase()} interval',
+      child: Semantics(
+        button: true,
+        enabled: onTap != null,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: onTap,
+            child: Stack(
               children: [
-                Text(title, style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: 5),
-                Text(date, style: Theme.of(context).textTheme.bodySmall),
-                ?action,
+                Positioned(
+                  left: 15.5,
+                  top: first ? 28 : 0,
+                  bottom: last ? null : 0,
+                  height: last ? 28 : null,
+                  width: 1,
+                  child: ColoredBox(color: theme.colorScheme.outlineVariant),
+                ),
+                Container(
+                  constraints: const BoxConstraints(minHeight: 80),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color.alphaBlend(
+                            accent.withValues(alpha: .1),
+                            theme.colorScheme.surface,
+                          ),
+                        ),
+                        child: Icon(icon, size: 18, color: accent),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              title,
+                              style: theme.textTheme.titleMedium!.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            AnimatedSwitcher(
+                              duration: AppMotion.duration(context),
+                              child: Align(
+                                key: ValueKey('$date-$interval'),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '$date · $interval',
+                                  style: theme.textTheme.bodySmall,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 8, 4, 0),
+                        child: Icon(
+                          AppIcons.edit,
+                          size: 16,
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
         ),
-      ],
-    ),
-  );
+      ),
+    );
+  }
 }

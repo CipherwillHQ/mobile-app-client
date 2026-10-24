@@ -41,7 +41,13 @@ String? parentDestination(String location) {
   if (['/beneficiaries', '/friends'].contains(path)) {
     return '/people';
   }
-  if (['/profile', '/backup', '/usage', '/account-actions'].contains(path)) {
+  if ([
+    '/profile',
+    '/backup',
+    '/usage',
+    '/account-actions',
+    '/about',
+  ].contains(path)) {
     return '/settings';
   }
   if (['/timeline', '/billing', '/factors', '/settings'].contains(path)) {

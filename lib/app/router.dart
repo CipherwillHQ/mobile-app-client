@@ -23,6 +23,7 @@ import '../features/executor/granted_items_screen.dart';
 import '../features/executor/granted_item_screen.dart';
 import '../features/executor/granted_access_screen.dart';
 import '../features/settings/settings_screen.dart';
+import '../features/settings/about_screen.dart';
 import '../features/settings/usage_screen.dart';
 import '../features/settings/platform_screen.dart';
 import '../features/settings/profile_screen.dart';
@@ -73,6 +74,7 @@ GoRouter createRouter() => GoRouter(
           pageBuilder: (_, state) => sectionPage(state, const PlatformScreen()),
         ),
         GoRoute(path: '/settings', builder: (_, _) => const SettingsScreen()),
+        GoRoute(path: '/about', builder: (_, _) => const AboutScreen()),
         GoRoute(path: '/usage', builder: (_, _) => const UsageScreen()),
         GoRoute(
           path: '/vault/:type',

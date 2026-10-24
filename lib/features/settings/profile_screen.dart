@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
 import '../../shared/ui/page_frame.dart';
+import '../../shared/ui/page_exit_guard.dart';
 import '../../shared/ui/actions.dart';
 import '../people/person_identity.dart';
 import 'profile_fields.dart';
@@ -20,8 +21,10 @@ class ProfileScreen extends ConsumerStatefulWidget {
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   final fields = <String, TextEditingController>{};
+  final savedValues = <String, String>{};
   bool loaded = false;
   bool busy = false;
+  void changed() => setState(() {});
   @override
   void dispose() {
     for (final field in fields.values) {
@@ -33,9 +36,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Future<void> save() async {
     setState(() => busy = true);
     await perform(context, () async {
-      final data = {
+      final snapshot = {
         for (final entry in fields.entries) entry.key: entry.value.text,
       };
+      final data = {...snapshot};
       if (data['birth_date']!.isEmpty) {
         data.remove('birth_date');
       } else {
@@ -47,6 +51,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ).millisecondsSinceEpoch.toString();
       }
       await ref.read(apiProvider).run('UPDATE_USER', {'data': data});
+      if (mounted) {
+        savedValues
+          ..clear()
+          ..addAll(snapshot);
+      }
       ref.invalidate(accountProvider);
     }, success: 'Profile saved.');
     if (mounted) setState(() => busy = false);
@@ -83,22 +92,30 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             isUtc: true,
           ).toIso8601String().split('T').first;
         }
-        fields[key] = TextEditingController(text: value);
+        savedValues[key] = value;
+        fields[key] = TextEditingController(text: value)..addListener(changed);
       }
       loaded = true;
     }
-    return PageFrame(
-      title: 'Settings',
-      tabs: const SettingsTabs(location: '/profile'),
-      footer: FilledButton.icon(
-        onPressed: busy ? null : save,
-        icon: const Icon(AppIcons.check),
-        label: Text(busy ? 'Saving…' : 'Save profile'),
+    return PageExitGuard(
+      canLeave:
+          !busy &&
+          fields.entries.every(
+            (entry) => entry.value.text == savedValues[entry.key],
+          ),
+      child: PageFrame(
+        title: 'Settings',
+        tabs: const SettingsTabs(location: '/profile'),
+        footer: FilledButton.icon(
+          onPressed: busy ? null : save,
+          icon: const Icon(AppIcons.check),
+          label: Text(busy ? 'Saving…' : 'Save profile'),
+        ),
+        children: [
+          PersonIdentity(person: account, caption: 'Your Cipherwill account'),
+          ProfileFields(fields: fields),
+        ],
       ),
-      children: [
-        PersonIdentity(person: account, caption: 'Your Cipherwill account'),
-        ProfileFields(fields: fields),
-      ],
     );
   }
 }

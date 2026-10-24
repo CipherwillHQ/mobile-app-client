@@ -3,6 +3,7 @@
 // Does not persist input or perform account/vault operations.
 
 import 'package:flutter/material.dart';
+import 'page_exit_guard.dart';
 
 class TextPromptDialog extends StatefulWidget {
   final String title;
@@ -31,26 +32,29 @@ class _TextPromptDialogState extends State<TextPromptDialog> {
   }
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
-    title: Text(widget.title),
-    content: TextField(
-      controller: controller,
-      obscureText: widget.secret,
-      autocorrect: !widget.secret,
-      enableSuggestions: !widget.secret,
-      autofocus: true,
-      minLines: widget.multiline && !widget.secret ? 4 : 1,
-      maxLines: widget.multiline && !widget.secret ? 8 : 1,
+  Widget build(BuildContext context) => PageExitGuard(
+    canLeave: false,
+    child: AlertDialog(
+      title: Text(widget.title),
+      content: TextField(
+        controller: controller,
+        obscureText: widget.secret,
+        autocorrect: !widget.secret,
+        enableSuggestions: !widget.secret,
+        autofocus: true,
+        minLines: widget.multiline && !widget.secret ? 4 : 1,
+        maxLines: widget.multiline && !widget.secret ? 8 : 1,
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.pop(context, controller.text),
+          child: const Text('Continue'),
+        ),
+      ],
     ),
-    actions: [
-      TextButton(
-        onPressed: () => Navigator.pop(context),
-        child: const Text('Cancel'),
-      ),
-      FilledButton(
-        onPressed: () => Navigator.pop(context, controller.text),
-        child: const Text('Continue'),
-      ),
-    ],
   );
 }

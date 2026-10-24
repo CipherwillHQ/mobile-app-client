@@ -11,6 +11,7 @@ import '../../core/security/temp_cleanup.dart';
 import '../../app/providers.dart';
 import '../../app/native_handoff.dart';
 import '../../shared/ui/page_frame.dart';
+import '../../shared/ui/page_exit_guard.dart';
 import '../../shared/ui/actions.dart';
 import '../../shared/ui/action_sheet.dart';
 import '../../shared/ui/empty_state.dart';
@@ -117,35 +118,38 @@ class _StorageScreenState extends ConsumerState<StorageScreen> {
         ],
       );
     }
-    return PageFrame(
-      title: executor ? 'Granted files' : 'File Storage',
-      subtitle: widget.folder != null ? 'Folder contents' : null,
-      actions: executor
-          ? null
-          : [
-              IconButton(
-                tooltip: 'Add file or folder',
-                onPressed: busy ? null : add,
-                icon: const Icon(AppIcons.add),
-              ),
-            ],
-      children: [
-        if (pending != null)
-          PendingUploadRow(name: pending!.name, saving: busy, retry: upload),
-        const SectionHeading('Folders'),
-        StorageFolders(
-          key: ValueKey('folders$revision'),
-          folder: widget.folder,
-          access: widget.access,
-          changed: () => setState(() => revision++),
-        ),
-        const SectionHeading('Files'),
-        StorageFiles(
-          key: ValueKey('files$revision'),
-          folder: widget.folder,
-          access: widget.access,
-        ),
-      ],
+    return PageExitGuard(
+      canLeave: !busy && pending == null,
+      child: PageFrame(
+        title: executor ? 'Granted files' : 'File Storage',
+        subtitle: widget.folder != null ? 'Folder contents' : null,
+        actions: executor
+            ? null
+            : [
+                IconButton(
+                  tooltip: 'Add file or folder',
+                  onPressed: busy ? null : add,
+                  icon: const Icon(AppIcons.add),
+                ),
+              ],
+        children: [
+          if (pending != null)
+            PendingUploadRow(name: pending!.name, saving: busy, retry: upload),
+          const SectionHeading('Folders'),
+          StorageFolders(
+            key: ValueKey('folders$revision'),
+            folder: widget.folder,
+            access: widget.access,
+            changed: () => setState(() => revision++),
+          ),
+          const SectionHeading('Files'),
+          StorageFiles(
+            key: ValueKey('files$revision'),
+            folder: widget.folder,
+            access: widget.access,
+          ),
+        ],
+      ),
     );
   }
 }

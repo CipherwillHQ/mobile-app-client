@@ -11,6 +11,8 @@ import '../core/crypto/factor_key.dart';
 import '../core/api/json_values.dart';
 import '../features/security/session_controller.dart';
 import '../features/settings/appearance.dart';
+import '../features/updates/store_update.dart';
+import '../features/updates/update_providers.dart';
 import 'design_fixtures.dart';
 import 'design_harness.dart';
 import 'fake_api.dart';
@@ -19,7 +21,12 @@ import 'fake_auth.dart';
 class NavigationHarness {
   final bool hasFactors;
   final Future<Json> Function(String, Json) respond;
-  NavigationHarness({this.hasFactors = true, this.respond = designResponse});
+  final AppUpdateService? updater;
+  NavigationHarness({
+    this.hasFactors = true,
+    this.respond = designResponse,
+    this.updater,
+  });
   late final api = FakeApi(respond);
   final auth = FakeAuth();
   final key = FactorKey.master('test master password', '1234');
@@ -32,6 +39,7 @@ class NavigationHarness {
   };
   late final container = ProviderContainer(
     overrides: [
+      if (updater != null) appUpdateServiceProvider.overrideWithValue(updater!),
       apiProvider.overrideWithValue(api),
       firebaseProvider.overrideWithValue(auth),
       authStateProvider.overrideWith((ref) => Stream.value(auth.currentUser)),

@@ -5,7 +5,6 @@ import '../../app/app_icons.dart';
 import 'package:flutter/material.dart';
 import '../../shared/ui/page_frame.dart';
 import '../../shared/ui/panel_section.dart';
-import '../../shared/ui/legal_links.dart';
 import 'appearance_selector.dart';
 import 'settings_destination.dart';
 import 'settings_tabs.dart';
@@ -43,7 +42,6 @@ class SettingsScreen extends StatelessWidget {
         AppIcons.feedback,
         '/feedback',
       ),
-      LegalLinks(),
     ],
   );
 }

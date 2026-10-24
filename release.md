@@ -7,10 +7,10 @@ Every release commit must start with the lowercase string `release`, followed by
 the version and build number in `VERSION+BUILD` format:
 
 ```text
-release 1.0.0+3: Describe this release
+release 1.0.1+4: Describe this release
 ```
 
-`release 1.0.0+3` without a summary is also valid. Use stable three-part versions
+`release 1.0.1+4` without a summary is also valid. Use stable three-part versions
 such as `1.0.0` or `1.1.0`. The release subject must exactly match `pubspec.yaml`.
 
 ## Always update the build number
@@ -19,7 +19,7 @@ Update `pubspec.yaml` **in every release commit**, including rebuilds of the sam
 version. The next release is prepared as:
 
 ```yaml
-version: 1.0.0+3
+version: 1.0.1+4
 ```
 
 The part before `+` is the user-visible version (`versionName`). The positive
@@ -35,7 +35,7 @@ and the release changes in one commit. For example:
 ```sh
 git add pubspec.yaml
 # Stage the reviewed application changes for this release too.
-git commit -m "release 1.0.0+3: Improve mobile navigation"
+git commit -m "release 1.0.1+4: Improve mobile navigation"
 git push origin main
 ```
 
@@ -120,10 +120,10 @@ artifacts and dependency caches.
 ## Download and upload
 
 Open **GitHub → Actions → Mobile validation → the release run → Artifacts**.
-Download and extract `android-release-1.0.0+3`. It contains:
+Download and extract `android-release-1.0.1+4`. It contains:
 
-- `cipherwill-1.0.0+3.aab`: signed Android App Bundle for manual Play Console upload.
-- `cipherwill-1.0.0+3.apk`: signed release APK for direct device installation/testing.
+- `cipherwill-1.0.1+4.aab`: signed Android App Bundle for manual Play Console upload.
+- `cipherwill-1.0.1+4.apk`: signed release APK for direct device installation/testing.
 
 Artifacts are retained for **90 days**. Save your release files elsewhere if you
 need longer retention. Allow the release run to finish before pushing another
