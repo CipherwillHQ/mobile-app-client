@@ -15,12 +15,16 @@ final guidanceOverviewProvider = FutureProvider.autoDispose<Json>((ref) async {
     api.run('GET_FACTORS'),
   ]);
   final account = await ref.watch(accountProvider.future);
+  final typeCounts = jsonList(values[1]['getMetamodelTypeCounts']);
   return {
     'firstName': account['first_name']?.toString().trim(),
+    'emailVerified': account['email_verified'] == true,
     'score': accountScore(values[0]['getUserScore']),
-    'itemCount': jsonList(
-      values[1]['getMetamodelTypeCounts'],
-    ).fold<int>(0, (sum, item) => sum + (item['count'] as int)),
+    'itemCount': typeCounts.fold<int>(
+      0,
+      (sum, item) => sum + (item['count'] as int),
+    ),
+    'typeCounts': typeCounts,
     'beneficiaryCount': jsonList(values[2]['getSmartWillBeneficiaries']).length,
     'factorCount': jsonList(values[3]['getFactors']).length,
   };

@@ -8,6 +8,7 @@ import '../shared/ui/page_frame.dart';
 import '../shared/ui/actions.dart';
 import '../features/auth/auth_screen.dart';
 import '../features/auth/onboarding_screen.dart';
+import '../features/guidance/guidance_screen.dart';
 import '../features/security/lock_screen.dart';
 import '../features/security/session_controller.dart';
 import 'providers.dart';
@@ -56,28 +57,6 @@ class AccountGate extends ConsumerWidget {
     if (account.isLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    if (account.value!['email_verified'] != true) {
-      return PageFrame(
-        title: 'Verify your email',
-        children: [
-          const Text('Verify your email to use Cipherwill.'),
-          FilledButton(
-            onPressed: () => perform(context, () async {
-              await ref.read(apiProvider).run('SEND_EMAIL_VERIFICATION');
-            }, success: 'Verification email requested.'),
-            child: const Text('Send verification email'),
-          ),
-          TextButton(
-            onPressed: () => perform(context, () async {
-              await ref.read(firebaseProvider).currentUser!.reload();
-              await ref.read(firebaseProvider).currentUser!.getIdToken(true);
-              ref.invalidate(accountProvider);
-            }),
-            child: const Text('I have verified my email'),
-          ),
-        ],
-      );
-    }
     final onboarding = ref.watch(onboardingProvider);
     if (onboarding.isLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -122,6 +101,8 @@ class AccountGate extends ConsumerWidget {
             ))) {
       return LockScreen(factors: factors.value!);
     }
-    return child;
+    return account.value!['email_verified'] == true
+        ? child
+        : const GuidanceScreen();
   }
 }

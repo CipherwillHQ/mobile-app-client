@@ -1,16 +1,20 @@
 // Mirrors the web Guide's centered opening and return overview slide.
-// Owns account status pills, Continue Setup and deferred task selection.
+// Owns account status pills, reusable banners, setup and deferred task selection.
 // Does not select objectives or read encrypted records.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/api/json_values.dart';
 import 'guidance_overview_data.dart';
+import '../../shared/ui/banner_area.dart';
+import 'email_verification_banner.dart';
+import 'data_records_metric.dart';
+import '../../shared/ui/animated_wrap.dart';
 
 class GuidanceOverview extends ConsumerWidget {
   final bool busy, available, failed;
   final List<Json> deferred, catalog;
-  final VoidCallback start;
+  final VoidCallback start, verifyEmail;
   final ValueChanged<String> resume;
   const GuidanceOverview({
     super.key,
@@ -20,6 +24,7 @@ class GuidanceOverview extends ConsumerWidget {
     required this.deferred,
     required this.catalog,
     required this.start,
+    required this.verifyEmail,
     required this.resume,
   });
   @override
@@ -41,6 +46,7 @@ class GuidanceOverview extends ConsumerWidget {
       );
     }
     final overview = data.value!;
+    final verified = overview['emailVerified'] == true;
     final name = overview['firstName'] ?? '';
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -60,10 +66,7 @@ class GuidanceOverview extends ConsumerWidget {
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 28),
-        Wrap(
-          alignment: WrapAlignment.center,
-          spacing: 8,
-          runSpacing: 8,
+        AnimatedWrap(
           children: [
             for (final metric in [
               ('score', 'Score', '/score'),
@@ -71,14 +74,20 @@ class GuidanceOverview extends ConsumerWidget {
               ('beneficiaryCount', 'Beneficiaries', '/beneficiaries'),
               ('factorCount', 'Security factors', '/factors'),
             ])
-              ActionChip(
-                onPressed: () => context.push(metric.$3),
-                label: Text(
-                  overview[metric.$1].toString() +
-                      (metric.$1 == 'score' ? ' / 950 ' : ' ') +
-                      metric.$2,
+              if (metric.$1 == 'itemCount')
+                DataRecordsMetric(
+                  count: overview['itemCount'] as int,
+                  typeCounts: jsonList(overview['typeCounts']),
+                )
+              else
+                ActionChip(
+                  onPressed: () => context.push(metric.$3),
+                  label: Text(
+                    overview[metric.$1].toString() +
+                        (metric.$1 == 'score' ? ' / 950 ' : ' ') +
+                        metric.$2,
+                  ),
                 ),
-              ),
             if (deferred.isNotEmpty)
               PopupMenuButton<String>(
                 onSelected: busy ? null : resume,
@@ -101,6 +110,11 @@ class GuidanceOverview extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 28),
+        BannerArea(
+          children: [
+            if (!verified) EmailVerificationBanner(verify: verifyEmail),
+          ],
+        ),
         if (busy || available || failed)
           FilledButton(
             onPressed: busy ? null : start,
