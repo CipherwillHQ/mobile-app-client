@@ -1,4 +1,4 @@
-// Exposes file export, clipboard and navigation state to the trusted web app.
+// Exposes file export, wallet launch, clipboard and navigation to the trusted app.
 // Owns origin/account checks and native capability responses.
 // Does not authenticate Firebase users or decrypt files.
 import 'dart:convert';
@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'mobile_download.dart';
+import 'mobile_wallet.dart';
 import 'webview_links.dart';
 
 class MobileDeviceBridge {
@@ -41,6 +42,8 @@ class MobileDeviceBridge {
       switch (request['type']) {
         case 'capabilities':
           value = {'passkeys': passkeys};
+        case 'wallet-open':
+          await openMobileWallet(request['url'] as String);
         case 'dirty':
           onDirty(request['dirty'] == true);
         case 'clipboard':
@@ -68,7 +71,9 @@ class MobileDeviceBridge {
           return;
       }
     } catch (_) {
-      error = 'Unable to complete this action. Please try again.';
+      error = request['type'] == 'wallet-open'
+          ? 'Unable to open MetaMask. Install or update MetaMask, then try again.'
+          : 'Unable to complete this action. Please try again.';
       if ((request['type'] as String?)?.startsWith('download-') == true) {
         await download.dispose();
       }
