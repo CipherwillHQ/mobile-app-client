@@ -1,1 +1,0 @@
-query GUIDANCE_BOOTSTRAP {getGuidedObjectiveCatalog getGuidedActionCompletions getGuidedActionSkips getGuidedActionDeferrals {objectiveId resumeAfter dismissed} getGuidedActionRecovery getGuidedAssetCounts}

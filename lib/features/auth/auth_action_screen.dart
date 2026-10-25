@@ -1,13 +1,10 @@
 // Handles Firebase verification and reset links in the native app.
 // Owns one-time action validation, feedback and return navigation.
-// Does not unlock vault encryption factors.
-
+// Does not unlock vault factors or load web application account data.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../app/providers.dart';
-import '../security/session_controller.dart';
-import '../../shared/ui/page_frame.dart';
 import '../../shared/ui/actions.dart';
 import '../../app/app_icons.dart';
 
@@ -42,14 +39,11 @@ class _AuthActionScreenState extends ConsumerState<AuthActionScreen> {
         );
         if (password == null) throw const ActionCancelled();
         await auth.confirmPasswordReset(code: code, newPassword: password);
-        await ref.read(securityProvider).clear();
-        ref.read(sessionProvider.notifier).lock();
         await auth.signOut();
       } else if (mode == 'verifyEmail' || mode == 'recoverEmail') {
         await auth.applyActionCode(code);
         await auth.currentUser?.reload();
         await auth.currentUser?.getIdToken(true);
-        ref.invalidate(accountProvider);
       } else {
         throw StateError('This account action is unsupported.');
       }
@@ -59,34 +53,39 @@ class _AuthActionScreenState extends ConsumerState<AuthActionScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => PageFrame(
-    title: 'Account action',
-    children: [
-      const Align(
-        alignment: Alignment.centerLeft,
-        child: Icon(AppIcons.security, size: 32),
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('Account action')),
+    body: SafeArea(
+      child: ListView(
+        padding: const EdgeInsets.all(24),
+        children: [
+          const Align(
+            alignment: Alignment.centerLeft,
+            child: Icon(AppIcons.security, size: 32),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            completed ? 'All done.' : 'One more step.',
+            style: Theme.of(context).textTheme.headlineLarge,
+          ),
+          const SizedBox(height: 12),
+          Text(
+            completed
+                ? 'Your account action is complete.'
+                : 'Complete the account action from your email.',
+          ),
+          const SizedBox(height: 16),
+          if (!completed)
+            FilledButton(
+              onPressed: busy ? null : complete,
+              child: Text(busy ? 'Please wait…' : 'Complete account action'),
+            ),
+          TextButton(
+            onPressed: busy ? null : () => context.go('/app'),
+            child: const Text('Continue to Cipherwill'),
+          ),
+        ],
       ),
-      const SizedBox(height: 24),
-      Text(
-        completed ? 'All done.' : 'One more step.',
-        style: Theme.of(context).textTheme.headlineLarge,
-      ),
-      const SizedBox(height: 12),
-      Text(
-        completed
-            ? 'Your account action is complete.'
-            : 'Complete the account action from your email.',
-      ),
-      const SizedBox(height: 16),
-      if (!completed)
-        FilledButton(
-          onPressed: busy ? null : complete,
-          child: Text(busy ? 'Please wait…' : 'Complete account action'),
-        ),
-      TextButton(
-        onPressed: busy ? null : () => context.go('/home'),
-        child: const Text('Continue to Cipherwill'),
-      ),
-    ],
+    ),
   );
 }

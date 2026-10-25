@@ -100,7 +100,7 @@ Get-Content -LiteralPath config/production.json -Raw | gh secret set CIPHERWILL_
 
 Create the ignored `config/production.json` from `config/production.example.json`.
 Set `APP_ENV` to `production` and `API_URL` to the production HTTPS GraphQL endpoint.
-Set `REOWN_PROJECT_ID` and any other required public client values. Leave Firebase
+Set the Google sign-in client IDs if overriding their native defaults. Leave Firebase
 overrides empty to use the committed FlutterFire registrations. Include only the
 public string fields in the example; never add backend credentials or private keys
 to runtime configuration, which is compiled into the app.

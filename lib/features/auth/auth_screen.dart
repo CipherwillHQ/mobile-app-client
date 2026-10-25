@@ -42,14 +42,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
         .email(email.text.trim(), password.text, signup: signup),
   );
   void reset() => submit(() async {
-    await ref.read(apiProvider).run('REQUEST_PASSWORD_RESET', {
-      'email': email.text.trim(),
-    });
+    final message = await ref.read(passwordResetProvider).request(email.text);
     if (mounted) {
-      showNotice(
-        context,
-        'Password reset request accepted. Check your email if your account is eligible.',
-      );
+      showNotice(context, message);
     }
   });
   @override

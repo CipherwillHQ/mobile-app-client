@@ -1,80 +1,11 @@
-// Aligns native controls with the web client's outline icon family.
-// Owns semantic icon names reused by navigation and feature screens.
-// Does not assign decorative colors or determine account state.
+// Aligns retained authentication controls with Cipherwill's outline icons.
+// Owns the icon names used by sign-in and email action screens.
+// Does not contain navigation or feature icon registries.
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 
 abstract final class AppIcons {
-  static const menu = TablerIcons.menu_2;
-  static const back = TablerIcons.arrow_left;
-  static const next = TablerIcons.chevron_right;
-  static const close = TablerIcons.x;
-  static const more = TablerIcons.dots;
-  static const add = TablerIcons.plus;
-  static const home = TablerIcons.home;
-  static const guide = TablerIcons.sparkles;
-  static const segments = TablerIcons.category;
-  static const notifications = TablerIcons.bell;
-  static const notes = TablerIcons.notes;
-  static const password = TablerIcons.password;
-  static const email = TablerIcons.mail;
-  static const devices = TablerIcons.device_mobile;
-  static const bank = TablerIcons.building_bank;
-  static const card = TablerIcons.credit_card;
-  static const seed = TablerIcons.key;
-  static const staking = TablerIcons.coins;
-  static const folder = TablerIcons.folder;
-  static const file = TablerIcons.file;
-  static const people = TablerIcons.users;
-  static const person = TablerIcons.user;
-  static const addPerson = TablerIcons.user_plus;
-  static const removePerson = TablerIcons.user_minus;
-  static const timeline = TablerIcons.timeline;
-  static const calendar = TablerIcons.calendar;
-  static const birthday = TablerIcons.cake;
-  static const billing = TablerIcons.credit_card;
-  static const security = TablerIcons.shield_lock;
-  static const settings = TablerIcons.settings;
-  static const key = TablerIcons.key;
-  static const lock = TablerIcons.lock;
-  static const unlocked = TablerIcons.lock_open;
-  static const fingerprint = TablerIcons.fingerprint;
-  static const wallet = TablerIcons.wallet;
-  static const logout = TablerIcons.logout;
-  static const system = TablerIcons.device_desktop;
-  static const light = TablerIcons.sun;
-  static const dark = TablerIcons.moon;
-  static const search = TablerIcons.search;
-  static const delete = TablerIcons.trash;
-  static const refresh = TablerIcons.refresh;
-  static const check = TablerIcons.check;
-  static const done = TablerIcons.circle_check;
-  static const copy = TablerIcons.copy;
-  static const reveal = TablerIcons.eye;
-  static const hide = TablerIcons.eye_off;
-  static const share = TablerIcons.share;
-  static const addFolder = TablerIcons.folder_plus;
-  static const phone = TablerIcons.phone;
-  static const send = TablerIcons.send;
-  static const pause = TablerIcons.player_pause;
-  static const play = TablerIcons.player_play;
-  static const dot = TablerIcons.circle_filled;
-  static const tip = TablerIcons.bulb;
-  static const premium = TablerIcons.award;
-  static const beneficiary = TablerIcons.heart_handshake;
-  static const attachment = TablerIcons.paperclip;
-  static const excluded = TablerIcons.user_off;
-  static const upload = TablerIcons.upload;
-  static const download = TablerIcons.download;
-  static const pending = TablerIcons.circle;
-  static const cloudOff = TablerIcons.cloud_off;
-  static const info = TablerIcons.info_circle;
-  static const error = TablerIcons.alert_triangle;
-  static const verified = TablerIcons.shield_check;
-  static const edit = TablerIcons.pencil;
-  static const desktop = TablerIcons.device_desktop;
-  static const feedback = TablerIcons.message;
-  static const chat = TablerIcons.messages;
-  static const external = TablerIcons.arrow_up_right;
-  static const score = TablerIcons.chart_donut;
   static const apple = TablerIcons.brand_apple;
+  static const hide = TablerIcons.eye_off;
+  static const reveal = TablerIcons.eye;
+  static const security = TablerIcons.shield_lock;
 }

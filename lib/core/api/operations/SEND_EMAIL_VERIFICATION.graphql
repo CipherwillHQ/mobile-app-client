@@ -1,6 +1,0 @@
-# Mirrors an existing Cipherwill web operation.
-# Owns the mobile selection contract.
-# Does not alter backend authorization.
-mutation SEND_EMAIL_VERIFICATION {
-    sendEmailVerification
-  }

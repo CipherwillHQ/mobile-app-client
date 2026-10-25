@@ -3,7 +3,6 @@
 // Does not authenticate accounts or control security-factor state.
 import 'package:flutter/material.dart';
 import '../../shared/ui/app_brand.dart';
-import '../../shared/ui/keyboard_presence.dart';
 
 class AuthLayout extends StatelessWidget {
   final List<Widget> children;
@@ -21,7 +20,7 @@ class AuthLayout extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 SizedBox(
-                  height: KeyboardPresence.isVisible(context)
+                  height: MediaQuery.viewInsetsOf(context).bottom > 0
                       ? 104
                       : (constraints.maxHeight * .28).clamp(160, 240),
                   child: Stack(
@@ -49,7 +48,7 @@ class AuthLayout extends StatelessWidget {
                       Positioned(
                         left: 24,
                         top: MediaQuery.paddingOf(context).top + 16,
-                        child: const AppBrand(light: true),
+                        child: const AppBrand(),
                       ),
                     ],
                   ),

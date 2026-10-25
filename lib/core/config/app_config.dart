@@ -1,6 +1,6 @@
-// Loads per-build public configuration
-// Owns environment and public service identifiers.
-// Does not ship server credentials.
+// Loads public build configuration for native authentication.
+// Owns Firebase identifiers, the reset-email API and Google sign-in configuration.
+// Does not configure web application services or ship server credentials.
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -8,15 +8,11 @@ import 'firebase_options.dart';
 class AppConfig {
   final String environment;
   final String apiUrl;
-  final String reownProjectId;
-  final String sentryDsn;
   final FirebaseOptions firebase;
   final String googleClientId;
   const AppConfig({
     required this.environment,
     required this.apiUrl,
-    required this.reownProjectId,
-    required this.sentryDsn,
     required this.firebase,
     required this.googleClientId,
   });
@@ -25,9 +21,10 @@ class AppConfig {
       'APP_ENV',
       defaultValue: 'development',
     ),
-    apiUrl: const String.fromEnvironment('API_URL'),
-    reownProjectId: const String.fromEnvironment('REOWN_PROJECT_ID'),
-    sentryDsn: const String.fromEnvironment('SENTRY_DSN'),
+    apiUrl: const String.fromEnvironment(
+      'API_URL',
+      defaultValue: 'https://api.stack.cipherwill.com/v1/',
+    ),
     googleClientId: const String.fromEnvironment('GOOGLE_SERVER_CLIENT_ID'),
     firebase: const String.fromEnvironment('FIREBASE_API_KEY').isEmpty
         ? DefaultFirebaseOptions.currentPlatform
@@ -44,17 +41,18 @@ class AppConfig {
           ),
   );
   void validate() {
-    if (apiUrl.isEmpty ||
+    final uri = Uri.tryParse(apiUrl);
+    if (uri == null ||
+        !uri.hasAuthority ||
         firebase.apiKey.isEmpty ||
         firebase.appId.isEmpty ||
         firebase.projectId.isEmpty) {
       throw StateError(
-        'Configure API_URL and Firebase build values before starting Cipherwill.',
+        'Configure Firebase and the password-reset API before starting Cipherwill.',
       );
     }
-    final uri = Uri.parse(apiUrl);
     if (environment == 'production' && uri.scheme != 'https') {
-      throw StateError('Production requires an HTTPS API endpoint.');
+      throw StateError('Production requires an HTTPS password-reset API.');
     }
   }
 }

@@ -1,1 +1,0 @@
-mutation RESUME_GUIDED_ACTION($objectiveId:String!){resumeGuidedAction(objectiveId:$objectiveId)}

@@ -8,7 +8,7 @@ const required = [
 const configKeys = new Set([
   'APP_ENV', 'API_URL', 'FIREBASE_API_KEY', 'FIREBASE_ANDROID_APP_ID',
   'FIREBASE_IOS_APP_ID', 'FIREBASE_PROJECT_ID', 'FIREBASE_SENDER_ID',
-  'GOOGLE_SERVER_CLIENT_ID', 'GOOGLE_IOS_CLIENT_ID', 'REOWN_PROJECT_ID', 'SENTRY_DSN',
+  'GOOGLE_SERVER_CLIENT_ID', 'GOOGLE_IOS_CLIENT_ID',
 ]);
 
 export function releaseInputs(environment) {

@@ -1,10 +1,7 @@
-# Applies Flutter lint rules to handwritten client sources.
-# Owns generated-source exclusions.
-# Does not suppress compiler errors in application code.
+# Applies Flutter lint rules to the authentication and WebView sources.
+# Owns static analysis configuration.
+# Does not exclude obsolete generated feature files.
 include: package:flutter_lints/flutter.yaml
-analyzer:
-  exclude:
-    - "**/*.graphql.dart"
 linter:
   rules:
     depend_on_referenced_packages: false

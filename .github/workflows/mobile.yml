@@ -27,13 +27,6 @@ jobs:
           node-version: 22
       - run: node --test tool/release_*_test.mjs tool/android_signing_test.mjs
       - run: flutter pub get
-      - uses: actions/cache@v4
-        with:
-          path: .dart_tool/build
-          key: ${{ runner.os }}-${{ runner.arch }}-dart-build-${{ env.FLUTTER_VERSION }}-${{ hashFiles('pubspec.lock', 'build.yaml') }}-${{ github.sha }}
-          restore-keys: ${{ runner.os }}-${{ runner.arch }}-dart-build-${{ env.FLUTTER_VERSION }}-${{ hashFiles('pubspec.lock', 'build.yaml') }}-
-      - run: dart run build_runner build
-      - run: node tool/generate_operation_registry.mjs --check
       - run: node tool/check_source_rules.mjs --format
       - run: flutter analyze
       - run: flutter test lib test

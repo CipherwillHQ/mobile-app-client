@@ -1,1 +1,0 @@
-mutation DEFER_GUIDED_ACTION($objectiveId:String!){deferGuidedAction(objectiveId:$objectiveId){objectiveId resumeAfter dismissed}}

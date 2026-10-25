@@ -1,5 +1,5 @@
 // Configures the native Android application and optional release signing.
-// Owns identifiers, API targets and platform security dependencies.
+// Owns identifiers, API targets and Flutter plugin configuration.
 // Does not embed service credentials or signing material.
 import java.util.Properties
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -40,9 +40,4 @@ android {
 }
 kotlin { compilerOptions { jvmTarget.set(JvmTarget.JVM_17) } }
 flutter { source = "../.." }
-dependencies {
-    implementation("androidx.biometric:biometric:1.1.0")
-    implementation("androidx.credentials:credentials:1.5.0")
-    implementation("androidx.credentials:credentials-play-services-auth:1.5.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
-}
+dependencies { implementation("androidx.webkit:webkit:1.15.0") }

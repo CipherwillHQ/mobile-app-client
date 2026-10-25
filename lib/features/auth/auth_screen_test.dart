@@ -3,13 +3,11 @@
 // Does not send test credentials to Firebase.
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../testing/design_harness.dart';
-import '../../testing/design_capture.dart';
+import '../../testing/auth_harness.dart';
 import 'auth_screen.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  setUpAll(loadDesignFonts);
   testWidgets(
     'auth validates empty fields and preserves explicit password input',
     (tester) async {
@@ -17,9 +15,7 @@ void main() {
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
-      await tester.pumpWidget(
-        const DesignHarness(location: '/auth', screen: AuthScreen()),
-      );
+      await tester.pumpWidget(const AuthHarness(screen: AuthScreen()));
       await tester.pumpAndSettle();
       await tester.ensureVisible(find.text('Sign in').last);
       await tester.tap(find.text('Sign in').last);
@@ -75,11 +71,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(
-      const DesignHarness(
-        location: '/auth',
-        keyboard: 320,
-        screen: AuthScreen(),
-      ),
+      const AuthHarness(keyboard: 320, screen: AuthScreen()),
     );
     await tester.pumpAndSettle();
     final password = find.byType(TextFormField).last;
@@ -89,6 +81,5 @@ void main() {
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
     expect(tester.getRect(password).bottom, lessThanOrEqualTo(852 - 320));
-    await captureDesign(tester, 'auth-keyboard');
   });
 }

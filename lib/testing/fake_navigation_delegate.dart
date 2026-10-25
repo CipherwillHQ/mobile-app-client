@@ -1,14 +1,14 @@
-// Captures native navigation events for embedded-web feature tests.
-// Owns deterministic loading, resource failures and navigation callbacks.
-// Does not instantiate an Android or iOS WebView.
+// Captures navigation and loading events for native wrapper tests.
+// Owns callbacks invoked by the fake WebView.
+// Does not instantiate Android or iOS browser controls.
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 
 class FakeNavigationDelegate extends PlatformNavigationDelegate {
   NavigationRequestCallback? navigate;
-  PageEventCallback? started;
   ProgressCallback? progress;
+  UrlChangeCallback? changed;
+  PageEventCallback? finished;
   WebResourceErrorCallback? resourceError;
-  HttpResponseErrorCallback? httpError;
   FakeNavigationDelegate(super.params) : super.implementation();
   @override
   Future<void> setOnNavigationRequest(
@@ -18,13 +18,18 @@ class FakeNavigationDelegate extends PlatformNavigationDelegate {
   }
 
   @override
-  Future<void> setOnPageStarted(PageEventCallback onPageStarted) async {
-    started = onPageStarted;
+  Future<void> setOnProgress(ProgressCallback onProgress) async {
+    progress = onProgress;
   }
 
   @override
-  Future<void> setOnProgress(ProgressCallback onProgress) async {
-    progress = onProgress;
+  Future<void> setOnUrlChange(UrlChangeCallback onUrlChange) async {
+    changed = onUrlChange;
+  }
+
+  @override
+  Future<void> setOnPageFinished(PageEventCallback onPageFinished) async {
+    finished = onPageFinished;
   }
 
   @override
@@ -32,10 +37,5 @@ class FakeNavigationDelegate extends PlatformNavigationDelegate {
     WebResourceErrorCallback onWebResourceError,
   ) async {
     resourceError = onWebResourceError;
-  }
-
-  @override
-  Future<void> setOnHttpError(HttpResponseErrorCallback onHttpError) async {
-    httpError = onHttpError;
   }
 }

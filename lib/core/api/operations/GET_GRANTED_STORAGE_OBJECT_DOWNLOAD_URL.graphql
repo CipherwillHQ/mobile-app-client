@@ -1,6 +1,0 @@
-# Mirrors an existing Cipherwill web operation.
-# Owns the mobile selection contract.
-# Does not alter backend authorization.
-query GET_GRANTED_STORAGE_OBJECT_DOWNLOAD_URL($access_id: ID!, $ref_id: ID!) {
-    getGrantedStorageObjectDownloadUrl(access_id: $access_id, ref_id: $ref_id)
-  }

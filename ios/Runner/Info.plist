@@ -8,7 +8,6 @@
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>Cipherwill</string>
-	<key>NSFaceIDUsageDescription</key><string>Unlock your saved Cipherwill security factor.</string>
 <key>CFBundleURLTypes</key><array><dict><key>CFBundleURLSchemes</key><array><string>com.googleusercontent.apps.200526322095-5knra0882hit6q2qk8rmnv7cn8t4rnta</string><string>cipherwill</string></array></dict></array>
 <key>GIDClientID</key><string>200526322095-5knra0882hit6q2qk8rmnv7cn8t4rnta.apps.googleusercontent.com</string>
 <key>GIDServerClientID</key><string>200526322095-7cpqopr74n57rouj3isudvijuarj43ar.apps.googleusercontent.com</string>

@@ -1,6 +1,0 @@
-# Mirrors an existing Cipherwill web operation.
-# Owns the mobile selection contract.
-# Does not alter backend authorization.
-mutation DELETE_KEY_BY_PUBLIC_KEY($publicKey: String!) {
-    deleteKeyForPublicKey(publicKey: $publicKey)
-  }

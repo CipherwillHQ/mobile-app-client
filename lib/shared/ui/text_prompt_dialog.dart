@@ -1,30 +1,22 @@
-// Collects a short value through the shared native text prompt.
-// Owns controller lifetime through dialog dismissal animations.
-// Does not persist input or perform account/vault operations.
-
+// Collects a replacement account password for Firebase reset links.
+// Owns the input controller until the dialog is disposed.
+// Does not persist passwords or manage application drafts.
 import 'package:flutter/material.dart';
-import 'page_exit_guard.dart';
 
 class TextPromptDialog extends StatefulWidget {
   final String title;
-  final String initial;
   final bool secret;
-  final bool multiline;
   const TextPromptDialog({
     super.key,
     required this.title,
-    required this.initial,
     required this.secret,
-    this.multiline = false,
   });
-
   @override
   State<TextPromptDialog> createState() => _TextPromptDialogState();
 }
 
 class _TextPromptDialogState extends State<TextPromptDialog> {
-  late final controller = TextEditingController(text: widget.initial);
-
+  final controller = TextEditingController();
   @override
   void dispose() {
     controller.dispose();
@@ -32,29 +24,24 @@ class _TextPromptDialogState extends State<TextPromptDialog> {
   }
 
   @override
-  Widget build(BuildContext context) => PageExitGuard(
-    canLeave: false,
-    child: AlertDialog(
-      title: Text(widget.title),
-      content: TextField(
-        controller: controller,
-        obscureText: widget.secret,
-        autocorrect: !widget.secret,
-        enableSuggestions: !widget.secret,
-        autofocus: true,
-        minLines: widget.multiline && !widget.secret ? 4 : 1,
-        maxLines: widget.multiline && !widget.secret ? 8 : 1,
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
-        ),
-        FilledButton(
-          onPressed: () => Navigator.pop(context, controller.text),
-          child: const Text('Continue'),
-        ),
-      ],
+  Widget build(BuildContext context) => AlertDialog(
+    title: Text(widget.title),
+    content: TextField(
+      controller: controller,
+      obscureText: widget.secret,
+      autocorrect: !widget.secret,
+      enableSuggestions: !widget.secret,
+      autofocus: true,
     ),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.pop(context),
+        child: const Text('Cancel'),
+      ),
+      FilledButton(
+        onPressed: () => Navigator.pop(context, controller.text),
+        child: const Text('Continue'),
+      ),
+    ],
   );
 }

@@ -1,26 +1,18 @@
-// Composes routing, account gates and accessible app themes
-// Owns the application widget and navigator lifetime.
-// Does not initialize Firebase or crash reporting.
-
+// Composes the retained authentication screens and web application route.
+// Owns native theme and router lifetime.
+// Does not provide a second implementation of web application features.
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_quill/flutter_quill.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../features/settings/appearance.dart';
-import '../features/updates/app_update_host.dart';
-import 'privacy_guard.dart';
-import '../shared/ui/app_notice.dart';
 import 'router.dart';
 import 'theme.dart';
 
-class CipherwillApp extends ConsumerStatefulWidget {
+class CipherwillApp extends StatefulWidget {
   const CipherwillApp({super.key});
   @override
-  ConsumerState<CipherwillApp> createState() => _CipherwillAppState();
+  State<CipherwillApp> createState() => _CipherwillAppState();
 }
 
-class _CipherwillAppState extends ConsumerState<CipherwillApp> {
+class _CipherwillAppState extends State<CipherwillApp> {
   late final GoRouter router = createRouter();
   @override
   void dispose() {
@@ -34,17 +26,6 @@ class _CipherwillAppState extends ConsumerState<CipherwillApp> {
     debugShowCheckedModeBanner: false,
     theme: cipherwillTheme(Brightness.light),
     darkTheme: cipherwillTheme(Brightness.dark),
-    themeMode: ref.watch(appearanceProvider),
     routerConfig: router,
-    localizationsDelegates: const [
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-      FlutterQuillLocalizations.delegate,
-    ],
-    supportedLocales: const [Locale('en')],
-    builder: (context, child) => PrivacyGuard(
-      child: AppNoticeHost(child: AppUpdateHost(child: child!)),
-    ),
   );
 }

@@ -3,7 +3,6 @@
      Does not grant server access or configure Firebase. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
     <application android:allowBackup="false"
         android:label="Cipherwill"
         android:name="${applicationName}"

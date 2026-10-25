@@ -1,9 +1,0 @@
-# Mirrors an existing Cipherwill web operation.
-# Owns the mobile selection contract.
-# Does not alter backend authorization.
-mutation DELETE_METAMODEL($id: ID!) {
-    deleteMetamodel(id: $id) {
-      id
-      folder_id
-    }
-  }

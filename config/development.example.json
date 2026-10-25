@@ -7,7 +7,5 @@
   "FIREBASE_PROJECT_ID": "project-cipherwill",
   "FIREBASE_SENDER_ID": "",
   "GOOGLE_SERVER_CLIENT_ID": "",
-  "GOOGLE_IOS_CLIENT_ID": "",
-  "REOWN_PROJECT_ID": "",
-  "SENTRY_DSN": ""
+  "GOOGLE_IOS_CLIENT_ID": ""
 }

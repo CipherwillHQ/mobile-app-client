@@ -36,7 +36,7 @@ test('malformed JSON errors do not expose the input', () => {
 });
 
 test('configuration permits only the public string fields', () => {
-  for (const invalid of [null, [], 'text', {...config, PRIVATE_KEY: 'secret'}, {...config, SENTRY_DSN: 1}]) {
+  for (const invalid of [null, [], 'text', {...config, PRIVATE_KEY: 'secret'}, {...config, GOOGLE_SERVER_CLIENT_ID: 1}]) {
     assert.throws(() => releaseInputs({
       ...environment, CIPHERWILL_PRODUCTION_CONFIG: JSON.stringify(invalid),
     }), /public string fields/);
