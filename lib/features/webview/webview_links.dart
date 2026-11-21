@@ -5,7 +5,7 @@ import '../../shared/cipherwill_links.dart';
 
 bool isCipherwillPage(Uri uri) =>
     uri.scheme == 'https' &&
-    uri.host == 'cipherwill.com' &&
+    uri.host == 'www.cipherwill.com' &&
     uri.port == 443 &&
     uri.userInfo.isEmpty;
 

@@ -3,7 +3,7 @@ Owns session handoff, token exchange, logout and acceptance requirements.
 Does not implement application features or store server credentials. -->
 # Authentication bridge
 
-Flutter retains Firebase authentication and loads `https://cipherwill.com/app`
+Flutter retains Firebase authentication and loads `https://www.cipherwill.com/app`
 with the `CipherwillAuth` JavaScript channel registered before navigation.
 
 Requests are JSON objects with an integer `id` and `type` of `session` or
@@ -24,7 +24,7 @@ and application providers continue to work. Ordinary browsers keep their existin
 Firebase behavior. Neither ID tokens nor custom tokens are put in URLs.
 
 Flutter sends sessions only while the original native account is current and
-the main WebView URL has the exact `https://cipherwill.com` origin. Injected
+the main WebView URL has the exact `https://www.cipherwill.com` origin. Injected
 responses check that origin again. External main-frame links open through the
 native URL launcher. Native logout disposes the authenticated WebView; an account
 switch creates a new one. Web logout also requests native logout.

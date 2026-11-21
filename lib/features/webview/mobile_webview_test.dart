@@ -36,7 +36,7 @@ void main() {
     final script = platform.controllers.single.scripts.single;
     expect(
       script,
-      contains('window.location.origin === "https://cipherwill.com"'),
+      contains('window.location.origin === "https://www.cipherwill.com"'),
     );
     expect(script, contains('setProperty("--cw-safe-top", "0px")'));
     expect(script, contains('setProperty("--cw-safe-bottom", "0px")'));
@@ -55,7 +55,7 @@ void main() {
       expect(
         await web.navigation.navigate!(
           const NavigationRequest(
-            url: 'https://cipherwill.com/app/notes',
+            url: 'https://www.cipherwill.com/app/notes',
             isMainFrame: true,
           ),
         ),
@@ -112,7 +112,7 @@ void main() {
       final web = platform.controllers.single;
       web.backAvailable = true;
       web.navigation.changed!(
-        const UrlChange(url: 'https://cipherwill.com/app/notes'),
+        const UrlChange(url: 'https://www.cipherwill.com/app/notes'),
       );
       await tester.pumpAndSettle();
       final backScope = find.byWidgetPredicate((widget) => widget is PopScope);

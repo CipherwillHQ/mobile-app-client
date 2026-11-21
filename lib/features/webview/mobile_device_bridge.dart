@@ -80,7 +80,7 @@ class MobileDeviceBridge {
     }
     if (auth.currentUser?.uid != uid) return;
     await controller.runJavaScript(
-      'if (window.location.origin === "https://cipherwill.com") {'
+      'if (window.location.origin === "https://www.cipherwill.com") {'
       'window.CipherwillDeviceResponse?.(${request['id']}, ${jsonEncode({'value': value, 'error': error})});}',
     );
   }

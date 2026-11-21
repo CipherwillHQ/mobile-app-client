@@ -23,7 +23,7 @@ void main() {
     auth = FakeAuth();
     addTearDown(auth.dispose);
     web = WebViewController();
-    platform.controllers.single.url = 'https://cipherwill.com/app';
+    platform.controllers.single.url = 'https://www.cipherwill.com/app';
   });
 
   test(
@@ -37,7 +37,7 @@ void main() {
       final script = platform.controllers.single.scripts.single;
       expect(
         script,
-        contains('window.location.origin === "https://cipherwill.com"'),
+        contains('window.location.origin === "https://www.cipherwill.com"'),
       );
       expect(script, contains('CipherwillAuthResponse?.(7,'));
       expect(script, contains('"uid":"firebase_account"'));
@@ -49,9 +49,10 @@ void main() {
     () async {
       final bridge = MobileAuthBridge(web, auth, auth.currentUser!);
       for (final url in [
-        'https://cipherwill.com.attacker.test/app',
-        'http://cipherwill.com/app',
-        'https://cipherwill.com:444/app',
+        'https://www.cipherwill.com.attacker.test/app',
+        'https://cipherwill.com/app',
+        'http://www.cipherwill.com/app',
+        'https://www.cipherwill.com:444/app',
         'https://other.test/app',
       ]) {
         platform.controllers.single.url = url;

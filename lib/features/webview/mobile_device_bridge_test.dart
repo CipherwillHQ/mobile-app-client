@@ -21,7 +21,7 @@ void main() {
       addTearDown(auth.dispose);
       final web = WebViewController();
       final native = platform.controllers.single;
-      native.url = 'https://cipherwill.com/app';
+      native.url = 'https://www.cipherwill.com/app';
       var dirty = false;
       MethodCall? clipboard;
       tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
@@ -59,7 +59,7 @@ void main() {
       expect(native.scripts.single, contains('"passkeys":true'));
       expect(
         native.scripts.single,
-        contains('window.location.origin === "https://cipherwill.com"'),
+        contains('window.location.origin === "https://www.cipherwill.com"'),
       );
       await bridge.receive('{"type":"dirty","id":2,"dirty":true}');
       expect(dirty, true);
@@ -71,7 +71,7 @@ void main() {
       await bridge.receive('{"type":"dirty","id":4,"dirty":false}');
       expect(dirty, true);
       expect(native.scripts, isEmpty);
-      native.url = 'https://cipherwill.com/app';
+      native.url = 'https://www.cipherwill.com/app';
       auth.user = FakeUser('different-account');
       await bridge.receive('{"type":"capabilities","id":5}');
       expect(native.scripts, isEmpty);

@@ -41,7 +41,7 @@ class _MobileBackGuardState extends State<MobileBackGuard>
           : 'foreground';
       unawaited(
         widget.controller?.runJavaScript(
-          'if (window.location.origin === "https://cipherwill.com") {'
+          'if (window.location.origin === "https://www.cipherwill.com") {'
           'window.dispatchEvent(new Event("cipherwill:$event"));}',
         ),
       );

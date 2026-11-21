@@ -34,7 +34,7 @@ void main() {
       true,
     );
     expect(scripts.last, contains('cipherwill:foreground'));
-    expect(scripts.last, contains('https://cipherwill.com'));
+    expect(scripts.last, contains('https://www.cipherwill.com'));
   });
 
   testWidgets('Stay preserves history and Leave allows native back', (

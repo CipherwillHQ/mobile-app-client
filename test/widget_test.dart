@@ -33,19 +33,19 @@ void main() {
     await tester.pumpAndSettle();
     expect(
       platform.controllers.single.requests.single.uri.toString(),
-      'https://cipherwill.com/app',
+      'https://www.cipherwill.com/app',
     );
     router.go('/app/notes?item=123');
     await tester.pumpAndSettle();
     expect(
       platform.controllers.last.requests.single.uri.toString(),
-      'https://cipherwill.com/app/notes?item=123',
+      'https://www.cipherwill.com/app/notes?item=123',
     );
     router.go('/executor/account');
     await tester.pumpAndSettle();
     expect(
       platform.controllers.last.requests.single.uri.toString(),
-      'https://cipherwill.com/executor/account',
+      'https://www.cipherwill.com/executor/account',
     );
   });
   testWidgets(
@@ -69,7 +69,7 @@ void main() {
       expect(find.byType(MobileWebView), findsOneWidget);
       expect(
         platform.controllers.single.requests.single.uri.toString(),
-        'https://cipherwill.com/app',
+        'https://www.cipherwill.com/app',
       );
       expect(platform.controllers.single.events, [
         'channel',

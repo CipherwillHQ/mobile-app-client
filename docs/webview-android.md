@@ -1,7 +1,7 @@
 # Android WebView capabilities
 
 The Android client retains native Firebase sign-in and the web application at
-`https://cipherwill.com/app`. The existing authentication bridge is unchanged.
+`https://www.cipherwill.com/app`. The existing authentication bridge is unchanged.
 
 The separate `CipherwillDevice` channel provides:
 
@@ -20,7 +20,7 @@ uses an isolated temporary directory, and deletes its temporary file after the
 save/share action or cancellation. Saving creates the user's selected file outside
 the app; sharing uses Android's system share sheet.
 
-Upgrades open the public `https://cipherwill.com/upgrade` checkout in the system
+Upgrades open the public `https://www.cipherwill.com/upgrade` checkout in the system
 browser, with the account email and backend user ID. Firebase credentials remain
 inside the app. Return to the app after payment; Premium is activated by the
 existing payment webhook. Billing details and invoices remain available in the app.

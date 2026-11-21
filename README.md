@@ -3,7 +3,7 @@ Owns local setup and verification commands.
 Does not claim physical-device or app-store acceptance. -->
 # Cipherwill mobile
 
-Flutter Android/iOS wrapper for [cipherwill.com/app](https://cipherwill.com/app).
+Flutter Android/iOS wrapper for [www.cipherwill.com/app](https://www.cipherwill.com/app).
 Email/password, Google and Apple sign-in stay native. After sign-in, a small
 bridge restores the same Firebase account in the web client. Onboarding, email
 verification, encryption factors and all application features run in the existing

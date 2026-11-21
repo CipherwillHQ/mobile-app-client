@@ -1,4 +1,4 @@
-// Displays cipherwill.com/app after native authentication.
+// Displays www.cipherwill.com/app after native authentication.
 // Owns loading, navigation, authentication delivery and native safe-area insets.
 // Does not implement application features or expose credentials through URLs.
 import 'dart:async';
@@ -153,7 +153,7 @@ class _MobileWebViewState extends State<MobileWebView> {
   Future<void> updateWebInsets(String url) async {
     if (!mounted || !isCipherwillPage(Uri.parse(url))) return;
     await controller?.runJavaScript(
-      'if (window.location.origin === "https://cipherwill.com") {'
+      'if (window.location.origin === "https://www.cipherwill.com") {'
       'document.documentElement.style.setProperty("--cw-safe-top", "0px");'
       'document.documentElement.style.setProperty("--cw-safe-bottom", "0px");}',
     );

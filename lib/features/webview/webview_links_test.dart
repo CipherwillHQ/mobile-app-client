@@ -6,13 +6,13 @@ import 'webview_links.dart';
 
 void main() {
   test('only the exact HTTPS Cipherwill origin is trusted', () {
-    expect(isCipherwillPage(Uri.parse('https://cipherwill.com/app')), true);
+    expect(isCipherwillPage(Uri.parse('https://www.cipherwill.com/app')), true);
     for (final url in [
-      'http://cipherwill.com/app',
-      'https://www.cipherwill.com/app',
-      'https://cipherwill.com.attacker.test/app',
-      'https://cipherwill.com:444/app',
-      'https://owner@cipherwill.com/app',
+      'http://www.cipherwill.com/app',
+      'https://cipherwill.com/app',
+      'https://www.cipherwill.com.attacker.test/app',
+      'https://www.cipherwill.com:444/app',
+      'https://owner@www.cipherwill.com/app',
       'javascript:alert(1)',
     ]) {
       expect(isCipherwillPage(Uri.parse(url)), false, reason: url);
@@ -35,7 +35,9 @@ void main() {
   });
   test('web and custom-scheme application links retain their destinations', () {
     expect(
-      mobileLocation(Uri.parse('https://cipherwill.com/app/notes?item=123')),
+      mobileLocation(
+        Uri.parse('https://www.cipherwill.com/app/notes?item=123'),
+      ),
       '/app/notes?item=123',
     );
     expect(
@@ -44,7 +46,7 @@ void main() {
     );
     expect(
       webAppUri(Uri.parse('/executor/account?folder=123')).toString(),
-      'https://cipherwill.com/executor/account?folder=123',
+      'https://www.cipherwill.com/executor/account?folder=123',
     );
     expect(mobileLocation(Uri.parse('https://other.test/app')), '/app');
   });

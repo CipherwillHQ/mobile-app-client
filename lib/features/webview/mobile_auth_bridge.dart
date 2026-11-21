@@ -49,7 +49,7 @@ class MobileAuthBridge {
 
   Future<void> reply(int id, Map<String, dynamic>? session) =>
       controller.runJavaScript(
-        'if (window.location.origin === "https://cipherwill.com") {'
+        'if (window.location.origin === "https://www.cipherwill.com") {'
         'window.CipherwillAuthResponse?.($id, ${jsonEncode(session)});}',
       );
 }

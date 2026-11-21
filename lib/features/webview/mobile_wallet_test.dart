@@ -21,7 +21,7 @@ void main() {
       addTearDown(auth.dispose);
       final web = WebViewController();
       final native = platform.controllers.single;
-      native.url = 'https://cipherwill.com/app/factors';
+      native.url = 'https://www.cipherwill.com/app/factors';
       final launches = <MethodCall>[];
       var installed = true;
       const launcher = MethodChannel('plugins.flutter.io/url_launcher');
@@ -63,7 +63,7 @@ void main() {
         'metamask://connect?channelId=test&pubkey=public',
       );
       expect(launches.single.arguments['useWebView'], false);
-      expect(native.url, 'https://cipherwill.com/app/factors');
+      expect(native.url, 'https://www.cipherwill.com/app/factors');
       expect(native.requests, isEmpty);
       expect(native.scripts.single, contains('"error":null'));
 
@@ -89,7 +89,7 @@ void main() {
       await bridge.receive(request);
       expect(launches.length, launchCount);
       expect(native.scripts, isEmpty);
-      native.url = 'https://cipherwill.com/app';
+      native.url = 'https://www.cipherwill.com/app';
       auth.user = FakeUser('different-account');
       await bridge.receive(request);
       expect(launches.length, launchCount);

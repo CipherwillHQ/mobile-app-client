@@ -13,19 +13,20 @@ import 'webview_links.dart';
 void main() {
   test('only the trusted upgrade path receives special external handling', () {
     expect(
-      isExternalUpgrade(Uri.parse('https://cipherwill.com/upgrade')),
+      isExternalUpgrade(Uri.parse('https://www.cipherwill.com/upgrade')),
       true,
     );
     expect(
-      isExternalUpgrade(Uri.parse('https://cipherwill.com/upgrade/')),
+      isExternalUpgrade(Uri.parse('https://www.cipherwill.com/upgrade/')),
       true,
     );
     for (final url in [
-      'https://cipherwill.com/app/billing',
-      'https://cipherwill.com/upgrade-other',
+      'https://www.cipherwill.com/app/billing',
+      'https://www.cipherwill.com/upgrade-other',
+      'https://cipherwill.com/upgrade',
       'https://other.test/upgrade',
-      'https://cipherwill.com:444/upgrade',
-      'http://cipherwill.com/upgrade',
+      'https://www.cipherwill.com:444/upgrade',
+      'http://www.cipherwill.com/upgrade',
     ]) {
       expect(isExternalUpgrade(Uri.parse(url)), false, reason: url);
     }
@@ -55,7 +56,7 @@ void main() {
           null,
         ),
       );
-      final upgrade = Uri.https('cipherwill.com', '/upgrade', {
+      final upgrade = Uri.https('www.cipherwill.com', '/upgrade', {
         'email': 'owner+mobile@example.test',
         'user_id': 'database_account',
       });
@@ -80,7 +81,7 @@ void main() {
       }
       expect(
         native.requests.single.uri.toString(),
-        'https://cipherwill.com/app',
+        'https://www.cipherwill.com/app',
       );
       expect(launches.single.method, 'launch');
       expect(launches.single.arguments['url'], upgrade.toString());
@@ -89,7 +90,7 @@ void main() {
       expect(
         await native.navigation.navigate!(
           NavigationRequest(
-            url: 'https://cipherwill.com/app/billing',
+            url: 'https://www.cipherwill.com/app/billing',
             isMainFrame: true,
           ),
         ),
